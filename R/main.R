@@ -2,34 +2,29 @@
 ##'
 ##' Longer description of what this function does here
 ##'
-##' @param data_type Document this argument here
-##'
-##' @param pa Document this argument here
-##'
-##' @param pb Document this argument here
-##'
-##' @param po Etc...
-##' @param smu  documentme
-##' @param ssigma  documentme
-##' @param ucta  documentme
-##' @param uctb  documentme
-##' @param ucto  documentme
-##' @param uct_mean  documentme
-##' @param rate  documentme
-##' @param seq_noise  documentme
-##' @param threshold  documentme
-##' @param threshold_ns  documentme
-##' @param max_n  documentme
-##' @param min_qual  documentme
-##' @param ali_file  documentme
-##' @param pat_file  documentme
-##' @param mov_file  documentme
-##' @param ward_file  documentme
+##' @param data_type Specifes the kind of data which is being used to perform the calculation.  Options are 0: Only times of symptom onset.  No sequence data is needed.  The code will assume that all individuals are in the ward at the time.  1: Times of symptom onset and genome sequence data.  Again the code will assume that all individuals are in the ward throughout the period in question. (Relevant command : --ali_file) 2: As for 1, but with patient location data.  (Relevant command --ward_file) 3: As for 2, but with staff location data.  (Relevant command --mov_file)
+##' @param pat_file (Required) Specify the name of a file containing the basic data for each individual.  This should be a comma separated (.csv) file with data in columns: 1.  Individual ID (A code or identified corresponding to the individual)  2.  Onset date : The date at which the individual first experienced symptoms.  Date format should be dd/mm/yyyy.  3.  Onset date source : Equal to 1 if the date of onset is known or 0 (or any other integer) if this date is not known, for example in the case of an individual being asymptomatic.  In the case that this value is 0 the code will assume that the onset date provided is the date at which the individual tested positive. The onset date will then be estimated on this basis, using data collected from Cambridge University hospitals.  4.  Infection type : Equal to 1 if the individual is a patient who may have been infected in the case in question.  Equal to 2 if the individual is a patient and a community case (i.e. who could not have been infected by others in the dataset).  Equal to 3 if the individual is a healthcare worker.  5.  Sequence ID : A code used to link the individual to genome sequence information.  This should match the header of the sequence corresponding to the individual in the accompanying .fasta file (see --ali_file for this).  6.  Date of sample collection : Used in evolutionary calculations.  Date format should be dd/mm/yyyy.  7.  Sample received date : Currently not used in the calculation.
+##' @param ali_file  Specify the name of a file in FASTA format containing genome sequences.  This file must contain all required sequences, specified by the sequence ID in the data of pat_file.
+##' @param ward_file  Specify the name of a file containing the location of patients over time.  This should be a comma separated (.csv) file.  The format of the file is designed to be compatible with local information on patient movements.  The first line is a header.  Subsequent lines are in columns as follows: 1.  Individual ID (same as for --pat_file)  2.  Cluster ID e.g. the name of the ward being studied.  3.  Infection type e.g. 'patient' or 'HCW' for health care worker.  4.  Availability of data e.g. 'patient_moves_available'
+5 onwards.  Data of the location of a patient, in sets of three columns.  These specify in turn: i)   The name of the location of the individual e.g. WARD_01. ii)  The start date of the individual being in that location. iii) The end date of the individual being in that location.  In practice only the first column, and columns from 5 onwards are used.
+##' @param mov_file  Data describing when specific health care workers were on the ward in question.  The first line is a header line with column names.  The first two of these are labels, while those from the third column onwards describe dates, specified in dd.mm.yyyy format.  After the first line, the data is specified in columns as follows:  1.  Individual ID (same as for --pat_file)  2.  Cluster ID e.g. the name of the ward in question.  3 onwards.  Presence/absence data.  A 'Y' indicates that the health care worker was on the ward on the date specified for that column in the first row.  An 'N' indicates that the health care worker was not present on the ward on that date.  Either 'Y' or 'N' should be specified for each date.
+##' @param evo_rate Rate of evolution of the virus, specified in nucleotide substitutions per locus per year.
+##' @param seq_noise An estimate of the number of mutations separating two genome sequences that arises from sequencing noise.  The default parameter was estimated from data collected by Cambridge University Hospitals within single hosts, using the criteria that at least 90% of the reported nucleotides were unambiguous.
+##' @param min_qual Minimum sequence quality for a sequence to be included, measured as a fraction of genome coverage (e.g. 0.8 would indicate that at least 80% of the genome must have been specified by a sequence
+##' @param max_n Maximum number of ambiguous nucleotides tolerated in a sequence counted at positions in the sequence data for which there is a polymorphism.  This parameter deals with a case of a sequence of generally high quality in which the missing coverage of the genome is all at critical sites
+##' @param pat_default Default probability of a patient being present on the ward on a given day if no location information is specified for that individual.  Default 1.
+##' @param hcw_default Default probability of a health care worker being present on the ward on a given day if no location information is specified for that individual.  Default is 4/7.
+##' @param uct_mean Mean time between an individual becoming symptomatic for coronavirus infection and testing positive.  This value is used to estimate times of individuals becoming symptomatic in the case that no symptom dates are available
+##' @param ucta Alpha parameter for a gamma distribution of the times bewterrn becomining symptomatic and testing positive.  Currently not used.
+##' @param uctb Beta parameter for a gamma distribution of the times bewterrn becomining symptomatic and testing positive.  Currently not used.
+##' @param ucto Offset parameter for a gamma distribution of the times bewterrn becomining symptomatic and testing positive.  Currently not used.
+##' @param pa Alpha parameter for the gamma distribution for the infectious potential of an individual.
+##' @param pb Beta parameter for the gamma distribution for the infectious potential of an individual.
+##' @param po Offset parameter for the gamma distribution for the infectious potential of an individual.
+##' @param smu Mu parameter for the lognormal distribution for the time from infection to becoming symptomatic.
+##' @param ssigma Sigma parameter for the lognormal distribution for the time from infection to becoming symptomatic.
+##' @param diagnostic Flag to enable extensive diagnostic output from the function.
 ##' @param noseq  documentme
-##' @param calc_thresholds  documentme
-##' @param diagnostic  documentme
-##' @param hcw_location_default  documentme
-##' @param pat_location_default  documentme
 ##'
 ##'
 ##' @return Document the return value here
