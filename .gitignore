@@ -42,4 +42,5 @@ vignettes/*.pdf
 *.so
 a2bcovid.Rproj
 tests/local
+data-raw
 
