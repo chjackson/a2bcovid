@@ -1,0 +1,22 @@
+Package: a2bcovid
+Type: Package
+Title: Inferring COVID-19 transmission events from sequence and location data
+Version: 0.1.0
+Authors@R: 
+    c(person(given = "Chris",
+           family = "Illingworth",
+           role = c("aut", "cre"),
+           email = "chris.illingworth@mrc-bsu.cam.ac.uk"),
+	   person(given = "Chris",
+	   family = "Jackson",
+	   role = c("aut"), 
+	   email = "chris.jackson@mrc-bsu.cam.ac.uk"))
+Maintainer: Chris Illingworth <chris.illingworth@mrc-bsu.cam.ac.uk>
+Description: Methods for inferring pathways of infection in hospitals from viral sequence data. More details in multiple sentences.
+License: GPL-3
+Encoding: UTF-8
+LazyData: true
+Imports: Rcpp (>= 1.0.5), shiny, rstudioapi
+Suggests: testthat
+LinkingTo: Rcpp
+RoxygenNote: 7.1.1
