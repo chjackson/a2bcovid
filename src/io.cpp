@@ -69,6 +69,9 @@ void GetOptions (run_params& p, int argc, const char **argv) {
 		} else if (p_switch.compare("--mov_file")==0) {
 			x++;
 			p.mov_file=argv[x];
+		} else if (p_switch.compare("--ward_file")==0) {/*New*/
+			x++;
+			p.ward_file=argv[x];
 		} else if (p_switch.compare("--sub_file")==0) {
 			x++;
 			p.sub_file=argv[x];
@@ -471,21 +474,23 @@ void EditHCWMovData (vector<pat>& pdat) {
 void ReadFastaAli (run_params p, vector<string>& names, vector<string>& seqs) {
     ifstream ali_file;
     ali_file.open(p.ali_file.c_str());
-    //Rcpp::Rcout << p.ali_file.c_str() << "\n";
-    int index=0;
-    for (int i=0;i<1000000;i++) {
-        if (index==0) {
-            string name;
-            if (!(ali_file >> name)) break;
-            names.push_back(name);
-            index=1-index;
-        } else {
-            string seq;
-            if (!(ali_file >> seq)) break;
-            seqs.push_back(seq);
-            index=1-index;
-        }
-    }
+	string seq;
+	string str;
+	for (int i=0;i<1000000;i++) {
+		if (!(ali_file >> str)) break;
+		if (str.at(0)=='>') {
+			names.push_back(str);
+			if (seq.size()>0) {
+				seqs.push_back(seq);
+				seq.clear();
+			}
+		} else {
+			seq=seq+str;
+		}
+	}
+	if (seq.size()>0) {
+		seqs.push_back(seq);
+	}
 }
 
 void ReadSubsets (run_params p, vector< vector<int> >& subsets) {
