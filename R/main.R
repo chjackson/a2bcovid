@@ -38,7 +38,12 @@
 ##' @useDynLib a2bcovid, .registration = TRUE
 ##'
 ##' @export
-mainR <- function(data_type = 2,
+a2bcovid <- function(
+  ali_file ,
+  pat_file,
+  mov_file ,
+  ward_file ,
+  data_type = 2,
                   pa=97.18750, pb=0.268908, po=25.625,
                   smu=1.434065, ssigma=0.6612,
                   ucta=2.5932152095707406, uctb=3.7760060663975437, ucto=3.112080041460921,
@@ -48,10 +53,6 @@ mainR <- function(data_type = 2,
                   threshold=0, threshold_ns=0,
                   max_n = 10,
                   min_qual = 0.8,
-                  ali_file = "Seqs_editN20_manali_plus.fa",
-                  pat_file = "data1.csv",
-                  mov_file = "data2.csv",
-                  ward_file = "ward_movement_network_edit_anonymised_20200811_NoPII.csv",
                   noseq = 0,
                   calc_thresholds=FALSE,
                   diagnostic =FALSE,
@@ -59,6 +60,10 @@ mainR <- function(data_type = 2,
                   pat_location_default = 1
 )
 {
+  check_file(ali_file)
+  check_file(pat_file)
+  check_file(mov_file)
+  check_file(ward_file)
   params <- list(data_type=data_type,
                  pa=pa, pb=pb, po=po, smu=smu, ssigma=ssigma,
                  ucta=ucta, uctb=uctb, ucto=ucto, uct_mean=uct_mean,
@@ -70,4 +75,8 @@ mainR <- function(data_type = 2,
                  diagnostic=diagnostic,
                  hcw_location_default=hcw_location_default, pat_location_default=pat_location_default)
   .Call(`_a2bcovid_mainC`, params);
+}
+
+check_file <- function(filename){
+  if (!file.exists(filename)) stop(sprintf("File `%s` not found", filename))
 }
