@@ -23,7 +23,6 @@
 ##' @param smu Mu parameter for the lognormal distribution for the time from infection to becoming symptomatic.
 ##' @param ssigma Sigma parameter for the lognormal distribution for the time from infection to becoming symptomatic.
 ##' @param diagnostic Flag to enable extensive diagnostic output from the function.
->>>>>>> 495cf9f98244f92b6d39dca94f1736d58e51d56e
 ##' @param noseq  documentme
 ##'
 ##'
