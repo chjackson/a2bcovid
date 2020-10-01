@@ -1,0 +1,8 @@
+patient_study_id,ward_cluster_network,hcw_status,patient_movement_data_available,LocationName_0,StartDate_0,EndDate_0,LocationName_1,StartDate_1,EndDate_1
+CAMP001001,A,patient,patient_moves_available,WARD_01,01/05/2020,07/05/2020,WARD_04,07/05/2020,09/05/2020
+CAMP001002,A,patient,patient_moves_available,WARD_01,04/05/2020,09/05/2020,WARD_05,09/05/2020,12/05/2020
+CAMP001003,A,patient,patient_moves_available,WARD_01,06/05/2020,15/05/2020,WARD_06,15/05/2020,17/05/2020
+CAMP001007,A,patient,patient_moves_available,WARD_02,11/05/2020,15/05/2020,WARD_01,15/05/2020,30/05/2020
+CAMP001008,A,patient,patient_moves_available,WARD_03,24/05/2020,26/05/2020,WARD_01,24/05/2020,02/06/2020
+CAMP001009,A,patient,patient_moves_available,WARD_01,17/05/2020,22/05/2020
+CAMP001010,A,patient,patient_moves_available,WARD_01,12/05/2020,20/05/2020
