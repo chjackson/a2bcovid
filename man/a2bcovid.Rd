@@ -5,9 +5,9 @@
 \title{Sentence of what this function does here}
 \usage{
 a2bcovid(
-  ali_file,
   pat_file,
   mov_file,
+  ali_file,
   ward_file,
   data_type = 2,
   pa = 97.1875,
@@ -19,7 +19,7 @@ a2bcovid(
   uctb = 3.77600606639754,
   ucto = 3.11208004146092,
   uct_mean = 6.67992,
-  rate = 8e-04,
+  evo_rate = 8e-04,
   seq_noise = 0.772469,
   threshold = 0,
   threshold_ns = 0,
@@ -28,16 +28,16 @@ a2bcovid(
   noseq = 0,
   calc_thresholds = FALSE,
   diagnostic = FALSE,
-  hcw_location_default = 0.5714286,
-  pat_location_default = 1
+  hcw_default = 0.5714286,
+  pat_default = 1
 )
 }
 \arguments{
-\item{ali_file}{Specify the name of a file in FASTA format containing genome sequences.  This file must contain all required sequences, specified by the sequence ID in the data of pat_file.}
-
 \item{pat_file}{(Required) Specify the name of a file containing the basic data for each individual.  This should be a comma separated (.csv) file with data in columns: 1.  Individual ID (A code or identified corresponding to the individual)  2.  Onset date : The date at which the individual first experienced symptoms.  Date format should be dd/mm/yyyy.  3.  Onset date source : Equal to 1 if the date of onset is known.   Equal to 2 if the infection was asymptomatic.  In this case the onset date is the date on which the first positive swab was collected.  Equal to 3 if data is missing or unknown.  In this case the onset date is the date on which the first positive swab was collected.  If the onset date is anything other than 1 the true onset date is estimated by the code using data collected from Cambridge University hospitals. (Relevant command --uct_mean).  4.  Infection type : Equal to 1 if the individual is a patient and a community case (i.e. who could not have been infected by others in the dataset but who could potentially transmit the virus to others).  This was defined as being positive for the virus 48 hours before admission to hospital with no healthcare contact in the previous 14 days prior to admission).  Equal to 2 if the individual is a patient and not a community case (i.e. who could potentially transmit and receive infection).  Equal to 3 if the individual is a healthcare worker.  5.  Sequence ID : A code used to link the individual to genome sequence information.  This should match the header of the sequence corresponding to the individual in the accompanying .fasta file (see --ali_file for this).  6.  Date of sample collection : Used in evolutionary calculations.  Date format should be dd/mm/yyyy.  7.  Sample received date : Currently not used in the calculation.}
 
 \item{mov_file}{Data describing when specific health care workers were on the ward in question.  The first line is a header line with column names.  The first two of these are labels, while those from the third column onwards describe dates, specified in dd.mm.yyyy format.  After the first line, the data is specified in columns as follows:  1.  Individual ID (same as for --pat_file)  2.  Cluster ID e.g. the name of the ward in question.  3 onwards.  Presence/absence data.  A 'Y' indicates that the health care worker was on the ward on the date specified for that column in the first row.  An 'N' indicates that the health care worker was not present on the ward on that date.  Either 'Y' or 'N' should be specified for each date.}
+
+\item{ali_file}{Specify the name of a file in FASTA format containing genome sequences.  This file must contain all required sequences, specified by the sequence ID in the data of pat_file.}
 
 \item{ward_file}{Specify the name of a file containing the location of patients over time.  This should be a comma separated (.csv) file.  The format of the file is designed to be compatible with local information on patient movements.  The first line is a header.  Subsequent lines are in columns as follows: 1.  Individual ID (same as for --pat_file)  2.  Cluster ID e.g. the name of the ward being studied.  3.  Infection type e.g. 'patient' or 'HCW' for health care worker.  4.  Availability of data e.g. 'patient_moves_available' 5 onwards.  Data of the location of a patient, in sets of three columns.  These specify in turn: i)   The name of the location of the individual e.g. WARD_01. ii)  The start date of the individual being in that location. iii) The end date of the individual being in that location.  In practice only the first column, and columns from 5 onwards are used.}
 
@@ -61,21 +61,27 @@ a2bcovid(
 
 \item{uct_mean}{Mean time between an individual becoming symptomatic for coronavirus infection and testing positive.  This value is used to estimate times of individuals becoming symptomatic in the case that no symptom dates are available}
 
-\item{seq_noise}{An estimate of the number of mutations separating two genome sequences that arises from sequencing noise.  The default parameter was estimated from data collected by Cambridge University Hospitals within single hosts, using the criteria that at least 90% of the reported nucleotides were unambiguous.}
+\item{evo_rate}{Rate of evolution of the virus, specified in nucleotide substitutions per locus per year.}
+
+\item{seq_noise}{An estimate of the number of mutations separating two genome sequences that arises from sequencing noise.  The default parameter was estimated from data collected by Cambridge University Hospitals within single hosts, using the criteria that at least 90\% of the reported nucleotides were unambiguous.}
+
+\item{threshold}{documentme}
+
+\item{threshold_ns}{documentme}
 
 \item{max_n}{Maximum number of ambiguous nucleotides tolerated in a sequence counted at positions in the sequence data for which there is a polymorphism.  This parameter deals with a case of a sequence of generally high quality in which the missing coverage of the genome is all at critical sites}
 
-\item{min_qual}{Minimum sequence quality for a sequence to be included, measured as a fraction of genome coverage (e.g. 0.8 would indicate that at least 80% of the genome must have been specified by a sequence}
+\item{min_qual}{Minimum sequence quality for a sequence to be included, measured as a fraction of genome coverage (e.g. 0.8 would indicate that at least 80\% of the genome must have been specified by a sequence}
 
 \item{noseq}{documentme}
 
+\item{calc_thresholds}{documentme}
+
 \item{diagnostic}{Flag to enable extensive diagnostic output from the function.}
 
-\item{evo_rate}{Rate of evolution of the virus, specified in nucleotide substitutions per locus per year.}
+\item{hcw_default}{Default probability of a health care worker being present on the ward on a given day if no location information is specified for that individual.  Default is 4/7.}
 
 \item{pat_default}{Default probability of a patient being present on the ward on a given day if no location information is specified for that individual.  Default 1.}
-
-\item{hcw_default}{Default probability of a health care worker being present on the ward on a given day if no location information is specified for that individual.  Default is 4/7.}
 }
 \value{
 Document the return value here
