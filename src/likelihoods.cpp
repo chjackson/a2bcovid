@@ -125,6 +125,8 @@ double LikelihoodFromItoJTimeK (int i, int j, int k, const run_params& p, const 
 	double L=0;
 	if (pdat[i].seq.size()==0||pdat[j].seq.size()==0) {
 		L=-1e10;
+	} else if (pdat[j].type==1) {//Flagged as community infection - can't be from i to j
+		L=-1e10;
 	} else {
 		//Sequence component of the likelihoods
 		if (pdat[j].time_seq<contact_times_probs[k].time) { //Data must be collected from j after the time of transmission

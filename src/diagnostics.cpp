@@ -68,6 +68,8 @@ DataFrame LikelihoodOutputR(run_params p, const vector<pat>& pdat, const vector<
     n = k;
     CharacterVector from(n);
     CharacterVector to(n);
+    NumericVector from_hcw(n);
+    NumericVector to_hcw(n);
     NumericVector likelihood(n);
     CharacterVector consistency(n);
     LogicalVector under_threshold(n);
@@ -76,6 +78,8 @@ DataFrame LikelihoodOutputR(run_params p, const vector<pat>& pdat, const vector<
       for (int j=0;j<like_trans[i].size();j++) {
         from[k] = pdat[i].code;
         to[k] = pdat[j].code;
+		from_hcw[k] = pdat[i].hcw;
+		to_hcw[k] = pdat[j].hcw;
         if (p.data_type==0) {
           likelihood[k] = like_trans[i][j].ns_lL_tot;
           consistency[k] = ThresholdsNSR(p, like_trans[i][j].ns_lL_tot);
@@ -90,6 +94,8 @@ DataFrame LikelihoodOutputR(run_params p, const vector<pat>& pdat, const vector<
     }
     return DataFrame::create( Named("from") = from,
                               Named("to")  = to,
+                              Named("from_hcw")  = from_hcw,
+                              Named("to_hcw")  = to_hcw,
                               Named("likelihood") = likelihood,
                               Named("consistency") = consistency,
                               Named("under_threshold") = under_threshold );
