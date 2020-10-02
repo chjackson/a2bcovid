@@ -17,6 +17,6 @@ License: GPL-3
 Encoding: UTF-8
 LazyData: true
 Imports: Rcpp (>= 1.0.5), shiny, rstudioapi
-Suggests: testthat
+Suggests: testthat, ggplot2, ggtext
 LinkingTo: Rcpp
 RoxygenNote: 7.1.1

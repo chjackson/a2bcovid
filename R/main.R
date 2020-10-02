@@ -78,7 +78,10 @@ a2bcovid <- function(
                  calc_thresholds=calc_thresholds,
                  diagnostic=diagnostic,
                  hcw_location_default=hcw_default, pat_location_default=pat_default)
-  .Call(`_a2bcovid_mainC`, params);
+  res <- .Call(`_a2bcovid_mainC`, params)
+  res$consistency <- ordered(res$consistency,
+                             levels=c("Consistent","Borderline","Unlikely"))
+  res
 }
 
 check_file <- function(filename){
