@@ -244,11 +244,11 @@ Rcpp::String ThresholdsR (run_params p, double L) {
   //99.9%:-12.8883
   //99.999%:-17.6422
   if (L>-8.15176) {
-    out = "Consistent "; //p>0.05
+    out = "Consistent"; //p>0.05
   } else if (L>-10.1578) {
-    out = "Borderline "; //0.05>p>0.01
+    out = "Borderline"; //0.05>p>0.01
   } else {
-    out = "Unlikely "; //0.01>p
+    out = "Unlikely"; //0.01>p
   }
   return out;
 }
