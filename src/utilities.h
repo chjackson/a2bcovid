@@ -33,3 +33,7 @@ void RemoveIndividualsMultipleN (const run_params p, vector<int>& nloc_count, ve
 void FixIndivudualsNoLocation (const run_params p, vector<pat>& pdat, vector<string>& fixed);
 void RemoveRepeatPatients (run_params p, vector<pat>& pdat);
 void RepairSequence(int i, int j, vector<pat>& pdat);
+void FindOrdering (const vector< vector<ijlike> >& like_trans, vector<int>& ordered);
+void FindLikelihoodCategories(const vector< vector<ijlike> >& like_trans, vector< vector<int> >& categories);
+void FindCategoryDistances(const vector< vector<int> >& categories, vector< vector<int> >& dists);
+void FindSubsets (const vector< vector<int> >& dists, vector< vector<int> >& subsets);

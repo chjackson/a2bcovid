@@ -467,14 +467,113 @@ void RepairSequence(int i, int j, vector<pat>& pdat) {
 	}
 }
 
-void FindBestRoot (int& index, const vector<treestore>& ts_roots) {
-	double max=-1e10;
-	for (int i=0;i<ts_roots.size();i++) {
-		if (ts_roots[i].logL>max) {
-			max=ts_roots[i].logL;
-			index=i;
+void FindOrdering (const vector< vector<ijlike> >& like_trans, vector<int>& ordered) {
+	vector< vector<int> > categories;
+	FindLikelihoodCategories(like_trans,categories);
+	vector< vector<int> > dists;
+	FindCategoryDistances(categories,dists);
+	vector< vector<int> > subsets;
+	FindSubsets(dists,subsets);
+	for (int i=0;i<subsets.size();i++) {
+		for (int j=0;j<subsets[i].size();j++) {
+			ordered.push_back(subsets[i][j]);
 		}
 	}
 }
 
+void FindLikelihoodCategories(const vector< vector<ijlike> >& like_trans, vector< vector<int> >& categories) {
+	for (int i=0;i<like_trans.size();i++) {
+		vector<int> c;
+		for (int j=0;j<like_trans[i].size();j++) {
+			if (like_trans[i][j].lL_tot>-8.15176) {
+				c.push_back(1);
+			} else if (like_trans[i][j].lL_tot>-10.1578) {
+				c.push_back(2);
+			} else {
+				c.push_back(3);
+			}
+		}
+		categories.push_back(c);
+	}
+}
 
+void FindCategoryDistances(const vector< vector<int> >& categories, vector< vector<int> >& dists) {
+	for (int i=0;i<categories.size();i++) {
+		vector<int> c;
+		for (int j=0;j<categories.size();j++) {
+			int d=0;
+			if (i!=j) {
+				for (int k=0;k<categories[i].size();k++) {
+					if (k!=i&&k!=j) {
+						d=d+abs(categories[i][k]-categories[j][k]);
+					}
+					if (k==i) {
+						d=d+categories[i][j];
+					}
+					if (k==j){
+						d=d+categories[j][i];
+					}
+				}
+			}
+			c.push_back(d);
+		}
+		dists.push_back(c);
+	}
+}
+
+void FindSubsets (const vector< vector<int> >& dists, vector< vector<int> >& subsets) {
+	int done=0;
+	while (done==0) {
+		int min=100;
+		int mi=-1;
+		int mj=-1;
+		for (int i=0;i<dists.size();i++) {
+			for (int j=0;j<dists[i].size();j++) {
+				if (i!=j&&dists[i][j]<min) {
+					int found=0;
+					for (int k=0;k<subsets.size();k++) {
+						for (int l=0;l<subsets[k].size();l++) {
+							if (subsets[k][l]==i) {
+								found++;
+							}
+							if (subsets[k][l]==j) {
+								found++;
+							}
+						}
+					}
+					if (found<2) {
+						min=dists[i][j];
+						mi=i;
+						mj=j;
+					}
+				}
+			}
+		}
+		//cout << mi << " " << mj << "\n";
+		if (mi>=0&&mj>=0) {
+			int placed=0;
+			for (int k=0;k<subsets.size();k++) {
+				for (int l=0;l<subsets[k].size();l++) {
+					if (subsets[k][l]==mi) {
+						subsets[k].push_back(mj);
+						placed=1;
+						break;
+					}
+					if (subsets[k][l]==mj) {
+						subsets[k].push_back(mi);
+						placed=1;
+						break;
+					}
+				}
+			}
+			if (placed==0) {
+				vector<int> n;
+				n.push_back(mi);
+				n.push_back(mj);
+				subsets.push_back(n);
+			}
+		} else {
+			done=1;
+		}
+	}
+}

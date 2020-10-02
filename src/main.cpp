@@ -153,7 +153,10 @@ DataFrame mainC(List params) {
   vector< vector<ijlike> > like_trans;
   CalculateTDLikelihoods (p,pdat,seqdists,seqdists_c,like_trans);
 
-  out = LikelihoodOutputR(p,pdat,like_trans);
+  vector<int> ordered;
+  FindOrdering (like_trans,ordered);
+
+  out = LikelihoodOutputR(p,ordered,pdat,like_trans);
   FinalOutput(p,removed,fixed);
 
   return out;
