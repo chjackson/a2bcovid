@@ -19,24 +19,13 @@ res <- a2bcovid(pat_file = pat_file, mov_file = mov_file,
              ali_file = ali_file, ward_file = ward_file,
              data_type = 3)
 
-library(stringr)
-library(ggplot2)
+plot_a2bcovid(res, hi_from="from_hcw", hi_to="to_hcw")
+plot_a2bcovid(res, hi_from="from_hcw", hi_to="to_hcw", hi_col="purple")
+plot_a2bcovid(res, hi_from="from_hcw", hi_to="to_hcw", palette="PuRd")
+plot_a2bcovid(res, hi_from="from_hcw", hi_to="to_hcw", palette="BuGn")
+plot_a2bcovid(res, hi_from="from_hcw", hi_to="to_hcw", palette="BuGn", direction=-1)
 
-## TODO good to bad color scheme plus colorblind safe.  inverse viridis?
-## its a bit bright.
-
-
-res_from <- res[!duplicated(res$from),]
-hcw_from <- res_from$from_hcw[match(levels(factor(res$from)), res_from$from)]
-x_cols <- ifelse(hcw_from, "red", "black")
-res_to <- res[!duplicated(res$to),]
-hcw_to <- res_to$to_hcw[match(levels(factor(res$to)), res_to$to)]
-y_cols <- ifelse(hcw_to, "red", "black")
-
-ggplot(res, aes(y=from, x=to)) +
-  geom_raster(aes(fill=consistency)) +
-  theme(axis.text.x = ggtext::element_markdown(angle = 90, vjust=0.5, colour = x_cols),
-        axis.text.y = ggtext::element_markdown(colour = y_cols),
-        legend.title = element_blank())
-
+# Available palettes.  Select direction = 1 or -1 to reverse the colours
+# Blues, BuGn, BuPu, GnBu, Greens, Greys, Oranges, OrRd, PuBu, PuBuGn,
+# PuRd, Purples, RdPu, Reds, YlGn, YlGnBu, YlOrBr, YlOrRd
 

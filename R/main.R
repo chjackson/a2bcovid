@@ -80,10 +80,63 @@ a2bcovid <- function(
                  hcw_location_default=hcw_default, pat_location_default=pat_default)
   res <- .Call(`_a2bcovid_mainC`, params)
   res$consistency <- ordered(res$consistency,
-                             levels=c("Consistent","Borderline","Unlikely"))
+                             levels=c("Unlikely","Borderline","Consistent"))
   res
 }
 
 check_file <- function(filename){
   if (!file.exists(filename)) stop(sprintf("File `%s` not found", filename))
+}
+
+
+##' Plot results of an a2bcovid analysis
+##'
+##' Plots a grid of colours indicating likelihood of transmission paths between
+##' each pair of individuals
+##'
+##'
+##' @param x Data frame returned by \code{\link{a2bcovid}}.
+##'
+##' @param hi_from Character string, naming a variable in the dataframe
+##'   indicating "from" individual IDs to be highlighted in the plot. If not
+##'   supplied, then no IDs will be highlighted.
+##'
+##' @param hi_to Character string indicating "to" individual IDs to be
+##'   highlighted, similarly.
+##'
+##' @param hi_col Colour to use to highlight individual IDs.
+##'
+##' @param palette Colour palette, passed to
+##'   \code{\link[ggplot2]{scale_fill_brewer}}.
+##'
+##' @param direction Direction of colours. Defaults to 1.  Change to -1 to
+##'   reverse the order of colours.
+##'
+##' @return A \pkg{ggplot2} plot object.
+##'
+##' @import ggplot2
+##'
+plot_a2bcovid <- function(x, hi_from, hi_to, hi_col="red",
+                          palette="YlOrRd", direction = 1){
+  if (!missing(hi_from)) {
+    if (!(hi_from %in% names(x))) stop(sprintf("`%s` not found in `x`", hi_from))
+    x_from <- x[!duplicated(x$from),]
+    xhi_from <- x_from[match(levels(factor(x$from)), x_from$from), hi_from]
+    x_cols <- ifelse(xhi_from, hi_col, "black")
+  } else x_cols <- "black"
+  if (!missing(hi_to)) {
+    if (!(hi_to %in% names(x))) stop(sprintf("`%s` not found in `x`", hi_from))
+    x_to <- x[!duplicated(x$to),]
+    xhi_to <- x_to[match(levels(factor(x$to)), x_to$to), hi_to]
+    y_cols <- ifelse(xhi_to, hi_col, "black")
+  } else y_cols <- "black"
+
+  ggplot(x, aes_string(y="from", x="to")) +
+    geom_raster(aes_string(fill="consistency")) +
+    theme(axis.text.x = ggtext::element_markdown(angle = 90, vjust=0.5, colour = x_cols),
+          axis.text.y = ggtext::element_markdown(colour = y_cols),
+          legend.title = element_blank()) +
+    scale_fill_brewer(type = "seq",
+                      palette = palette, direction = direction,
+                      aesthetics = "fill")
 }
