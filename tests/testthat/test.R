@@ -29,3 +29,9 @@ plot_a2bcovid(res, hi_from="from_hcw", hi_to="to_hcw", palette="BuGn", direction
 # Blues, BuGn, BuPu, GnBu, Greens, Greys, Oranges, OrRd, PuBu, PuBuGn,
 # PuRd, Purples, RdPu, Reds, YlGn, YlGnBu, YlOrBr, YlOrRd
 
+if (0){
+
+  ## Run this to test the web app locally
+  a2bcovid_app()
+
+}
