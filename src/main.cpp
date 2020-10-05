@@ -154,8 +154,13 @@ DataFrame mainC(List params) {
   CalculateTDLikelihoods (p,pdat,seqdists,seqdists_c,like_trans);
 
   vector<int> ordered;
-  FindOrdering (like_trans,ordered);
-
+  if (p.make_clusters==1) {
+    FindOrdering (like_trans,ordered);
+  } else {
+    for (int i=0;i<like_trans.size();i++) {
+	  ordered.push_back(i);
+	}
+  }
   out = LikelihoodOutputR(p,ordered,pdat,like_trans);
   FinalOutput(p,removed,fixed);
 

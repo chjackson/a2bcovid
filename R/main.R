@@ -23,6 +23,7 @@
 ##' @param smu Mu parameter for the lognormal distribution for the time from infection to becoming symptomatic.
 ##' @param ssigma Sigma parameter for the lognormal distribution for the time from infection to becoming symptomatic.
 ##' @param diagnostic Flag to enable extensive diagnostic output from the function.
+##' @param make_clusters Flag to sort output matrix into machine-derived clusters.  Alternative is that the input order of individuals is mirrored in the output
 ##'
 ##' @param threshold documentme
 ##' @param threshold_ns documentme
@@ -61,7 +62,8 @@ a2bcovid <- function(
                   calc_thresholds=FALSE,
                   diagnostic =FALSE,
                   hcw_default = 0.5714286,
-                  pat_default = 1
+                  pat_default = 1,
+                  make_clusters = 1
 )
 {
   check_file(ali_file)
@@ -77,7 +79,9 @@ a2bcovid <- function(
                  noseq=noseq,
                  calc_thresholds=calc_thresholds,
                  diagnostic=diagnostic,
-                 hcw_location_default=hcw_default, pat_location_default=pat_default)
+				 hcw_location_default=hcw_default,
+				 pat_location_default=pat_default,
+				 make_clusters=make_clusters)
   res <- .Call(`_a2bcovid_mainC`, params)
   res$consistency <- ordered(res$consistency,
                              levels=c("Unlikely","Borderline","Consistent"))

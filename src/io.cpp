@@ -42,6 +42,7 @@ void GetOptions (run_params& p, int argc, const char **argv) {
 	p.data_type=1;
 	p.hcw_location_default=0.5714286;
 	p.pat_location_default=1;
+	p.make_clusters=1;
 	int x=1;
 	while (x < argc && (argv[x][0]=='-')) {
 		p_switch=argv[x];
@@ -93,6 +94,9 @@ void GetOptions (run_params& p, int argc, const char **argv) {
 		} else if (p_switch.compare("--calc_thresholds")==0) {
 			x++;
 			p.calc_thresholds=atoi(argv[x]);
+		} else if (p_switch.compare("--cluster")==0) {
+			x++;
+			p.make_clusters=atoi(argv[x]);
         } else {
 			Rcpp::Rcout << "Incorrect usage\n ";
 			//			exit(1);
