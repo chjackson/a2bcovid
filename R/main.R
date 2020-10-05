@@ -120,6 +120,7 @@ check_file <- function(filename){
 ##'
 ##' @import ggplot2
 ##'
+##' @export
 plot_a2bcovid <- function(x, hi_from, hi_to, hi_col="red",
                           palette="YlOrRd", direction = 1){
   if (!missing(hi_from)) {

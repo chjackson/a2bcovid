@@ -29,7 +29,8 @@ a2bcovid(
   calc_thresholds = FALSE,
   diagnostic = FALSE,
   hcw_default = 0.5714286,
-  pat_default = 1
+  pat_default = 1,
+  make_clusters = 1
 )
 }
 \arguments{
@@ -82,6 +83,8 @@ a2bcovid(
 \item{hcw_default}{Default probability of a health care worker being present on the ward on a given day if no location information is specified for that individual.  Default is 4/7.}
 
 \item{pat_default}{Default probability of a patient being present on the ward on a given day if no location information is specified for that individual.  Default 1.}
+
+\item{make_clusters}{Flag to sort output matrix into machine-derived clusters.  Alternative is that the input order of individuals is mirrored in the output}
 }
 \value{
 Document the return value here
