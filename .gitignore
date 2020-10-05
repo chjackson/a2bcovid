@@ -43,4 +43,5 @@ vignettes/*.pdf
 a2bcovid.Rproj
 tests/local
 data-raw
+R/deploy.R
 

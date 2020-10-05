@@ -9,7 +9,3 @@ a2bcovid_app <- function(rstudio=FALSE){
     shiny::runApp(system.file("a2bcovid", package = "a2bcovid"),
                   launch.browser = launch.browser)
 }
-
-deploy_app <- function(rebuild=FALSE){
-  ## TODO copy to server
-}
