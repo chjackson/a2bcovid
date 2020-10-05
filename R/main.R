@@ -122,7 +122,7 @@ check_file <- function(filename){
 ##'
 ##' @export
 plot_a2bcovid <- function(x, hi_from, hi_to, hi_col="red",
-                          palette="YlOrRd", direction = 1){
+                          palette="RdYlBu", direction = 1){
   if (!missing(hi_from)) {
     if (!(hi_from %in% names(x))) stop(sprintf("`%s` not found in `x`", hi_from))
     x_from <- x[!duplicated(x$from),]
@@ -141,7 +141,7 @@ plot_a2bcovid <- function(x, hi_from, hi_to, hi_col="red",
     theme(axis.text.x = ggtext::element_markdown(angle = 90, vjust=0.5, colour = x_cols),
           axis.text.y = ggtext::element_markdown(colour = y_cols),
           legend.title = element_blank()) +
-    scale_fill_brewer(type = "seq",
+    scale_fill_brewer(type = "div",
                       palette = palette, direction = direction,
                       aesthetics = "fill")
 }
