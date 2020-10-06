@@ -70,10 +70,12 @@ DataFrame LikelihoodOutputR(run_params p, const vector<int>& ordered, const vect
     CharacterVector to(n);
     NumericVector from_hcw(n);
     NumericVector to_hcw(n);
-    NumericVector likelihood(n);
+    NumericVector order(n);
+	NumericVector likelihood(n);
     CharacterVector consistency(n);
     LogicalVector under_threshold(n);
     k = 0;
+	order=ordered;
     for (int i=0;i<like_trans.size();i++) {
       for (int j=0;j<like_trans[i].size();j++) {
         from[k] = pdat[ordered[i]].code;
@@ -96,6 +98,7 @@ DataFrame LikelihoodOutputR(run_params p, const vector<int>& ordered, const vect
                               Named("to")  = to,
                               Named("from_hcw")  = from_hcw,
                               Named("to_hcw")  = to_hcw,
+                              Named("ordered")  = order,
                               Named("likelihood") = likelihood,
                               Named("consistency") = consistency,
                               Named("under_threshold") = under_threshold );

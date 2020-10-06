@@ -122,7 +122,29 @@ check_file <- function(filename){
 ##'
 ##' @export
 plot_a2bcovid <- function(x, hi_from, hi_to, hi_col="red",
-                          palette="RdYlBu", direction = 1){
+                          direction = 1){
+  cbpallette3=c("#3C87C8","#FCF9DA","#D64E47")
+  cbpallette21=c("#3C87C8","#FCF9DA")
+  cbpallette22=c("#3C87C8","#D64E47")
+  cbpallette23=c("#FCF9DA","#D64E47")
+  cbpallette11=c("#3C87C8")
+  cbpallette12=c("#FCF9DA")
+  cbpallette13=c("#D64E47")
+  col<-list()
+  col[[1]]=cbpallette3
+  col[[2]]=cbpallette21
+  col[[3]]=cbpallette22
+  col[[4]]=cbpallette23
+  col[[5]]=cbpallette11
+  col[[6]]=cbpallette12
+  col[[7]]=cbpallette13
+  x$from<-factor(x$from,unique(x$from))
+  x$to<-factor(x$to,unique(x$to))
+  
+  #x$from<-factor(x$from,levels=c("CAMP007108","CAMP007128","CAMP007074","CAMP007111","CAMP007127","CAMP007109","CAMP007069","CAMP007112","CAMP007136","CAMP007129"))
+  #x$to<-factor(x$to,levels=c("CAMP007108","CAMP007128","CAMP007074","CAMP007111","CAMP007127","CAMP007109","CAMP007069","CAMP007112","CAMP007136","CAMP007129"))
+  #x$from<-factor(x$from,levels=c("CAMP001773","CAMP002914","CAMP004255","CAMP004902","CAMP004633","CAMP004493","CAMP002019","CAMP004907","CAMP004636","CAMP003327"))
+  #x$to<-factor(x$to,levels=c("CAMP001773","CAMP002914","CAMP004255","CAMP004902","CAMP004633","CAMP004493","CAMP002019","CAMP004907","CAMP004636","CAMP003327"))
   if (!missing(hi_from)) {
     if (!(hi_from %in% names(x))) stop(sprintf("`%s` not found in `x`", hi_from))
     x_from <- x[!duplicated(x$from),]
@@ -135,13 +157,31 @@ plot_a2bcovid <- function(x, hi_from, hi_to, hi_col="red",
     xhi_to <- x_to[match(levels(factor(x$to)), x_to$to), hi_to]
     y_cols <- ifelse(xhi_to, hi_col, "black")
   } else y_cols <- "black"
-
+  cdat=unique((x$consistency))
+  val=1
+  if (length(cdat)==2&&cdat[1]=='Unlikely'&&cdat[2]=='Borderline'){
+    val=2
+  }
+  if (length(cdat)==2&&cdat[1]=='Unlikely'&&cdat[2]=='Consistent'){
+    val=3
+  }
+  if (length(cdat)==2&&cdat[1]=='Borderline'&&cdat[2]=='Consistent'){
+    val=4
+  }
+  if (length(cdat)==1&&cdat[1]=='Unlikely'){
+     val=5
+  }
+  if (length(cdat)==1&&cdat[1]=='Borderline'){
+    val=6
+  }
+  if (length(cdat)==1&&cdat[1]=='Consistent'){
+    val=7
+  }
   ggplot(x, aes_string(y="from", x="to")) +
     geom_raster(aes_string(fill="consistency")) +
     theme(axis.text.x = ggtext::element_markdown(angle = 90, vjust=0.5, colour = x_cols),
           axis.text.y = ggtext::element_markdown(colour = y_cols),
           legend.title = element_blank()) +
-    scale_fill_brewer(type = "div",
-                      palette = palette, direction = direction,
-                      aesthetics = "fill")
+    scale_fill_manual(values=col[[val]])
+  }
 }
