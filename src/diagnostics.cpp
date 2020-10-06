@@ -70,18 +70,20 @@ DataFrame LikelihoodOutputR(run_params p, const vector<int>& ordered, const vect
     CharacterVector to(n);
     NumericVector from_hcw(n);
     NumericVector to_hcw(n);
-    NumericVector order(n);
+    NumericVector orderi(n);
+    NumericVector orderj(n);
 	NumericVector likelihood(n);
     CharacterVector consistency(n);
     LogicalVector under_threshold(n);
     k = 0;
-	order=ordered;
     for (int i=0;i<like_trans.size();i++) {
       for (int j=0;j<like_trans[i].size();j++) {
         from[k] = pdat[ordered[i]].code;
         to[k] = pdat[ordered[j]].code;
 		from_hcw[k] = pdat[ordered[i]].hcw;
 		to_hcw[k] = pdat[ordered[j]].hcw;
+		orderi[k] = ordered[i];
+		orderj[k] = ordered[j];
         if (p.data_type==0) {
           likelihood[k] = like_trans[ordered[i]][ordered[j]].ns_lL_tot;
           consistency[k] = ThresholdsNSR(p, like_trans[ordered[i]][ordered[j]].ns_lL_tot);
@@ -98,7 +100,8 @@ DataFrame LikelihoodOutputR(run_params p, const vector<int>& ordered, const vect
                               Named("to")  = to,
                               Named("from_hcw")  = from_hcw,
                               Named("to_hcw")  = to_hcw,
-                              Named("ordered")  = order,
+                              Named("ordered_i")  = orderi,
+                              Named("ordered_j")  = orderj,
                               Named("likelihood") = likelihood,
                               Named("consistency") = consistency,
                               Named("under_threshold") = under_threshold );

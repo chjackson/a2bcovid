@@ -13,8 +13,6 @@ void CalculateThresholdsFull (run_params p) {
 	//Assume that S1 is at time zero
 	double n=0.772469;
 	double r=(0.0008*29782)/365.25;
-	double pp=4.5/(3*29782);
-	int index=1;
 	for (int s2=-11;s2<=87;s2++) {
 		Rcpp::Rcout << "Track progress : S2=" << s2 << "\n";
 		for (int d2=s2-5;d2<=s2+20;d2++) {
@@ -106,10 +104,6 @@ void CalculateThresholdsNoSeq (run_params p) {
 	Rcpp::Rcout << "Calculation for likelihood with sequence information removed\n";
 	vector<double> allstats;
 	//Assume that S1 is at time zero
-	double n=0.772469;
-	double r=(0.0008*29782)/365.25;
-	double pp=4.5/(3*29782);
-	int index=1;
 	stat ss;
 	ss.s1=0;
 	ss.h1=0;
