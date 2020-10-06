@@ -140,11 +140,6 @@ plot_a2bcovid <- function(x, hi_from, hi_to, hi_col="red",
   col[[7]]=cbpallette13
   x$from<-factor(x$from,unique(x$from))
   x$to<-factor(x$to,unique(x$to))
-  
-  #x$from<-factor(x$from,levels=c("CAMP007108","CAMP007128","CAMP007074","CAMP007111","CAMP007127","CAMP007109","CAMP007069","CAMP007112","CAMP007136","CAMP007129"))
-  #x$to<-factor(x$to,levels=c("CAMP007108","CAMP007128","CAMP007074","CAMP007111","CAMP007127","CAMP007109","CAMP007069","CAMP007112","CAMP007136","CAMP007129"))
-  #x$from<-factor(x$from,levels=c("CAMP001773","CAMP002914","CAMP004255","CAMP004902","CAMP004633","CAMP004493","CAMP002019","CAMP004907","CAMP004636","CAMP003327"))
-  #x$to<-factor(x$to,levels=c("CAMP001773","CAMP002914","CAMP004255","CAMP004902","CAMP004633","CAMP004493","CAMP002019","CAMP004907","CAMP004636","CAMP003327"))
   if (!missing(hi_from)) {
     if (!(hi_from %in% names(x))) stop(sprintf("`%s` not found in `x`", hi_from))
     x_from <- x[!duplicated(x$from),]
@@ -183,5 +178,4 @@ plot_a2bcovid <- function(x, hi_from, hi_to, hi_col="red",
           axis.text.y = ggtext::element_markdown(colour = y_cols),
           legend.title = element_blank()) +
     scale_fill_manual(values=col[[val]])
-  }
 }
