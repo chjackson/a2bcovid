@@ -10,9 +10,6 @@ exampledat <- list(
     ward = system.file("extdata", "Example_ward_file.csv", package="a2bcovid")
 )
 
-exampleres <- a2bcovid(pat_file = exampledat$pat, mov_file = exampledat$mov,
-                       ward_file = exampledat$ward, ali_file = exampledat$ali)
-
 vals <- reactiveValues(data = "default")
 
 shinyServer(function(input, output, session) {
@@ -29,13 +26,19 @@ shinyServer(function(input, output, session) {
         if (!is.null(input$ali)) dat$ali <- input$ali$datapath
         if (!is.null(input$ward)) dat$ward <- input$ward$datapath
         a2bcovid(pat_file = dat$pat, mov_file = dat$mov,
-                 ward_file = dat$ward, ali_file = dat$ali)
+                 ward_file = dat$ward, ali_file = dat$ali,
+                 data_type = match(input$dataType, data_choices) - 1)
+    })
+
+    get_exampleres <- reactive({
+        a2bcovid(pat_file = exampledat$pat, mov_file = exampledat$mov,
+                 ward_file = exampledat$ward, ali_file = exampledat$ali,
+                 data_type =  match(input$dataType, data_choices) - 1)
     })
 
     get_res <- reactive({
-        get_userres()
         switch(vals$data,
-               default = exampleres,
+               default = get_exampleres(),
                user = get_userres())
     })
 
