@@ -4,14 +4,7 @@
 \alias{plot_a2bcovid}
 \title{Plot results of an a2bcovid analysis}
 \usage{
-plot_a2bcovid(
-  x,
-  hi_from,
-  hi_to,
-  hi_col = "red",
-  palette = "YlOrRd",
-  direction = 1
-)
+plot_a2bcovid(x, hi_from, hi_to, hi_col = "red", palette = NULL, direction = 1)
 }
 \arguments{
 \item{x}{Data frame returned by \code{\link{a2bcovid}}.}
@@ -26,7 +19,7 @@ highlighted, similarly.}
 \item{hi_col}{Colour to use to highlight individual IDs.}
 
 \item{palette}{Colour palette, passed to
-\code{\link[ggplot2]{scale_fill_brewer}}.}
+\code{\link[ggplot2]{scale_fill_brewer}}.  If omitted, a default will be chosen}
 
 \item{direction}{Direction of colours. Defaults to 1.  Change to -1 to
 reverse the order of colours.}
