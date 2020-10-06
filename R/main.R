@@ -83,6 +83,8 @@ a2bcovid <- function(
 				 pat_location_default=pat_default,
 				 make_clusters=make_clusters)
   res <- .Call(`_a2bcovid_mainC`, params)
+  res$from <- factor(res$from, unique(res$from))
+  res$to <- factor(res$to, unique(res$to))
   res$consistency <- ordered(res$consistency,
                              levels=c("Unlikely","Borderline","Consistent"))
   res
@@ -111,25 +113,28 @@ check_file <- function(filename){
 ##' @param hi_col Colour to use to highlight individual IDs.
 ##'
 ##' @param palette Colour palette, passed to
-##'   \code{\link[ggplot2]{scale_fill_brewer}}.
+##'   \code{\link[ggplot2]{scale_fill_brewer}}.  If omitted, a default will be chosen
 ##'
-##' @param direction Direction of colours. Defaults to 1.  Change to -1 to
+##'
+##' @param direction Direction of colours in the brewer palettes. Defaults to 1.  Change to -1 to
 ##'   reverse the order of colours.
 ##'
 ##' @return A \pkg{ggplot2} plot object.
 ##'
 ##' @import ggplot2
 ##'
-##' @export
-plot_a2bcovid <- function(x, hi_from, hi_to, hi_col="red",
+##' @exportÒ
+plot_a2bcovid <- function(x, hi_from, hi_to, hi_col="red", palette=NULL,
                           direction = 1){
 
-  cols_default <- c("Unlikely"="#3C87C8",
-                    "Borderline"="#FCF9DA",
-                    "Consistent"="#D64E47")
-
-  x$from<-factor(x$from,unique(x$from))
-  x$to<-factor(x$to,unique(x$to))
+  if (is.null(palette)) {
+    cols_default <- c("Unlikely"="#3C87C8",
+                      "Borderline"="#FCF9DA",
+                      "Consistent"="#D64E47")
+    scale_chosen <- scale_fill_manual(values = cols_default)
+  } else {
+    scale_chosen <- scale_fill_brewer(palette = palette,  direction=direction)
+}
   if (!missing(hi_from)) {
     if (!(hi_from %in% names(x))) stop(sprintf("`%s` not found in `x`", hi_from))
     x_from <- x[!duplicated(x$from),]
@@ -148,5 +153,5 @@ plot_a2bcovid <- function(x, hi_from, hi_to, hi_col="red",
     theme(axis.text.x = ggtext::element_markdown(angle = 90, vjust=0.5, colour = x_cols),
           axis.text.y = ggtext::element_markdown(colour = y_cols),
           legend.title = element_blank()) +
-    scale_fill_manual(values=cols_default)
+    scale_chosen
 }
