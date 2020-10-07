@@ -38,7 +38,7 @@ DataFrame mainC(List params) {
 
   //Code to read in CSV format
   vector<pat> pdat;
-  if (p.ali_file.compare("NULL")==0) {
+  if (p.ali_file.compare("")==0) {
     ReadPatFromCSVNoSeq(p,pdat);  //No sequence data
     //Remove duplicate individuals by code
     RemoveDuplicatesNoSeq(pdat);
@@ -54,7 +54,7 @@ DataFrame mainC(List params) {
   vector<string> names;
   vector<string> seqs;
   vector<string> removed;
-  if (p.ali_file.compare("NULL")!=0) {
+  if (p.ali_file.compare("")!=0) {
     ReadFastaAli(p,names,seqs); //Read in large file containing genome sequences
     //Correct names >
     CorrectNames(names);  //Convert the names from the fasta file into the format used for input
@@ -73,11 +73,11 @@ DataFrame mainC(List params) {
 
   //Code to read in location data
   int pd=0;
-  if (p.mov_file.compare("NULL")!=0) {
+  if (p.mov_file.compare("")!=0) {
 	  ReadWardMovFromCSV(p,pdat);
 	  pd=1;
   }
-  if (p.ward_file.compare("NULL")!=0) {
+  if (p.ward_file.compare("")!=0) {
 	  ReadHCWMovFromCSV(p,pdat);
 	  EditHCWMovData(pdat); //12 hour window of uncertainty - days with probability 0.5
 	  pd=1;
@@ -95,7 +95,7 @@ DataFrame mainC(List params) {
 
   //Generate sequence variant data
   vector<sparseseq> variants;
-  if (p.ali_file.compare("NULL")==0) {
+  if (p.ali_file.compare("")==0) {
     FindVariantsNoSeq (variants,pdat);
   } else {
     //Convert sequences to variants
@@ -119,7 +119,7 @@ DataFrame mainC(List params) {
 
   //Find distances between sequences
   vector< vector<int> > seqdists;
-  if (p.ali_file.compare("NULL")==0) {
+  if (p.ali_file.compare("")==0) {
     FindPairwiseDistances (p,seqdists,variants,pdat);
   } else {
     FindPairwiseDistancesNoSeq (p,seqdists,variants,pdat);
@@ -127,7 +127,7 @@ DataFrame mainC(List params) {
 
   //Find pairwise consensus distances
   vector< vector<tpair> > seqdists_c; //Distance to pairwise consensus
-  if (p.ali_file.compare("NULL")==0) {
+  if (p.ali_file.compare("")==0) {
     FromConsensusDistances (variants,seqdists_c);
   } else {
     FromConsensusDistancesNoSeq (variants,seqdists_c);
@@ -193,9 +193,7 @@ run_params DefineParams(List params)
   p.mov_delim='.';
 
   p.diagnostic = as<NumericVector>(params["diagnostic"])[0];
-  p.noseq = as<NumericVector>(params["noseq"])[0];
   p.calc_thresholds = as<NumericVector>(params["calc_thresholds"])[0];
-  p.data_type = as<NumericVector>(params["data_type"])[0];
   p.hcw_location_default = as<NumericVector>(params["hcw_location_default"])[0];
   p.pat_location_default  = as<NumericVector>(params["pat_location_default"])[0];
 

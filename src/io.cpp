@@ -30,10 +30,10 @@ void GetOptions (run_params& p, int argc, const char **argv) {
 	p.thresholdns=0;
 	p.max_n=10;
 	p.min_qual=0.8;
-    p.ali_file="NULL";
-    p.pat_file="NULL";
-    p.mov_file="NULL";
-	p.ward_file="NULL";
+    p.ali_file="";
+    p.pat_file="";
+    p.mov_file="";
+	p.ward_file="";
 	p.pat_delim='/';
 	p.mov_delim='.';
 	p.diagnostic=0;

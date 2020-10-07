@@ -10,19 +10,13 @@ exampledat <- list(
     ward = system.file("extdata", "Example_ward_file.csv", package="a2bcovid")
 )
 
-vals <- reactiveValues(data = "default",
-                       using_gen  = TRUE,
-                       using_ward = TRUE,
-                       using_mov = FALSE)
+vals <- reactiveValues(data = "default")
 
 shinyServer(function(input, output, session) {
 
     observe({
-        input$pat; input$mov; input$ali; input$ward
-        vals$using_gen  <- input$dataType %in% c("times_gen","times_gen_pat","times_gen_pat_staff")
-        vals$using_ward <- input$dataType %in% c("times_gen_pat","times_gen_pat_staff")
-        vals$using_mov  <- input$dataType %in% c("times_gen_pat_staff")
-        if (!is.null(input$pat))  vals$data <- "user"
+        if (!is.null(input$pat))
+            vals$data <- "user"
     })
 
     observe({
@@ -37,18 +31,34 @@ shinyServer(function(input, output, session) {
             vals$data <- "user"
             print("Using user data")
         }
-        if (!is.null(input$mov)) dat$mov <- input$mov$datapath
-        if (!is.null(input$ali)) dat$ali <- input$ali$datapath
-        if (!is.null(input$ward)) dat$ward <- input$ward$datapath
+        ## TODO Switch off input$use_mov if no data supplied.
+        if (!is.null(input$ali) && input$use_ali)
+            dat$ali <- input$ali$datapath
+        else {
+            dat$ali <- ""
+            updateCheckboxInput(session, "use_ali", value=FALSE)
+        }
+        if (!is.null(input$ward) && input$use_ward)
+            dat$ward <- input$ward$datapath
+        else {
+            updateCheckboxInput(session, "use_ward", value=FALSE)
+            dat$ward <- ""
+        }
+        if (!is.null(input$mov) && input$use_mov)
+            dat$mov <- input$mov$datapath
+        else {
+            dat$mov <- ""
+            updateCheckboxInput(session, "use_mov", value=FALSE)
+        }
         a2bcovid(pat_file = dat$pat, mov_file = dat$mov,
-                 ward_file = dat$ward, ali_file = dat$ali,
-                 data_type = match(input$dataType, data_choices) - 1)
+                 ward_file = dat$ward, ali_file = dat$ali)
     })
 
     get_exampleres <- reactive({
-        a2bcovid(pat_file = exampledat$pat, mov_file = exampledat$mov,
-                 ward_file = exampledat$ward, ali_file = exampledat$ali,
-                 data_type =  match(input$dataType, data_choices) - 1)
+        a2bcovid(pat_file = exampledat$pat,
+                 mov_file = if (input$use_mov) exampledat$mov else "",
+                 ward_file = if (input$use_ward) exampledat$ward else  "",
+                 ali_file = if (input$use_ali) exampledat$ali else "")
     })
 
     get_res <- reactive({
@@ -73,21 +83,18 @@ shinyServer(function(input, output, session) {
     })
     output$aliInput <- renderUI({
         input$reset
-        input$dataType
         fileInput('ali',
                   'Genome sequence file (FASTA)',
                   accept = ".fa")
     })
     output$wardInput <- renderUI({
         input$reset
-        input$dataType
         fileInput('ward',
                   'Patient location data (CSV)',
                   accept = txtfiles_accepted)
     })
     output$movInput <- renderUI({
         input$reset
-        input$dataType
         fileInput('mov',
                   'Staff location data (CSV)',
                   accept = txtfiles_accepted)
@@ -95,9 +102,9 @@ shinyServer(function(input, output, session) {
 
     output$whichdata <- renderText({
         patf <-  "Patient"
-        alif <-  if (vals$using_gen) " | Sequence" else ""
-        wardf <-  if (vals$using_ward) " | Patient location" else ""
-        movf <-  if (vals$using_mov) " | Staff location" else ""
+        alif <-  if (input$use_ali) " | Sequence" else ""
+        wardf <-  if (input$use_ward) " | Patient location" else ""
+        movf <-  if (input$use_mov) " | Staff location" else ""
         if (vals$data=="default") {
             outstr <- sprintf("Using built-in example data:\n%s%s%s%s", patf, alif, wardf, movf)
         } else if (vals$data == "user"){

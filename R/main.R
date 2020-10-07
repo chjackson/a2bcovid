@@ -40,16 +40,17 @@
 ##'
 ##'   7.  Sample received date : Currently not used in the calculation.
 ##'
-##'   An example is given with
-##'   the installed package.  The path to the example file can be shown by the
-##'   R command
-##'   \code{system.file("extdata", "Example_genetic_temporal_data.csv",
-##'   package="a2bcovid")}
+##'   An example is given with the installed package.  The path to the example
+##'   file can be shown by the R command \code{system.file("extdata",
+##'   "Example_genetic_temporal_data.csv", package="a2bcovid")}
 ##'
 ##'
 ##'
 ##' @param mov_file  A character string with the path to a file of data
 ##'   describing when specific health care workers were on the ward in question.
+##'   If this argument is omitted or set to an empty string, then this kind of
+##'   data is not used in the calculation.
+##'
 ##'   The first line is a header line with column names. The first two of these
 ##'   are labels, while those from the third column onwards describe dates,
 ##'   specified in dd.mm.yyyy format.  After the first line, the data is
@@ -64,27 +65,27 @@
 ##'   row.  An 'N' indicates that the health care worker was not present on the
 ##'   ward on that date.  Either 'Y' or 'N' should be specified for each date.
 ##'
-##'  An example is given with
-##'   the installed package.  The path to the example file can be shown by the
-##'   R command
-##'   \code{system.file("extdata", "Example_movement_file.csv",
-##'   package="a2bcovid")}
+##'   An example is given with the installed package.  The path to the example
+##'   file can be shown by the R command \code{system.file("extdata",
+##'   "Example_movement_file.csv", package="a2bcovid")}
 ##'
 ##' @param ali_file  A character string with the path to a file in FASTA format
-##'  containing genome sequences.  This file must contain all required
-##'  sequences, specified by the sequence ID in the data of \code{pat_file}.
+##'   containing genome sequences.  This file must contain all required
+##'   sequences, specified by the sequence ID in the data of \code{pat_file}. If
+##'   this argument is omitted or set to an empty string, then genomic data are
+##'   not used in the calculation.
 ##'
-##'  An
-##'  example is given with the installed package.  The path to the example file
-##'  can be shown by the R command
-##'   \code{system.file("extdata", "Example_sequences.fa",
-##'   package="a2bcovid")}
+##'   An example is given with the installed package.  The path to the example
+##'   file can be shown by the R command \code{system.file("extdata",
+##'   "Example_sequences.fa", package="a2bcovid")}
 ##'
 ##' @param ward_file  A character string with the path to a file containing the
-##'   location of patients over time.  This should be a comma separated (.csv)
-##'   file.  The format of the file is designed to be compatible with local
-##'   information on patient movements.  The first line is a header.  Subsequent
-##'   lines are in columns as follows:
+##'   location of patients over time. If this argument is omitted or set to an
+##'   empty string, then this kind of data is not used in the calculation.
+##'
+##'   This should be a comma separated (.csv) file.  The format of the file is
+##'   designed to be compatible with local information on patient movements. The
+##'   first line is a header.  Subsequent lines are in columns as follows:
 ##'
 ##'   1. Individual ID (same as for \code{pat_file}).
 ##'
@@ -100,26 +101,10 @@
 ##'   location. iii) The end date of the individual being in that location.  In
 ##'   practice only the first column, and columns from 5 onwards are used.
 ##'
-##'  An
-##'  example is given with the installed package.  The path to the example file
-##'  can be shown by the R command
-##'   \code{system.file("extdata", "Example_ward_file.csv",
-##'   package="a2bcovid")}
+##'   An example is given with the installed package.  The path to the example
+##'   file can be shown by the R command \code{system.file("extdata",
+##'   "Example_ward_file.csv", package="a2bcovid")}
 ##'
-##' @param data_type An integer specifying which data sources are used
-##'   to perform the calculation.  Options are
-##'
-##'   0: Only times of symptom onset, given in \code{pat_file}.  No sequence data
-##'   is needed.  The code will assume that all individuals are in the ward at
-##'   the time.
-##'
-##'   1: Times of symptom onset and genome sequence data, given in
-##'   \code{ali_file}.  Again the code will assume that all individuals are in
-##'   the ward throughout the period in question.
-##'
-##'   2: As for 1, but with patient location data, given in \code{ward_file}.
-##'
-##'   3: As for 2, but with staff location data, given in \code{mov_file}.
 ##'
 ##' @param evo_rate Rate of evolution of the virus, specified in nucleotide
 ##'   substitutions per locus per year.
@@ -187,16 +172,23 @@
 ##' @param threshold documentme
 ##' @param threshold_ns documentme
 ##' @param calc_thresholds documentme
-##' @param noseq  documentme
 ##'
 ##'
 ##' @return A data frame with the following columns
 ##'
-##' \code{from}
+##'   \code{from}
 ##'
-##' \code{to}
+##'   \code{to}
 ##'
-##' \code{hcw_from}
+##'   \code{hcw_from}
+##'
+##'   \code{hcw_to}
+##'
+##'   \code{likelihood}
+##'
+##'   \code{consistency}
+##'
+##'   \code{under_threshold}
 ##'
 ##' @author Our names
 ##'
@@ -210,10 +202,9 @@
 ##' @export
 a2bcovid <- function(
   pat_file,
-  mov_file ,
-  ali_file ,
-  ward_file ,
-  data_type = 2,
+  mov_file = "",
+  ali_file = "",
+  ward_file = "",
                   pa=97.18750, pb=0.268908, po=25.625,
                   smu=1.434065, ssigma=0.6612,
                   ucta=2.5932152095707406, uctb=3.7760060663975437, ucto=3.112080041460921,
@@ -223,7 +214,6 @@ a2bcovid <- function(
                   threshold=0, threshold_ns=0,
                   max_n = 10,
                   min_qual = 0.8,
-                  noseq = 0,
                   calc_thresholds=FALSE,
                   diagnostic =FALSE,
                   hcw_default = 0.5714286,
@@ -235,13 +225,11 @@ a2bcovid <- function(
   check_file(pat_file)
   check_file(mov_file)
   check_file(ward_file)
-  params <- list(data_type=data_type,
-                 pa=pa, pb=pb, po=po, smu=smu, ssigma=ssigma,
+  params <- list(pa=pa, pb=pb, po=po, smu=smu, ssigma=ssigma,
                  ucta=ucta, uctb=uctb, ucto=ucto, uct_mean=uct_mean,
                  rate=evo_rate, seq_noise=seq_noise,
                  threshold=threshold, threshold_ns=threshold_ns,  max_n=max_n, min_qual=min_qual,
                  ali_file=ali_file, pat_file=pat_file,  mov_file=mov_file, ward_file=ward_file,
-                 noseq=noseq,
                  calc_thresholds=calc_thresholds,
                  diagnostic=diagnostic,
 				 hcw_location_default=hcw_default,
@@ -260,7 +248,9 @@ a2bcovid <- function(
 }
 
 check_file <- function(filename){
-  if (!file.exists(filename)) stop(sprintf("File `%s` not found", filename))
+  if (!(filename==""))
+    if (!file.exists(filename))
+      stop(sprintf("File `%s` not found", filename))
 }
 
 

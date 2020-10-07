@@ -132,7 +132,7 @@ double LikelihoodFromItoJTimeK (int i, int j, int k, const run_params& p, const 
 		if (pdat[j].time_seq<contact_times_probs[k].time) { //Data must be collected from j after the time of transmission
 			L=L-1e10; //Can't transmit after collecting data from recipient
 		} else {
-			if (p.ali_file.compare("NULL")!=0) {
+			if (p.ali_file.compare("")!=0) {
 				//Two sequence likelihoods -
 				if (pdat[i].time_seq<contact_times_probs[k].time) {//First, case where transmission is after collecting the first sequence sample
 					int evo_time=(pdat[j].time_seq-pdat[i].time_seq);//Amount of time over which evolution has occurred

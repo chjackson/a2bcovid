@@ -11,23 +11,13 @@ shinyUI(fluidPage(
       sidebarPanel(
         h3("Upload data"),
         uiOutput('patInput'),
-        conditionalPanel(
-          condition = "(input.dataType == 'times_gen') || (input.dataType == 'times_gen_pat') || (input.dataType == 'times_gen_pat_staff')",
-          uiOutput('aliInput')
-        ),
-        conditionalPanel(
-          condition = "(input.dataType == 'times_gen_pat') || (input.dataType == 'times_gen_pat_staff')",
-          uiOutput('wardInput')
-        ),
-        conditionalPanel(
-          condition = "input.dataType == 'times_gen_pat_staff'",
-          uiOutput('movInput')
-        ),
-        HTML("<button id='reset' class='action-button resetButton'>Reset to example data</button><p>"),
-        selectInput('dataType',
-                    label = "Data to include",
-                    choices = data_choices,
-                    selected = data_choices[3])
+        uiOutput('aliInput'),
+        checkboxInput("use_ali",label="Use genomic data",value=TRUE),
+        uiOutput('wardInput'),
+        checkboxInput("use_ward",label="Use patient location data",value=TRUE),
+        uiOutput('movInput'),
+        checkboxInput("use_mov",label="Use staff location data",value=FALSE),
+        HTML("<button id='reset' class='action-button resetButton'>Reset to example data</button><p>")
       ),
 
       mainPanel(
