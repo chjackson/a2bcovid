@@ -35,26 +35,10 @@ DataFrame mainC(List params) {
 //    return List::create();
   }
 
-  Rcout << "Data type: " << p.data_type << "\n";
-  if (p.data_type==0) {
-    Rcout << "Code uses only symptom data\n";
-    Rcout << "Will assume that all individuals were contact at all times\n";
-  }
-  if (p.data_type==1) {
-    Rcout << "Code requires sequence data plus symptom data\n";
-    Rcout << "Will assume that all individuals were contact at all times\n";
-  }
-  if (p.data_type==2) {
-    Rcout << "Code requires sequence data, symptom data, and patient movement data\n";
-    Rcout << "Will assume that all health care workers were present at all times\n";
-  }
-  if (p.data_type==3) {
-    Rcout << "Code requires sequence data, symptom data, and movement data or all individuals\n";
-  }
 
   //Code to read in CSV format
   vector<pat> pdat;
-  if (p.data_type==0) {
+  if (p.ali_file.compare("NULL")==0) {
     ReadPatFromCSVNoSeq(p,pdat);  //No sequence data
     //Remove duplicate individuals by code
     RemoveDuplicatesNoSeq(pdat);
@@ -70,7 +54,7 @@ DataFrame mainC(List params) {
   vector<string> names;
   vector<string> seqs;
   vector<string> removed;
-  if (p.data_type>0&&p.noseq==0) {
+  if (p.ali_file.compare("NULL")!=0) {
     ReadFastaAli(p,names,seqs); //Read in large file containing genome sequences
     //Correct names >
     CorrectNames(names);  //Convert the names from the fasta file into the format used for input
@@ -88,15 +72,18 @@ DataFrame mainC(List params) {
   Rcout << "Have complete data for " << pdat.size() << " individuals\n";
 
   //Code to read in location data
-  if (p.data_type>1||p.noseq==1) {
-    ReadWardMovFromCSV(p,pdat);
-    if (p.data_type==3) {
-      ReadHCWMovFromCSV(p,pdat);
-      EditHCWMovData(pdat); //12 hour window of uncertainty - days with probability 0.5
-    }
-    if (p.diagnostic==1) {
-      PrintPdat(pdat);
-    }
+  int pd=0;
+  if (p.mov_file.compare("NULL")!=0) {
+	  ReadWardMovFromCSV(p,pdat);
+	  pd=1;
+  }
+  if (p.ward_file.compare("NULL")!=0) {
+	  ReadHCWMovFromCSV(p,pdat);
+	  EditHCWMovData(pdat); //12 hour window of uncertainty - days with probability 0.5
+	  pd=1;
+  }
+  if (p.diagnostic==1&&pd==1) {
+	  PrintPdat(pdat);
   }
 
   //Deal with individuals with no sequence data - assumed present
@@ -108,7 +95,7 @@ DataFrame mainC(List params) {
 
   //Generate sequence variant data
   vector<sparseseq> variants;
-  if (p.data_type==0||p.noseq==1) {
+  if (p.ali_file.compare("NULL")==0) {
     FindVariantsNoSeq (variants,pdat);
   } else {
     //Convert sequences to variants
@@ -132,7 +119,7 @@ DataFrame mainC(List params) {
 
   //Find distances between sequences
   vector< vector<int> > seqdists;
-  if (p.data_type>0||p.noseq==1) {
+  if (p.ali_file.compare("NULL")==0) {
     FindPairwiseDistances (p,seqdists,variants,pdat);
   } else {
     FindPairwiseDistancesNoSeq (p,seqdists,variants,pdat);
@@ -140,7 +127,7 @@ DataFrame mainC(List params) {
 
   //Find pairwise consensus distances
   vector< vector<tpair> > seqdists_c; //Distance to pairwise consensus
-  if (p.data_type>0||p.noseq==1) {
+  if (p.ali_file.compare("NULL")==0) {
     FromConsensusDistances (variants,seqdists_c);
   } else {
     FromConsensusDistancesNoSeq (variants,seqdists_c);

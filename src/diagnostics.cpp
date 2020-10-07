@@ -111,7 +111,7 @@ void LikelihoodOutput (run_params p, const vector<int>& ordered, const vector<pa
 	for (int i=0;i<like_trans.size();i++) {
 		for (int j=0;j<like_trans[i].size();j++) {
 			Rcout << "From " << pdat[ordered[i]].code << " to " << pdat[ordered[j]].code << " ";
-			if (p.data_type==0||p.noseq==1) {
+			if (p.ali_file.compare("NULL")==0) {
 				Rcout << like_trans[ordered[i]][ordered[j]].ns_lL_tot << " ";
 				ThresholdsNS(p,like_trans[ordered[i]][ordered[j]].ns_lL_tot);
 				Rcout << "\n";
@@ -132,8 +132,6 @@ void FinalOutput (run_params p, const vector<string>& removed, const vector<stri
 			Rcout << removed[i] << "\n";
 		}
 	}
-	Rcout << "Can rerun with --data_type 0 to perform an assessment based on symptom and location data alone\n\n";
-
 	if (fixed.size()>0) {
 		Rcout << "Default location parameters were used to assess transmission events involving some individuals:\n";
 		for (int i=0;i<fixed.size();i++) {
@@ -141,13 +139,4 @@ void FinalOutput (run_params p, const vector<string>& removed, const vector<stri
 		}
 	}
 	Rcout << "Note that default parameters are biased towards individuals being present on the primary ward in question\n";
-
-
-	if (p.data_type==1) {
-		Rcout << "Can rerun with --data_type 2 or --data_type 3 if location data are available\n\n";
-	}
-	if (p.data_type==2) {
-		Rcout << "Can rerun with --data_type 3 if HCW location data are available\n\n";
-	}
-
 }

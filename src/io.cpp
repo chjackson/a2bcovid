@@ -30,16 +30,14 @@ void GetOptions (run_params& p, int argc, const char **argv) {
 	p.thresholdns=0;
 	p.max_n=10;
 	p.min_qual=0.8;
-    p.ali_file="Seqs_editN20_manali_plus.fa";
-    p.pat_file="data1.csv";
-    p.mov_file="data2.csv";
-	p.ward_file="ward_movement_network_edit_anonymised_20200811_NoPII.csv";
+    p.ali_file="NULL";
+    p.pat_file="NULL";
+    p.mov_file="NULL";
+	p.ward_file="NULL";
 	p.pat_delim='/';
 	p.mov_delim='.';
 	p.diagnostic=0;
-	p.noseq=0;
 	p.calc_thresholds=0;
-	p.data_type=1;
 	p.hcw_location_default=0.5714286;
 	p.pat_location_default=1;
 	p.make_clusters=1;
@@ -55,12 +53,6 @@ void GetOptions (run_params& p, int argc, const char **argv) {
 		} else if (p_switch.compare("--diag")==0) {
 			x++;
 			p.diagnostic=atoi(argv[x]);
-		} else if (p_switch.compare("--noseq")==0) {
-			x++;
-			p.noseq=atoi(argv[x]);
-		} else if (p_switch.compare("--data_type")==0) {
-			x++;
-			p.data_type=atoi(argv[x]);
 		} else if (p_switch.compare("--ali_file")==0) {
 			x++;
 			p.ali_file=argv[x];

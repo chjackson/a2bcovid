@@ -11,7 +11,6 @@ using namespace std;
 //#include <gsl/gsl_cdf.h>
 
 struct run_params {
-	int data_type;
 	double pa;	//Parameters for the infectious potential relative to time of symptoms
 	double pb;
 	double po;
@@ -38,7 +37,6 @@ struct run_params {
 	char pat_delim; //Delimiter for date information in the patient data file
 	char mov_delim; //Delimiter for date information in the HCW movement data file
 	int diagnostic; //Flag to run various diagnostics - prints out various data along the way
-	int noseq; //Flag to ignore genome seuqence data
 	int alt_like; //Flag for alternative likelihood model.  This increases the likelihood of transmission for each additional day of contact
 	int calc_thresholds; //Calculate thresholds of the likelihood function
 	double hcw_location_default;  //Probability a HCW is there given no other information
