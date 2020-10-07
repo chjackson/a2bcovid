@@ -10,18 +10,33 @@ exampledat <- list(
     ward = system.file("extdata", "Example_ward_file.csv", package="a2bcovid")
 )
 
-vals <- reactiveValues(data = "default")
+vals <- reactiveValues(data = "default",
+                       using_gen  = TRUE,
+                       using_ward = TRUE,
+                       using_mov = FALSE)
 
 shinyServer(function(input, output, session) {
 
     observe({
         input$pat; input$mov; input$ali; input$ward
-        vals$data <- "user"
+        vals$using_gen  <- input$dataType %in% c("times_gen","times_gen_pat","times_gen_pat_staff")
+        vals$using_ward <- input$dataType %in% c("times_gen_pat","times_gen_pat_staff")
+        vals$using_mov  <- input$dataType %in% c("times_gen_pat_staff")
+        if (!is.null(input$pat))  vals$data <- "user"
+    })
+
+    observe({
+        input$reset
+        vals$data <- "default"
     })
 
     get_userres <- reactive({
         dat <- exampledat
-        if (!is.null(input$pat)) dat$pat <- input$pat$datapath
+        if (!is.null(input$pat)) {
+            dat$pat <- input$pat$datapath
+            vals$data <- "user"
+            print("Using user data")
+        }
         if (!is.null(input$mov)) dat$mov <- input$mov$datapath
         if (!is.null(input$ali)) dat$ali <- input$ali$datapath
         if (!is.null(input$ward)) dat$ward <- input$ward$datapath
@@ -47,36 +62,49 @@ shinyServer(function(input, output, session) {
     })
 
     output$rasterPlot <- renderPlot({
-        plot_a2bcovid(get_res(), hi_from="from_hcw", hi_to="to_hcw")
+        plot_a2bcovid(get_res(), cluster=input$cluster, hi_from="from_hcw", hi_to="to_hcw")
     })
 
     output$patInput <- renderUI({
         input$reset
-        vals$data <- "default"
         fileInput('pat',
-                  'Patient file in CSV format. [ Info about format here ].',
-                  accept = txtfiles_accepted)
-    })
-    output$movInput <- renderUI({
-        input$reset
-        vals$data <- "default"
-        fileInput('mov',
-                  'Movement file in CSV format. [ Info about format here ].',
-                  accept = txtfiles_accepted)
-    })
-    output$wardInput <- renderUI({
-        input$reset
-        vals$data <- "default"
-        fileInput('ward',
-                  'Ward file in CSV format. [ Info about format here ].',
+                  'Times of symptom onset (CSV)',
                   accept = txtfiles_accepted)
     })
     output$aliInput <- renderUI({
         input$reset
-        vals$data <- "default"
+        input$dataType
         fileInput('ali',
-                  'Sequence file in FASTA format. [ Info about format here ].',
+                  'Genome sequence file (FASTA)',
                   accept = ".fa")
+    })
+    output$wardInput <- renderUI({
+        input$reset
+        input$dataType
+        fileInput('ward',
+                  'Patient location data (CSV)',
+                  accept = txtfiles_accepted)
+    })
+    output$movInput <- renderUI({
+        input$reset
+        input$dataType
+        fileInput('mov',
+                  'Staff location data (CSV)',
+                  accept = txtfiles_accepted)
+    })
+
+    output$whichdata <- renderText({
+        patf <-  "Patient"
+        alif <-  if (vals$using_gen) " | Sequence" else ""
+        wardf <-  if (vals$using_ward) " | Patient location" else ""
+        movf <-  if (vals$using_mov) " | Staff location" else ""
+        if (vals$data=="default") {
+            outstr <- sprintf("Using built-in example data:\n%s%s%s%s", patf, alif, wardf, movf)
+        } else if (vals$data == "user"){
+            outstr <- sprintf("Using user data:\n%s%s%s%s", patf, alif, wardf, movf)
+        }
+        else outstr <- "ERROR 1"
+        outstr
     })
 })
 
