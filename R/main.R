@@ -190,8 +190,12 @@ a2bcovid <- function(
 				 pat_location_default=pat_default,
 				 make_clusters=make_clusters)
   res <- .Call(`_a2bcovid_mainC`, params)
+  ## default factor levels as in data order, not sorted alphabetically
   res$from <- factor(res$from, unique(res$from))
   res$to <- factor(res$to, unique(res$to))
+  ## converts to 1,2,3... IDs while preserving order
+  res$ordered_i <- match(res$ordered_i, unique(res$ordered_i))
+  res$ordered_j <- match(res$ordered_j, unique(res$ordered_j))
   res$consistency <- ordered(res$consistency,
                              levels=c("Unlikely","Borderline","Consistent"))
   res
@@ -209,6 +213,11 @@ check_file <- function(filename){
 ##'
 ##'
 ##' @param x Data frame returned by \code{\link{a2bcovid}}.
+##'
+##' @param cluster If \code{TRUE} (the default) then the individual IDs are rearranged  using
+##'   a heuristic clustering method so that apparent clusters of infections
+##'   appear contiguously in the plot.   If \code{FALSE} then
+##'   individuals are arranged in their original order in the data.
 ##'
 ##' @param hi_from Character string, naming a variable in the dataframe
 ##'   indicating "from" individual IDs to be highlighted in the plot. If not
@@ -231,7 +240,7 @@ check_file <- function(filename){
 ##' @import ggplot2
 ##'
 ##' @export
-plot_a2bcovid <- function(x, hi_from, hi_to, hi_col="red", palette=NULL,
+plot_a2bcovid <- function(x, cluster = TRUE, hi_from, hi_to, hi_col="red", palette=NULL,
                           direction = 1){
 
   if (is.null(palette)) {
@@ -241,7 +250,8 @@ plot_a2bcovid <- function(x, hi_from, hi_to, hi_col="red", palette=NULL,
     scale_chosen <- scale_fill_manual(values = cols_default)
   } else {
     scale_chosen <- scale_fill_brewer(palette = palette,  direction=direction)
-}
+  }
+  ## TODO match with rownames(RColorBrewer::brewer.pal.info)
   if (!missing(hi_from)) {
     if (!(hi_from %in% names(x))) stop(sprintf("`%s` not found in `x`", hi_from))
     x_from <- x[!duplicated(x$from),]
@@ -254,6 +264,11 @@ plot_a2bcovid <- function(x, hi_from, hi_to, hi_col="red", palette=NULL,
     xhi_to <- x_to[match(levels(factor(x$to)), x_to$to), hi_to]
     y_cols <- ifelse(xhi_to, hi_col, "black")
   } else y_cols <- "black"
+
+  if (!cluster) {
+    x$from <- factor(x$from, levels = levels(x$from)[x$ordered_i[!duplicated(x$from)]])
+    x$to <- factor(x$to, levels = levels(x$to)[x$ordered_j[!duplicated(x$to)]])
+  }
 
   ggplot(x, aes_string(y="from", x="to")) +
     geom_raster(aes_string(fill="consistency")) +

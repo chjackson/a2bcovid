@@ -4,10 +4,23 @@
 \alias{plot_a2bcovid}
 \title{Plot results of an a2bcovid analysis}
 \usage{
-plot_a2bcovid(x, hi_from, hi_to, hi_col = "red", palette = NULL, direction = 1)
+plot_a2bcovid(
+  x,
+  cluster = TRUE,
+  hi_from,
+  hi_to,
+  hi_col = "red",
+  palette = NULL,
+  direction = 1
+)
 }
 \arguments{
 \item{x}{Data frame returned by \code{\link{a2bcovid}}.}
+
+\item{cluster}{If \code{TRUE} (the default) then the individual IDs are rearranged  using
+a heuristic clustering method so that apparent clusters of infections
+appear contiguously in the plot.   If \code{FALSE} then
+individuals are arranged in their original order in the data.}
 
 \item{hi_from}{Character string, naming a variable in the dataframe
 indicating "from" individual IDs to be highlighted in the plot. If not
@@ -21,7 +34,7 @@ highlighted, similarly.}
 \item{palette}{Colour palette, passed to
 \code{\link[ggplot2]{scale_fill_brewer}}.  If omitted, a default will be chosen}
 
-\item{direction}{Direction of colours. Defaults to 1.  Change to -1 to
+\item{direction}{Direction of colours in the brewer palettes. Defaults to 1.  Change to -1 to
 reverse the order of colours.}
 }
 \value{
