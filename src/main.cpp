@@ -70,7 +70,7 @@ DataFrame mainC(List params) {
   vector<string> names;
   vector<string> seqs;
   vector<string> removed;
-  if (p.data_type>0) {
+  if (p.data_type>0&&p.noseq==0) {
     ReadFastaAli(p,names,seqs); //Read in large file containing genome sequences
     //Correct names >
     CorrectNames(names);  //Convert the names from the fasta file into the format used for input
@@ -88,7 +88,7 @@ DataFrame mainC(List params) {
   Rcout << "Have complete data for " << pdat.size() << " individuals\n";
 
   //Code to read in location data
-  if (p.data_type>1) {
+  if (p.data_type>1||p.noseq==1) {
     ReadWardMovFromCSV(p,pdat);
     if (p.data_type==3) {
       ReadHCWMovFromCSV(p,pdat);
@@ -108,7 +108,7 @@ DataFrame mainC(List params) {
 
   //Generate sequence variant data
   vector<sparseseq> variants;
-  if (p.data_type==0) {
+  if (p.data_type==0||p.noseq==1) {
     FindVariantsNoSeq (variants,pdat);
   } else {
     //Convert sequences to variants
@@ -132,7 +132,7 @@ DataFrame mainC(List params) {
 
   //Find distances between sequences
   vector< vector<int> > seqdists;
-  if (p.data_type>0) {
+  if (p.data_type>0||p.noseq==1) {
     FindPairwiseDistances (p,seqdists,variants,pdat);
   } else {
     FindPairwiseDistancesNoSeq (p,seqdists,variants,pdat);
@@ -140,7 +140,7 @@ DataFrame mainC(List params) {
 
   //Find pairwise consensus distances
   vector< vector<tpair> > seqdists_c; //Distance to pairwise consensus
-  if (p.data_type>0) {
+  if (p.data_type>0||p.noseq==1) {
     FromConsensusDistances (variants,seqdists_c);
   } else {
     FromConsensusDistancesNoSeq (variants,seqdists_c);

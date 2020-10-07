@@ -111,7 +111,7 @@ void LikelihoodOutput (run_params p, const vector<int>& ordered, const vector<pa
 	for (int i=0;i<like_trans.size();i++) {
 		for (int j=0;j<like_trans[i].size();j++) {
 			Rcout << "From " << pdat[ordered[i]].code << " to " << pdat[ordered[j]].code << " ";
-			if (p.data_type==0) {
+			if (p.data_type==0||p.noseq==1) {
 				Rcout << like_trans[ordered[i]][ordered[j]].ns_lL_tot << " ";
 				ThresholdsNS(p,like_trans[ordered[i]][ordered[j]].ns_lL_tot);
 				Rcout << "\n";
