@@ -1,6 +1,6 @@
 Package: a2bcovid
 Type: Package
-Title: Inferring COVID-19 transmission events from sequence and location data
+Title: Inferring COVID-19 Transmission Events from Sequence and Location Data
 Version: 0.1.0
 Authors@R: 
     c(person(given = "Chris",
@@ -12,7 +12,7 @@ Authors@R:
 	   role = c("aut"), 
 	   email = "chris.jackson@mrc-bsu.cam.ac.uk"))
 Maintainer: Chris Illingworth <chris.illingworth@mrc-bsu.cam.ac.uk>
-Description: Methods for inferring pathways of infection in hospitals from viral sequence data. More details in multiple sentences.
+Description: A tool which combines genome sequence and the locations of infected individuals, using a statistical and evolutionary model, to estimate the likelihood that transmission occurred between particular individuals, and then to identify clusters of infections.  It is currently designed to apply to COVID-19 infection dynamics on hospital wards.
 License: GPL-3
 Encoding: UTF-8
 LazyData: true
