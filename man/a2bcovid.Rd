@@ -2,7 +2,8 @@
 % Please edit documentation in R/main.R
 \name{a2bcovid}
 \alias{a2bcovid}
-\title{Sentence of what this function does here}
+\title{Identifying clusters of COVID-19 infections from genome sequence and
+individual location data}
 \usage{
 a2bcovid(
   pat_file,
@@ -213,6 +214,10 @@ A data frame with the following columns
 
   \code{hcw_to}
 
+  \code{ordered_i}
+
+  \code{ordered_j}
+
   \code{likelihood}
 
   \code{consistency}
@@ -220,11 +225,33 @@ A data frame with the following columns
   \code{under_threshold}
 }
 \description{
-Longer description of what this function does here
+A tool which combines genome sequence and the locations of infected
+individuals, using a statistical and evolutionary model, to estimate the
+likelihood that transmission occurred between particular individuals, and
+then to identify clusters of infections.  It is currently designed to apply
+to COVID-19 infection dynamics on hospital wards.
+}
+\examples{
+
+## Example data supplied with the package
+pat_file <- system.file("extdata", "Example_genetic_temporal_data.csv", package="a2bcovid")
+mov_file <- system.file("extdata", "Example_movement_file.csv", package="a2bcovid")
+ali_file <- system.file("extdata", "Example_sequences.fa", package="a2bcovid")
+ward_file <- system.file("extdata", "Example_ward_file.csv", package="a2bcovid")
+
+res <- a2bcovid(pat_file = pat_file, mov_file = mov_file, ali_file = ali_file,
+                ward_file = ward_file)
+plot_a2bcovid(res, hi_from="from_hcw", hi_to="to_hcw")
+
 }
 \references{
-Our paper
+"A2B-Covid: A method for evaluating potential Covid-19 transmission events".
+Illingworth C., Hamilton W., Jackson C. et al. Under preparation.
+}
+\seealso{
+\code{\link{plot_a2bcovid}}
 }
 \author{
-Our names
+Chris Illingworth \email{chris.illingworth@mrc.bsu.cam.ac.uk}, Chris Jackson
+\email{chris.jackson@mrc.bsu.cam.ac.uk}.
 }

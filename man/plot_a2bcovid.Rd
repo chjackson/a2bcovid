@@ -42,5 +42,8 @@ A \pkg{ggplot2} plot object.
 }
 \description{
 Plots a grid of colours indicating likelihood of transmission paths between
-each pair of individuals
+each pair of individuals.
+}
+\seealso{
+\code{\link{a2bcovid}}
 }
