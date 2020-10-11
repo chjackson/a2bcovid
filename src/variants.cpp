@@ -4,7 +4,8 @@ using namespace std;
 #include "Rcpp.h"
 
 void FindVariants (vector<sparseseq>& variants, string& consensus, vector<pat>& pdat) {
-	Rcpp::Rcout << "Find variants\n";
+    Rcpp::Function msg("message");
+	msg("Find variants");
 	for (int i=0;i<pdat.size();i++) {
         sparseseq s;
         for (int pos=0;pos<pdat[i].seq.size();pos++) {
@@ -23,7 +24,8 @@ void FindVariants (vector<sparseseq>& variants, string& consensus, vector<pat>& 
 }
 
 void FindVariantsNoSeq (vector<sparseseq>& variants, vector<pat>& pdat) {
-	Rcpp::Rcout << "Find variants NoSeq\n";
+    Rcpp::Function msg("message");
+	msg("Find variants NoSeq");
 	for (int i=0;i<pdat.size();i++) {
         sparseseq s;
         variants.push_back(s);

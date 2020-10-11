@@ -7,15 +7,15 @@
 using namespace std;
 #include "Rcpp.h"
 
-
-
 //Used for sorting data
 bool comparetprob (tprob v1, tprob v2) {
 	return (v1.time < v2.time);
 }
 
 void CalculateTDLikelihoods (run_params p, const vector<pat>& pdat, const vector< vector<int> >& seqdists, const vector< vector<tpair> >& seqdists_c, vector< vector<ijlike> >& like_trans) {
-	Rcpp::Rcout << "Calculate likelihoods\n";
+//	Rcpp::Rcout << "Calculate likelihoods\n";
+Rcpp::Function msg("message");
+  msg("Calculate likelihoods");
 	for (int i=0;i<pdat.size();i++) {
 		vector<ijlike> lt;
 		for (int j=0;j<pdat.size();j++) {

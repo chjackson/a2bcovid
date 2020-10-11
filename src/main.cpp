@@ -23,7 +23,8 @@ run_params DefineParams(List params);
 
 // [[Rcpp::export]]
 DataFrame mainC(List params) {
-
+  Rcpp::Function msg("message");
+  
   run_params p;
   DataFrame out;
 
@@ -69,7 +70,11 @@ DataFrame mainC(List params) {
   }
 
   ProcessSymptomUncertainty(p,pdat);
-  Rcout << "Have complete data for " << pdat.size() << " individuals\n";
+
+  // TODO sprintf this then msg
+  std::ostringstream outstr; 
+  outstr << "Have complete data for " << pdat.size() << " individuals";
+  msg(outstr.str());
 
   //Code to read in location data
   int pd=0;

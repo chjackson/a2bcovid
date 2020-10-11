@@ -6,6 +6,7 @@
 using namespace std;
 using namespace Rcpp;
 
+
 void PrintSeqDistances (const vector< vector<int> >& seqdists) {
 	Rcout << "Sequence distances\n";
 	for (int i=0;i<seqdists.size();i++) {
@@ -125,17 +126,18 @@ void LikelihoodOutput (run_params p, const vector<int>& ordered, const vector<pa
 }
 
 void FinalOutput (run_params p, const vector<string>& removed, const vector<string>& fixed) {
+    Rcpp::Function msg("message");
 	if (removed.size()>0) {
-		Rcout << "Individuals were removed due to missing or poor quality sequence data:\n";
+	    msg("Individuals were removed due to missing or poor quality sequence data:");
 		for (int i=0;i<removed.size();i++) {
-			Rcout << removed[i] << "\n";
+		    msg(removed[i]);
 		}
 	}
 	if (fixed.size()>0) {
-		Rcout << "Default location parameters were used to assess transmission events involving some individuals:\n";
+	    msg("Default location parameters were used to assess transmission events involving some individuals:");
 		for (int i=0;i<fixed.size();i++) {
-			Rcout << fixed[i] << "\n";
+		    msg(fixed[i]);
 		}
 	}
-	Rcout << "Note that default parameters are biased towards individuals being present on the primary ward in question\n";
+	msg("Note that default parameters are biased towards individuals being present on the primary ward in question");
 }
