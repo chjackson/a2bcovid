@@ -113,5 +113,15 @@ shinyServer(function(input, output, session) {
         else outstr <- "ERROR 1"
         outstr
     })
+
+    output$pat_data_table <- renderTable({
+        read.csv(exampledat$pat)[1:2,]
+    })
+    output$ward_data_table <- renderTable({
+        read.csv(exampledat$ward)[1:2,]
+    })
+    output$mov_data_table <- renderTable({
+        read.csv(exampledat$mov, check.names = FALSE)[1:2,]
+    })
 })
 

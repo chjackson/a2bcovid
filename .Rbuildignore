@@ -4,3 +4,5 @@ data-raw
 tests/local
 inst/OurApp/library
 R/deploy.R
+R/files.R
+^doc$

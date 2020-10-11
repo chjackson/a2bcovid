@@ -45,3 +45,4 @@ tests/local
 data-raw
 R/deploy.R
 inst/a2bcovid/global_bsu.R
+inst/doc

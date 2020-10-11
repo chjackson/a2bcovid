@@ -89,8 +89,9 @@ void CountNs (vector<pat>& pdat) {
 }
 
 void FindConsensus (string& consensus, vector<string>& seqs) {
+    Rcpp::Function msg("message");
 	consensus=seqs[0];
-	Rcpp::Rcout << "Find consensus of all input sequences\n";
+	msg("Find consensus of all input sequences");
     int nA=0;
     int nC=0;
     int nG=0;

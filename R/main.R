@@ -223,6 +223,7 @@
 ##' @importFrom Rcpp evalCpp
 ##' @importFrom shiny runApp
 ##' @importFrom rstudioapi viewer
+##' @importFrom utils read.csv
 ##' @useDynLib a2bcovid, .registration = TRUE
 ##'
 ##' @export

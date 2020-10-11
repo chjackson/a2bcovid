@@ -1,0 +1,105 @@
+---
+title: "A2BCovid: example analysis"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{A2BCovid: example analysis}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE,
+                      message = FALSE,
+                      fig.width = 8,
+                      out.extra='keepaspectratio')
+```
+
+`a2bcovid` is a tool to estimate the likelihood that an infection was transmitted between particular individuals, and then to identify clusters of infections.   
+
+It uses data on either genome sequences or the locations of infected individuals, and uses a statistical and evolutionary model.
+
+It is currently designed to apply to COVID-19 infection dynamics on hospital wards.
+ 
+An `a2bcovid` analysis for a simple example is shown here.  
+
+The data files for this example are provided with the installed package, and can be read into R as follows.  For the CSV files, the first couple of rows are shown here, to illustrate the format required.  Full details of the format are specified in the R help page `help(a2bcovid)`
+
+### Times of symptom onset 
+```{r}
+pat_file <- system.file("extdata", "Example_genetic_temporal_data.csv", package="a2bcovid")
+head(read.csv(pat_file),2)
+```
+
+### Genome sequence data
+The example sequences file has been constructed so that all of the variants in the sequence appear in the first 10 positions in the genome.  Looking at it with an alignment viewer will give a simple idea of how the sequences relate to one another.    [ TODO can we show this in R?  No need unless it would help understand the example ]  
+
+```{r}
+ali_file <- system.file("extdata", "Example_sequences.fa", package="a2bcovid")
+```
+
+### Patient location data
+```{r}
+ward_file <- system.file("extdata", "Example_ward_file.csv", package="a2bcovid")
+head(read.csv(ward_file),2)
+```
+
+### Staff location data
+```{r}
+mov_file <- system.file("extdata", "Example_movement_file.csv", package="a2bcovid")
+head(read.csv(mov_file),2)
+```
+
+
+# Example analysis 
+
+### Using just the symptom onset times 
+
+```{r}
+library(a2bcovid)
+a <- a2bcovid(pat_file = pat_file)
+plot_a2bcovid(a)
+```
+
+Individual 1008 does not seem to infect anyone else, but otherwise most of the cases appear to be connected to each other.   Sequences with lower numbers are generally more likely to infect individuals with higher numbers.
+
+### Using symptom onset times and sequence data
+
+```{r}
+a <- a2bcovid(pat_file = pat_file, ali_file = ali_file)
+plot_a2bcovid(a)
+```
+
+With the addition of sequence information, individuals 1009 and 1010 appear more separate.  They may have been infected by 1001 or 1002 but most of the links to them at type 0 have disappeared.   There seems to be a cluster of individuals 1001 to 1008.
+
+### Using symptom onset times, sequence data and patient location data
+
+Suppose that individuals 1004 to 1006 are healthcare workers, and the remaining individuals are patients in the ward.   Suppose we have location data for all patients, but not the healthcare workers.
+
+```{r}
+a <- a2bcovid(pat_file = pat_file, ali_file = ali_file, ward_file = ward_file)
+plot_a2bcovid(a)
+```
+
+The links from 1001 and 1002 to 1009 and 1010 are now gone, with these last two individuals being seen as clearly separate from the remaining cases.  The plot suggests that 1007 infected 1008 in the absence of other known cases.
+
+### Using symptom onset times, sequence data, patient location and staff location data
+
+Finally, we add in location data for the healthcare workers, individuals 1004 to 1006.  
+
+```{r}
+a <- a2bcovid(pat_file = pat_file, ali_file = ali_file, ward_file = ward_file, mov_file = mov_file)
+plot_a2bcovid(a)
+```
+
+More resolution is now seen around these individuals, with for example 1006 not having infected anyone else, but possibly having been infected by 1002 or 1003.  We note that generally the question of who infected who is not resolved for the cluster of cases at the top right of the plot, but a cluster linking the individuals 1001 to 1008, and a second linking 1009 and 1010, could be identified from this plot for further investigation.
+
+
+
+Note that in the current version of `a2bcovid`, two different data formats are used for location of patients and location of healthcare workers.   However this is not necessary for the calculation.   This is just a legacy of the original setting where the package was used.   In a future version the data format might be standardised. 
+
+
+
+<script>
+  var d = document.document.getElementsByTagName("img");
+  d.className += " img-responsive";
+</script>
