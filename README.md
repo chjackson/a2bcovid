@@ -19,6 +19,6 @@ It is currently designed to apply to COVID-19 infection dynamics on hospital war
   
 See the package vignette for an example:
 
-[A2BCovid: Example analysis](https://chjackson.github.io/a2covid/inst/doc/example.html)
+[A2BCovid: Example analysis](https://chjackson.github.io/a2bcovid/inst/doc/example.html)
 
 Source code [GitHub repository](https://github.com/chjackson/a2bcovid)
