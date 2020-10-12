@@ -25,7 +25,7 @@ void GetOptions (run_params& p, int argc, const char **argv) {
 	p.uct_mean=6.67992;
 	//Can create an option to optimise over the unknown times of becoming symptomatic
 	p.rate=0.0008;
-	p.seq_noise=0.772469;
+	p.seq_noise=0.41369;
 	p.threshold=0;
 	p.thresholdns=0;
 	p.max_n=10;
