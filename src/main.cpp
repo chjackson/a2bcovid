@@ -114,7 +114,11 @@ DataFrame mainC(List params) {
     vector<allele> allvar;
     ListAllVariantPositions(variants,allvar);
     if (p.diagnostic==1) {
-      PrintVariantLoci(allvar);
+      cout << "Number of variants is " << variants.size() << "\n";
+		for (int i=0;i<variants.size();i++) {
+			cout << i << " " << variants[i].locus.size() << "\n";
+		}
+	  PrintVariantLoci(allvar);
 	  PrintVariants (variants,pdat);
     }
     vector<int> nloc_count;
