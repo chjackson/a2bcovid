@@ -115,6 +115,7 @@ DataFrame mainC(List params) {
     ListAllVariantPositions(variants,allvar);
     if (p.diagnostic==1) {
       PrintVariantLoci(allvar);
+	  PrintVariants (variants,pdat);
     }
     vector<int> nloc_count;
     FindAmbiguousVarPositions (allvar,pdat,nloc_count);
