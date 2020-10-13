@@ -14,6 +14,8 @@ knitr::opts_chunk$set(echo = TRUE,
                       out.extra='keepaspectratio')
 ```
 
+## a2bcovid: introduction
+
 `a2bcovid` is a tool to estimate the likelihood that an infection was transmitted between particular individuals, and then to identify clusters of infections.   
 
 It uses data on either genome sequences or the locations of infected individuals, and uses a statistical and evolutionary model.
