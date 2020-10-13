@@ -23,7 +23,7 @@ void CalculateThresholdsFull (run_params p) {
 						int h2=h-b;
 						double logT=0;
 						for (int t=-11;t<=16;t++) {
-							if (t<=s2) {
+							if (t<=s2&&d2>=t) {
 								if (d1<t) {
 									int evotime2=d2-d1;
 									double L=OffsetGammaCDFFlex(t,p.pa,p.pb,p.po);
