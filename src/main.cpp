@@ -125,17 +125,17 @@ DataFrame mainC(List params) {
   //Find distances between sequences
   vector< vector<int> > seqdists;
   if (p.ali_file.compare("")==0) {
-    FindPairwiseDistances (p,seqdists,variants,pdat);
-  } else {
     FindPairwiseDistancesNoSeq (p,seqdists,variants,pdat);
+  } else {
+    FindPairwiseDistances (p,seqdists,variants,pdat);
   }
 
   //Find pairwise consensus distances
   vector< vector<tpair> > seqdists_c; //Distance to pairwise consensus
   if (p.ali_file.compare("")==0) {
-    FromConsensusDistances (variants,seqdists_c);
-  } else {
     FromConsensusDistancesNoSeq (variants,seqdists_c);
+  } else {
+    FromConsensusDistances (variants,seqdists_c);
   }
 
   if (p.diagnostic==1) {
