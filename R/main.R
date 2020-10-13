@@ -171,10 +171,6 @@
 ##' @param diagnostic Flag to enable extensive diagnostic output from the
 ##'   function.
 ##'
-##' @param make_clusters Flag to sort output matrix into machine-derived
-##'   clusters.  Alternative is that the input order of individuals is mirrored
-##'   in the output
-##'
 ##' @param threshold documentme
 ##' @param threshold_ns documentme
 ##' @param calc_thresholds documentme
@@ -245,7 +241,6 @@ a2bcovid <- function(
                   diagnostic =FALSE,
                   hcw_default = 0.5714286,
                   pat_default = 1,
-                  make_clusters = 1
 )
 {
   check_file(ali_file)
@@ -260,8 +255,7 @@ a2bcovid <- function(
                  calc_thresholds=calc_thresholds,
                  diagnostic=diagnostic,
 				 hcw_location_default=hcw_default,
-				 pat_location_default=pat_default,
-				 make_clusters=make_clusters)
+				 pat_location_default=pat_default)
   res <- .Call(`_a2bcovid_mainC`, params)
   ## default factor levels as in data order, not sorted alphabetically
   res$from <- factor(res$from, unique(res$from))

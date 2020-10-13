@@ -41,7 +41,6 @@ struct run_params {
 	int calc_thresholds; //Calculate thresholds of the likelihood function
 	double hcw_location_default;  //Probability a HCW is there given no other information
 	double pat_location_default;  //Probability a HCW is there given no other information
-	int make_clusters; //Flag to cluster output
 };
 
 
