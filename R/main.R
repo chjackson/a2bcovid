@@ -240,7 +240,7 @@ a2bcovid <- function(
                   calc_thresholds=FALSE,
                   diagnostic =FALSE,
                   hcw_default = 0.5714286,
-                  pat_default = 1,
+                  pat_default = 1
 )
 {
   check_file(ali_file)
@@ -260,9 +260,9 @@ a2bcovid <- function(
   ## default factor levels as in data order, not sorted alphabetically
   res$from <- factor(res$from, unique(res$from))
   res$to <- factor(res$to, unique(res$to))
-  ## converts to 1,2,3... IDs while preserving order
-  res$ordered_i <- match(res$ordered_i, unique(res$ordered_i))
-  res$ordered_j <- match(res$ordered_j, unique(res$ordered_j))
+  ## converts from 0 based to 1 based index
+  res$ordered_i <- res$ordered_i + 1
+  res$ordered_j <- res$ordered_j + 1
   res$consistency <- ordered(res$consistency,
                              levels=c("Unlikely","Borderline","Consistent"))
   res
@@ -310,7 +310,10 @@ check_file <- function(filename){
 ##' @import ggplot2
 ##'
 ##' @export
-plot_a2bcovid <- function(x, cluster = TRUE, hi_from, hi_to, hi_col="red", palette=NULL,
+plot_a2bcovid <- function(x, cluster = TRUE,
+                          hi_from, hi_to, hi_col="red",
+                          hi_lab="Healthcare workers",
+                          palette=NULL,
                           direction = 1){
 
   if (is.null(palette)) {
@@ -322,6 +325,12 @@ plot_a2bcovid <- function(x, cluster = TRUE, hi_from, hi_to, hi_col="red", palet
     scale_chosen <- scale_fill_brewer(palette = palette,  direction=direction)
   }
   ## TODO match with rownames(RColorBrewer::brewer.pal.info)
+
+  if (cluster) {
+    x$from <- factor(x$from, levels = levels(x$from)[x$ordered_i[!duplicated(x$from)]])
+    x$to <- factor(x$to, levels = levels(x$to)[x$ordered_j[!duplicated(x$to)]])
+  }
+
   if (!missing(hi_from)) {
     if (!(hi_from %in% names(x))) stop(sprintf("`%s` not found in `x`", hi_from))
     x_from <- x[!duplicated(x$from),]
@@ -335,15 +344,12 @@ plot_a2bcovid <- function(x, cluster = TRUE, hi_from, hi_to, hi_col="red", palet
     y_cols <- ifelse(xhi_to, hi_col, "black")
   } else y_cols <- "black"
 
-  if (!cluster) {
-    x$from <- factor(x$from, levels = levels(x$from)[x$ordered_i[!duplicated(x$from)]])
-    x$to <- factor(x$to, levels = levels(x$to)[x$ordered_j[!duplicated(x$to)]])
-  }
-
   ggplot(x, aes_string(y="from", x="to")) +
     geom_raster(aes_string(fill="consistency")) +
     theme(axis.text.x = ggtext::element_markdown(angle = 90, vjust=0.5, colour = x_cols),
           axis.text.y = ggtext::element_markdown(colour = y_cols),
-          legend.title = element_blank()) +
+          legend.title = element_blank(),
+          plot.subtitle = ggtext::element_markdown(colour=hi_col)) +
+    labs(subtitle=hi_lab) +
     scale_chosen
 }
