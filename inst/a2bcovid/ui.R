@@ -4,28 +4,26 @@ shinyUI(fluidPage(
     tags$style(".resetButton {float:left; font-size:12px;}")
   ),
 
-  titlePanel("Infection Pathways from Sequence Data"),
+  titlePanel("a2bcovid: Infection Pathways from Sequence Data"),
 
   sidebarLayout(
 
       sidebarPanel(
         h3("Upload data"),
         uiOutput('patInput'),
-        uiOutput('aliInput'),
         checkboxInput("use_ali",label="Use genomic data",value=TRUE),
-        uiOutput('wardInput'),
+        uiOutput('aliInput'),
         checkboxInput("use_ward",label="Use patient location data",value=TRUE),
-        uiOutput('movInput'),
+        uiOutput('wardInput'),
         checkboxInput("use_mov",label="Use staff location data",value=FALSE),
+        uiOutput('movInput'),
         HTML("<button id='reset' class='action-button resetButton'>Reset to example data</button><p>")
       ),
 
       mainPanel(
         tabsetPanel(type="tabs",
-
                     tabPanel("Output",
-                             h4("Output here"),
-                             tableOutput(outputId = "reshead"),
+                             p('The graph indicates the likelihood that infection was transmitted between each pair of individuals'),
                              textOutput('whichdata'),
                              plotOutput(outputId = "rasterPlot"),
                              checkboxInput("cluster",label="Cluster",value=TRUE)
@@ -89,7 +87,8 @@ shinyUI(fluidPage(
                                      )
                              ),
                              uiOutput('mov_data_table')
-                    )
+                    ),
+                    tabPanel("Example analysis",includeHTML("example.html"))
         )
       )
   )
