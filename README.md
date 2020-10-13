@@ -1,7 +1,7 @@
 a2bcovid
 ===
 
-The development repository for the [a2bcovid](http://cran.r-project.org/package=fic) R package for 
+The development repository for the `a2bcovid` R package.
 
 ## Installation (development version)
 
