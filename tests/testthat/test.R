@@ -22,6 +22,12 @@ res <- a2bcovid(pat_file = pat_file, mov_file = mov_file,
 plot_a2bcovid(res, hi_from="from_hcw", hi_to="to_hcw")
 plot_a2bcovid(res, hi_from="from_hcw", hi_to="to_hcw",cluster=FALSE)
 
+## TODO make sure palettes match.
+# Exclude diagonals first
+# L > -8.15176 consistent,      L>-10.1578 borderline, else unlikely
+plot_a2bcovid(res, hi_from="from_hcw", hi_to="to_hcw",cluster=FALSE)
+plot_a2bcovid(res, hi_from="from_hcw", hi_to="to_hcw",cluster=FALSE,continuous=TRUE)
+
 plot_a2bcovid(res, hi_from="from_hcw", hi_to="to_hcw", hi_col="purple")
 plot_a2bcovid(res, hi_from="from_hcw", hi_to="to_hcw", palette="PuRd")
 plot_a2bcovid(res, hi_from="from_hcw", hi_to="to_hcw", palette="BuGn")

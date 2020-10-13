@@ -4,7 +4,7 @@
 \alias{a2bcovid_app}
 \title{Web app interface to a2bcovid}
 \usage{
-a2bcovid_app(rstudio = FALSE)devtool
+a2bcovid_app(rstudio = FALSE)
 }
 \arguments{
 \item{rstudio}{Set to \code{TRUE} to open the app in the RStudio Viewer.

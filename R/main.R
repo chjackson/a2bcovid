@@ -265,6 +265,7 @@ a2bcovid <- function(
   res$ordered_j <- res$ordered_j + 1
   res$consistency <- ordered(res$consistency,
                              levels=c("Unlikely","Borderline","Consistent"))
+  res <- res[res$from != res$to,  ]
   res
 }
 
@@ -296,9 +297,14 @@ check_file <- function(filename){
 ##'
 ##' @param hi_col Colour to use to highlight individual IDs.
 ##'
+##' @param hi_lab Legend to describe which individuals are highlighted.  By default this is "Healthcare workers".
+##'
 ##' @param palette Colour palette, passed to
 ##'   \code{\link[ggplot2]{scale_fill_brewer}}.  If omitted, a default will be chosen
 ##'
+##' @param continuous  If \code{TRUE} then the likelihood values are plotted on
+##'   a continuous colour scale.  Currently only implemented with the default
+##'   colour palette.
 ##'
 ##' @param direction Direction of colours in the brewer palettes. Defaults to 1.  Change to -1 to
 ##'   reverse the order of colours.
@@ -308,21 +314,32 @@ check_file <- function(filename){
 ##' @seealso \code{\link{a2bcovid}}
 ##'
 ##' @import ggplot2
+##' @importFrom scales squish
 ##'
 ##' @export
 plot_a2bcovid <- function(x, cluster = TRUE,
                           hi_from, hi_to, hi_col="red",
                           hi_lab="Healthcare workers",
                           palette=NULL,
+                          continuous=FALSE,
                           direction = 1){
-
-  if (is.null(palette)) {
-    cols_default <- c("Unlikely"="#3C87C8",
-                      "Borderline"="#FCF9DA",
-                      "Consistent"="#D64E47")
-    scale_chosen <- scale_fill_manual(values = cols_default)
+  if (continuous) {
+    scale_chosen <- scale_fill_gradient2(
+      low = "#3C87C8", mid = "#FCF9DA", high="#D64E47",
+      breaks=c(-15, -10.1578, -8.15176), midpoint = -10.15,
+      limits=c(-15, -3), labels=c("-15 or less", "-10", "-8"),
+      oob=scales::squish,
+      guide="legend"
+    )
   } else {
-    scale_chosen <- scale_fill_brewer(palette = palette,  direction=direction)
+    if (is.null(palette)) {
+      cols_default <- c("Unlikely"="#3C87C8",
+                        "Borderline"="#FCF9DA",
+                        "Consistent"="#D64E47")
+      scale_chosen <- scale_fill_manual(values = cols_default)
+    } else {
+      scale_chosen <- scale_fill_brewer(palette = palette,  direction=direction)
+    }
   }
   ## TODO match with rownames(RColorBrewer::brewer.pal.info)
 
@@ -344,8 +361,9 @@ plot_a2bcovid <- function(x, cluster = TRUE,
     y_cols <- ifelse(xhi_to, hi_col, "black")
   } else y_cols <- "black"
 
+  fill_var <- if (continuous) "likelihood" else "consistency"
   ggplot(x, aes_string(y="from", x="to")) +
-    geom_raster(aes_string(fill="consistency")) +
+    geom_raster(aes_string(fill=fill_var)) +
     theme(axis.text.x = ggtext::element_markdown(angle = 90, vjust=0.5, colour = x_cols),
           axis.text.y = ggtext::element_markdown(colour = y_cols),
           legend.title = element_blank(),

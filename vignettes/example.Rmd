@@ -21,8 +21,10 @@ knitr::opts_chunk$set(echo = TRUE,
 It uses data on either genome sequences or the locations of infected individuals, and uses a statistical and evolutionary model.
 
 It is currently designed to apply to COVID-19 infection dynamics on hospital wards.
+
+It is available as both an R package and a web app. 
  
-An `a2bcovid` analysis for a simple example is shown here.  
+An `a2bcovid` analysis using the R package is shown here for a simple example.
 
 The data files for this example are provided with the installed package, and can be read into R as follows.  For the CSV files, the first couple of rows are shown here, to illustrate the format required.  Full details of the format are specified in the R help page `help(a2bcovid)`
 

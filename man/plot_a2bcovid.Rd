@@ -10,7 +10,9 @@ plot_a2bcovid(
   hi_from,
   hi_to,
   hi_col = "red",
+  hi_lab = "Healthcare workers",
   palette = NULL,
+  continuous = FALSE,
   direction = 1
 )
 }
@@ -31,8 +33,14 @@ highlighted, similarly.}
 
 \item{hi_col}{Colour to use to highlight individual IDs.}
 
+\item{hi_lab}{Legend to describe which individuals are highlighted.  By default this is "Healthcare workers".}
+
 \item{palette}{Colour palette, passed to
 \code{\link[ggplot2]{scale_fill_brewer}}.  If omitted, a default will be chosen}
+
+\item{continuous}{If \code{TRUE} then the likelihood values are plotted on
+a continuous colour scale.  Currently only implemented with the default
+colour palette.}
 
 \item{direction}{Direction of colours in the brewer palettes. Defaults to 1.  Change to -1 to
 reverse the order of colours.}

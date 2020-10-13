@@ -16,7 +16,7 @@ Description: A tool which combines genome sequence and the locations of infected
 License: GPL-3
 Encoding: UTF-8
 LazyData: true
-Imports: Rcpp (>= 1.0.5), shiny, rstudioapi, ggplot2, ggtext
+Imports: Rcpp (>= 1.0.5), shiny, rstudioapi, ggplot2, ggtext, scales
 Suggests: 
     testthat,
     knitr,
