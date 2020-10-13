@@ -113,9 +113,9 @@ DataFrame mainC(List params) {
     //Find sequences with an 'N' at sites with called variants
     vector<allele> allvar;
     ListAllVariantPositions(variants,allvar);
-	  cout << "Number of variants is " << variants.size() << "\n";
+	  Rcout << "Number of variants is " << variants.size() << "\n";
 		for (int i=0;i<variants.size();i++) {
-			cout << i << " " << variants[i].locus.size() << "\n";
+			Rcout << i << " " << variants[i].locus.size() << "\n";
 		}
 
     if (p.diagnostic==1) {
