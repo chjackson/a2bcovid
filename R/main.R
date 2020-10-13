@@ -326,8 +326,8 @@ plot_a2bcovid <- function(x, cluster = TRUE,
   if (continuous) {
     scale_chosen <- scale_fill_gradient2(
       low = "#3C87C8", mid = "#FCF9DA", high="#D64E47",
-      breaks=c(-15, -10.1578, -8.15176), midpoint = -10.15,
-      limits=c(-15, -3), labels=c("-15 or less", "-10", "-8"),
+      breaks=c(-15, -10.1578, -8.15176, -3), midpoint = -10.15,
+      limits=c(-15, -3), labels=c("<-15 (Unlikely)", "-10", "-8", "-3 (Consistent)"),
       oob=scales::squish,
       guide="legend"
     )
