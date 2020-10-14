@@ -265,7 +265,6 @@ a2bcovid <- function(
   res$ordered_j <- res$ordered_j + 1
   res$consistency <- ordered(res$consistency,
                              levels=c("Unlikely","Borderline","Consistent"))
-  res <- res[res$from != res$to,  ]
   res
 }
 
