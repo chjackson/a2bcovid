@@ -317,11 +317,13 @@ check_file <- function(filename){
 ##'
 ##' @export
 plot_a2bcovid <- function(x, cluster = TRUE,
-                          hi_from, hi_to, hi_col="red",
-                          hi_lab="Healthcare workers",
+                          hi_from="from_hcw", hi_to="to_hcw", hi_col="red",
+                          hi_lab=NULL,
                           palette=NULL,
                           continuous=FALSE,
                           direction = 1){
+  if (is.null(hi_lab))
+    hi_lab <- sprintf("Healthcare workers labelled in %s",hi_col)
   if (continuous) {
     scale_chosen <- scale_fill_gradient2(
       low = "#3C87C8", mid = "#FCF9DA", high="#D64E47",

@@ -270,7 +270,7 @@ void Thresholds (run_params p, double L) {
 		//99.9%:-12.8883
 		//99.999%:-17.6422
 	if (L>-8.01729) {
-		cout << "Consistent "; //p>0.05
+	        Rcpp::Rcout << "Consistent "; //p>0.05
 	} else if (L>-10.0562) {
 		Rcpp::Rcout << "Borderline "; //0.05>p>0.01
 	} else {

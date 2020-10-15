@@ -7,10 +7,10 @@
 plot_a2bcovid(
   x,
   cluster = TRUE,
-  hi_from,
-  hi_to,
+  hi_from = "from_hcw",
+  hi_to = "to_hcw",
   hi_col = "red",
-  hi_lab = "Healthcare workers",
+  hi_lab = NULL,
   palette = NULL,
   continuous = FALSE,
   direction = 1

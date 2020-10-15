@@ -72,7 +72,7 @@ shinyServer(function(input, output, session) {
     })
 
     output$rasterPlot <- renderPlot({
-        plot_a2bcovid(get_res(), cluster=input$cluster, hi_from="from_hcw", hi_to="to_hcw")
+        plot_a2bcovid(get_res(), cluster=input$cluster, hi_from="from_hcw", hi_to="to_hcw", continuous=input$continuous)
     })
 
     output$patInput <- renderUI({
