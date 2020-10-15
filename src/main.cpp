@@ -113,8 +113,14 @@ DataFrame mainC(List params) {
     //Find sequences with an 'N' at sites with called variants
     vector<allele> allvar;
     ListAllVariantPositions(variants,allvar);
+	  Rcout << "Number of variants is " << variants.size() << "\n";
+		for (int i=0;i<variants.size();i++) {
+			Rcout << i << " " << variants[i].locus.size() << "\n";
+		}
+
     if (p.diagnostic==1) {
-      PrintVariantLoci(allvar);
+	  PrintVariantLoci(allvar);
+	  PrintVariants (variants,pdat);
     }
     vector<int> nloc_count;
     FindAmbiguousVarPositions (allvar,pdat,nloc_count);
