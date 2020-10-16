@@ -39,6 +39,14 @@ shinyUI(fluidPage(
                              bsCollapse(id = "collapseExample", open = "Panel 2",
                                         bsCollapsePanel("Advanced settings", p("Not implemented yet"),
                                                         p("Here you will be able to change parameters used in the algorithm"),
+                                                        numericInput("seq_noise","Parameter governing sequencing noise",
+                                                                     0.772469, min = NA, max = NA,  step = NA, width = NULL),
+                                                        numericInput("evo_rate","Virus evolution rate (nucleotide substitutions per locus per year)",
+                                                                     0.0008,  min = NA, max = NA,  step = NA, width = NULL),
+                                                        numericInput("min_qual","Fraction of genome covered by the sequence",
+                                                                     0.8,  min = NA, max = NA,  step = NA, width = NULL),
+                                                        numericInput("max_n","Maximum number of ambiguous nucleotides tolerated",
+                                                                     10, min = NA, max = NA,  step = NA, width = NULL),
                                                         style = "default")
                              )
                     ),

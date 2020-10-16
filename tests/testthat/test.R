@@ -23,6 +23,12 @@ res <- a2bcovid(pat_file = pat_file, mov_file = mov_file,
                 ali_file = ali_file, ward_file = ward_file)
 plot_a2bcovid(res, hi_from="from_hcw", hi_to="to_hcw")
 
+## todo get seq or not
+res$x
+pdat <- approx(x = thresholds_seq$lik, y = thresholds_seq$p,
+               xout=res$likelihood, yleft=1, yright=0)
+do.call("cbind", pdat)
+
 plot_a2bcovid(res, hi_from="from_hcw", hi_to="to_hcw",cluster=FALSE)
 plot_a2bcovid(res, hi_from="from_hcw", hi_to="to_hcw",cluster=TRUE)
 

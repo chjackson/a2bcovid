@@ -38,9 +38,10 @@ highlighted, similarly.}
 \item{palette}{Colour palette, passed to
 \code{\link[ggplot2]{scale_fill_brewer}}.  If omitted, a default will be chosen}
 
-\item{continuous}{If \code{TRUE} then the likelihood values are plotted on
-a continuous colour scale.  Currently only implemented with the default
-colour palette.}
+\item{continuous}{If \code{TRUE} then the p-values are plotted on a
+continuous colour scale.  Currently only implemented with the default
+colour palette.  If \code{FALSE} (the default), then the p-values are
+classified into ranges and plotted as a categorical variable.}
 
 \item{direction}{Direction of colours in the brewer palettes. Defaults to 1.  Change to -1 to
 reverse the order of colours.}

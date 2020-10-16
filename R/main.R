@@ -220,6 +220,7 @@
 ##' @importFrom shiny runApp
 ##' @importFrom rstudioapi viewer
 ##' @importFrom utils read.csv
+##' @importFrom stats approx pnorm qnorm
 ##' @useDynLib a2bcovid, .registration = TRUE
 ##'
 ##' @export
@@ -263,8 +264,17 @@ a2bcovid <- function(
   ## converts from 0 based to 1 based index
   res$ordered_i <- res$ordered_i + 1
   res$ordered_j <- res$ordered_j + 1
+  res$likelihood[res$likelihood==-1e+10] <- -Inf
+  thresh <- if (ali_file=="") thresholds_noseq else thresholds_seq
+  res$p <- approx(x = thresh$lik, y = thresh$p, xout=res$likelihood, yleft=1, yright=0)$y
+  cons_p <- cut(res$p, breaks=c(0, 0.95, 0.99, 1), include.lowest=TRUE,
+                    labels = c("Consistent","Borderline","Unlikely"),
+                    ordered_result=TRUE)
+  res$p <- 1 - res$p
   res$consistency <- ordered(res$consistency,
                              levels=c("Unlikely","Borderline","Consistent"))
+  if (!all(cons_p==res$consistency))
+    warning("Consistency classification does not match, file a bug report with the maintainer")
   res
 }
 
@@ -301,9 +311,10 @@ check_file <- function(filename){
 ##' @param palette Colour palette, passed to
 ##'   \code{\link[ggplot2]{scale_fill_brewer}}.  If omitted, a default will be chosen
 ##'
-##' @param continuous  If \code{TRUE} then the likelihood values are plotted on
-##'   a continuous colour scale.  Currently only implemented with the default
-##'   colour palette.
+##' @param continuous  If \code{TRUE} then the p-values are plotted on a
+##'   continuous colour scale.  Currently only implemented with the default
+##'   colour palette.  If \code{FALSE} (the default), then the p-values are
+##'   classified into ranges and plotted as a categorical variable.
 ##'
 ##' @param direction Direction of colours in the brewer palettes. Defaults to 1.  Change to -1 to
 ##'   reverse the order of colours.
@@ -324,14 +335,17 @@ plot_a2bcovid <- function(x, cluster = TRUE,
                           direction = 1){
   if (is.null(hi_lab))
     hi_lab <- sprintf("Healthcare workers labelled in %s",hi_col)
+  midp <- pnorm((qnorm(0.05) + qnorm(0.01))/2)
   if (continuous) {
-    scale_chosen <- scale_fill_gradient2(
-      low = "#3C87C8", mid = "#FCF9DA", high="#D64E47",
-      breaks=c(-15, -10.0562, -8.01729, -3), midpoint = -10.15,
-      limits=c(-15, -3), labels=c("<-15 (Unlikely)", "-10", "-8", "-3 (Consistent)"),
+    scale_chosen <- scale_fill_gradientn(
+      colours = c( "#D64E47", "#FCF9DA", "#3C87C8"),
+      values = scales::rescale(c(0.1, midp, 0)),
+      breaks=c(0.1, 0.05, 0.01, 0),
+      limits=c(0, 0.1),
       oob=scales::squish,
       guide="legend"
     )
+    leg_lab <- "p-value"
   } else {
     if (is.null(palette)) {
       cols_default <- c("Unlikely"="#3C87C8",
@@ -341,6 +355,7 @@ plot_a2bcovid <- function(x, cluster = TRUE,
     } else {
       scale_chosen <- scale_fill_brewer(palette = palette,  direction=direction)
     }
+    leg_lab <- ""
   }
   ## TODO match with rownames(RColorBrewer::brewer.pal.info)
 
@@ -362,13 +377,14 @@ plot_a2bcovid <- function(x, cluster = TRUE,
     y_cols <- ifelse(xhi_to, hi_col, "black")
   } else y_cols <- "black"
 
-  fill_var <- if (continuous) "likelihood" else "consistency"
+  fill_var <- if (continuous) "p" else "consistency"
   ggplot(x, aes_string(y="from", x="to")) +
     geom_raster(aes_string(fill=fill_var)) +
     theme(axis.text.x = ggtext::element_markdown(angle = 90, vjust=0.5, colour = x_cols),
           axis.text.y = ggtext::element_markdown(colour = y_cols),
-          legend.title = element_blank(),
-          plot.subtitle = ggtext::element_markdown(colour=hi_col)) +
-    labs(subtitle=hi_lab) +
+          plot.subtitle = ggtext::element_markdown(colour=hi_col)
+          ) +
+    labs(subtitle=hi_lab,
+         fill=leg_lab) +
     scale_chosen
 }
