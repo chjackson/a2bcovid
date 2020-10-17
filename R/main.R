@@ -348,10 +348,10 @@ plot_a2bcovid <- function(x, cluster = TRUE,
     leg_lab <- "p-value"
   } else {
     if (is.null(palette)) {
-      cols_default <- c("Unlikely"="#3C87C8",
+      cols_default <- c("Consistent"="#D64E47",
                         "Borderline"="#FCF9DA",
-                        "Consistent"="#D64E47")
-      scale_chosen <- scale_fill_manual(values = cols_default)
+                        "Unlikely"="#3C87C8")
+      scale_chosen <- scale_fill_manual(values = cols_default, breaks=names(cols_default))
     } else {
       scale_chosen <- scale_fill_brewer(palette = palette,  direction=direction)
     }

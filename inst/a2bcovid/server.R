@@ -31,7 +31,6 @@ shinyServer(function(input, output, session) {
             vals$data <- "user"
             print("Using user data")
         }
-        ## TODO Switch off input$use_mov if no data supplied.
         if (!is.null(input$ali) && input$use_ali)
             dat$ali <- input$ali$datapath
         else {
@@ -51,14 +50,18 @@ shinyServer(function(input, output, session) {
             updateCheckboxInput(session, "use_mov", value=FALSE)
         }
         a2bcovid(pat_file = dat$pat, mov_file = dat$mov,
-                 ward_file = dat$ward, ali_file = dat$ali)
+                 ward_file = dat$ward, ali_file = dat$ali,
+                 seq_noise = input$seq_noise, evo_rate = input$evo_rate,
+                 max_n = input$max_n, min_qual = input$min_qual)
     })
 
     get_exampleres <- reactive({
         a2bcovid(pat_file = exampledat$pat,
                  mov_file = if (input$use_mov) exampledat$mov else "",
                  ward_file = if (input$use_ward) exampledat$ward else  "",
-                 ali_file = if (input$use_ali) exampledat$ali else "")
+                 ali_file = if (input$use_ali) exampledat$ali else "",
+                 seq_noise = input$seq_noise, evo_rate = input$evo_rate,
+                 max_n = input$max_n, min_qual = input$min_qual)
     })
 
     get_res <- reactive({
@@ -72,7 +75,9 @@ shinyServer(function(input, output, session) {
     })
 
     output$rasterPlot <- renderPlot({
-        plot_a2bcovid(get_res(), cluster=input$cluster, hi_from="from_hcw", hi_to="to_hcw", continuous=input$continuous)
+        plot_a2bcovid(get_res(), cluster=input$cluster,
+                      hi_from="from_hcw", hi_to="to_hcw",
+                      continuous=(input$colour_scale=="continuous"))
     })
 
     output$patInput <- renderUI({
@@ -122,6 +127,12 @@ shinyServer(function(input, output, session) {
     })
     output$mov_data_table <- renderTable({
         read.csv(exampledat$mov, check.names = FALSE)[1:2,]
+    })
+
+    observe({
+        input$reset_pars
+        for (i in c("seq_noise","evo_rate","max_n","min_qual"))
+            updateNumericInput(session, i, value=defaultpars[[i]])
     })
 })
 
