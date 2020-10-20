@@ -37,3 +37,4 @@ void FindOrdering (const vector< vector<ijlike> >& like_trans, vector<int>& orde
 void FindLikelihoodCategories(const vector< vector<ijlike> >& like_trans, vector< vector<int> >& categories);
 void FindCategoryDistances(const vector< vector<int> >& categories, vector< vector<int> >& dists);
 void FindSubsets (const vector< vector<int> >& dists, vector< vector<int> >& subsets);
+void ExtraSeq(vector<string>& seqs);
