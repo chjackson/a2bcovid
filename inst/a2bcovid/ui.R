@@ -34,7 +34,7 @@ shinyUI(fluidPage(
                              p('The graph indicates the likelihood that infection was transmitted between each pair of individuals'),
                              textOutput('whichdata'),
                              plotOutput(outputId = "rasterPlot"),
-                             checkboxInput("cluster",label="Cluster",value=TRUE),
+                             checkboxInput("cluster",label="Arrange individuals by inferred clusters of infections",value=TRUE),
                              radioButtons("colour_scale", label="Colour the plot by:",
                                           c("Discrete significance ranges" = "discrete",
                                             "Continuous significance level" = "continuous"),

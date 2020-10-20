@@ -266,15 +266,10 @@ a2bcovid <- function(
   res$ordered_j <- res$ordered_j + 1
   res$likelihood[res$likelihood==-1e+10] <- -Inf
   thresh <- if (ali_file=="") thresholds_noseq else thresholds_seq
-  res$p <- approx(x = thresh$lik, y = thresh$p, xout=res$likelihood, yleft=1, yright=0)$y
-  cons_p <- cut(res$p, breaks=c(0, 0.95, 0.99, 1), include.lowest=TRUE,
-                    labels = c("Consistent","Borderline","Unlikely"),
-                    ordered_result=TRUE)
+  suppressWarnings(res$p <- approx(x = thresh$lik, y = thresh$p, xout=res$likelihood, yleft=1, yright=0)$y)
   res$p <- 1 - res$p
   res$consistency <- ordered(res$consistency,
                              levels=c("Unlikely","Borderline","Consistent"))
-  if (!all(cons_p==res$consistency))
-    warning("Consistency classification does not match, file a bug report with the maintainer")
   res
 }
 
@@ -333,8 +328,6 @@ plot_a2bcovid <- function(x, cluster = TRUE,
                           palette=NULL,
                           continuous=FALSE,
                           direction = 1){
-  if (is.null(hi_lab))
-    hi_lab <- sprintf("Healthcare workers labelled in %s",hi_col)
   midp <- pnorm((qnorm(0.05) + qnorm(0.01))/2)
   if (continuous) {
     scale_chosen <- scale_fill_gradientn(
@@ -364,18 +357,21 @@ plot_a2bcovid <- function(x, cluster = TRUE,
     x$to <- factor(x$to, levels = levels(x$to)[x$ordered_j[!duplicated(x$to)]])
   }
 
-  if (!missing(hi_from)) {
+  xhi_from <- xhi_to <- NULL
+  if (!is.null(hi_from)) {
     if (!(hi_from %in% names(x))) stop(sprintf("`%s` not found in `x`", hi_from))
     x_from <- x[!duplicated(x$from),]
     xhi_from <- x_from[match(levels(factor(x$from)), x_from$from), hi_from]
     x_cols <- ifelse(xhi_from, hi_col, "black")
   } else x_cols <- "black"
-  if (!missing(hi_to)) {
+  if (!is.null(hi_to)) {
     if (!(hi_to %in% names(x))) stop(sprintf("`%s` not found in `x`", hi_from))
     x_to <- x[!duplicated(x$to),]
     xhi_to <- x_to[match(levels(factor(x$to)), x_to$to), hi_to]
     y_cols <- ifelse(xhi_to, hi_col, "black")
   } else y_cols <- "black"
+  if (is.null(hi_lab) & ((length(xhi_from)>0)||(length(xhi_to)>0)))
+    hi_lab <- sprintf("Healthcare workers labelled in %s",hi_col)
 
   fill_var <- if (continuous) "p" else "consistency"
   ggplot(x, aes_string(y="from", x="to")) +

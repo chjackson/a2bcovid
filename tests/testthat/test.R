@@ -16,12 +16,15 @@ expect_error(
                   ali_file = ali_file, ward_file = "wibble"),
   "`wibble` not found")
 
+res <- a2bcovid(pat_file = pat_file)
+
 res <- a2bcovid(pat_file = pat_file,
                 ali_file = ali_file, ward_file = ward_file)
 
 res <- a2bcovid(pat_file = pat_file, mov_file = mov_file,
                 ali_file = ali_file, ward_file = ward_file)
 plot_a2bcovid(res, hi_from="from_hcw", hi_to="to_hcw")
+plot_a2bcovid(res)
 
 ## todo get seq or not
 res$x

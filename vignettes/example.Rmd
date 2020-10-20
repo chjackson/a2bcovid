@@ -103,6 +103,27 @@ Note that in the current version of `a2bcovid`, two different data formats are u
 
 
 
+### Additional plotting options 
+
+By default, the individuals in the plot are sorted in a way that highlights potential clusters of infections.  To sort them in the order that they were provided in the original data, specify `cluster=FALSE`. 
+
+```{r}
+plot_a2bcovid(a, cluster=FALSE)
+```
+
+By default the colours in the plot indicate _ranges_ of significance levels for a test of the hypothesis that transmission occurred between a pair of individuals.  Three ranges are shown, corresponding to different ranges of the test p-value: 
+
+* (p > 0.05) Data "Consistent" with transmission
+* (0.01 < p < 0.05) Data of "Borderline" significance
+* (p < 0.01) Data "Unlikely" to have arisen from a transmission event
+
+A smoother plot can be obtained by specifying `continuous=TRUE`.  Here the colours vary smoothly with the p-value.
+
+```{r}
+plot_a2bcovid(a, continuous=TRUE)
+```
+
+
 <script>
   var d = document.document.getElementsByTagName("img");
   d.className += " img-responsive";
