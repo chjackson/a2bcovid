@@ -5,9 +5,10 @@ txtfiles_accepted <-   c('text/csv', 'text/comma-separated-values', 'text/tab-se
 
 exampledat <- list(
     pat = system.file("extdata", "Example_genetic_temporal_data.csv", package="a2bcovid"),
-    mov = system.file("extdata", "Example_movement_file.csv", package="a2bcovid"),
+    hcwloc = system.file("extdata", "Example_hcw_loc_file.csv", package="a2bcovid"),
     ali = system.file("extdata", "Example_sequences.fa", package="a2bcovid"),
-    ward = system.file("extdata", "Example_ward_file.csv", package="a2bcovid")
+    patloc = system.file("extdata", "Example_pat_loc_file.csv", package="a2bcovid"),
+    patloclong = system.file("extdata", "Example_pat_loc_file_long.csv", package="a2bcovid")
 )
 
 vals <- reactiveValues(data = "default")
@@ -37,28 +38,28 @@ shinyServer(function(input, output, session) {
             dat$ali <- ""
             updateCheckboxInput(session, "use_ali", value=FALSE)
         }
-        if (!is.null(input$ward) && input$use_ward)
-            dat$ward <- input$ward$datapath
+        if (!is.null(input$patloc) && input$use_patloc)
+            dat$patloc <- input$patloc$datapath
         else {
-            updateCheckboxInput(session, "use_ward", value=FALSE)
-            dat$ward <- ""
+            updateCheckboxInput(session, "use_patloc", value=FALSE)
+            dat$patloc <- ""
         }
-        if (!is.null(input$mov) && input$use_mov)
-            dat$mov <- input$mov$datapath
+        if (!is.null(input$hcwloc) && input$use_hcwloc)
+            dat$hcwloc <- input$hcwloc$datapath
         else {
-            dat$mov <- ""
-            updateCheckboxInput(session, "use_mov", value=FALSE)
+            dat$hcwloc <- ""
+            updateCheckboxInput(session, "use_hcwloc", value=FALSE)
         }
-        a2bcovid(pat_file = dat$pat, mov_file = dat$mov,
-                 ward_file = dat$ward, ali_file = dat$ali,
+        a2bcovid(pat_file = dat$pat, hcw_loc_file = dat$hcwloc,
+                 pat_loc_file = dat$patloc, ali_file = dat$ali,
                  seq_noise = input$seq_noise, evo_rate = input$evo_rate,
                  max_n = input$max_n, min_qual = input$min_qual)
     })
 
     get_exampleres <- reactive({
         a2bcovid(pat_file = exampledat$pat,
-                 mov_file = if (input$use_mov) exampledat$mov else "",
-                 ward_file = if (input$use_ward) exampledat$ward else  "",
+                 hcw_loc_file = if (input$use_hcwloc) exampledat$hcwloc else "",
+                 pat_loc_file = if (input$use_patloc) exampledat$patloc else  "",
                  ali_file = if (input$use_ali) exampledat$ali else "",
                  seq_noise = input$seq_noise, evo_rate = input$evo_rate,
                  max_n = input$max_n, min_qual = input$min_qual)
@@ -92,15 +93,15 @@ shinyServer(function(input, output, session) {
                   'Genome sequence file (FASTA)',
                   accept = ".fa")
     })
-    output$wardInput <- renderUI({
+    output$patLocInput <- renderUI({
         input$reset
-        fileInput('ward',
+        fileInput('patloc',
                   'Patient location data (CSV)',
                   accept = txtfiles_accepted)
     })
-    output$movInput <- renderUI({
+    output$hcwLocInput <- renderUI({
         input$reset
-        fileInput('mov',
+        fileInput('hcwloc',
                   'Staff location data (CSV)',
                   accept = txtfiles_accepted)
     })
@@ -108,12 +109,12 @@ shinyServer(function(input, output, session) {
     output$whichdata <- renderText({
         patf <-  "Patient"
         alif <-  if (input$use_ali) " | Sequence" else ""
-        wardf <-  if (input$use_ward) " | Patient location" else ""
-        movf <-  if (input$use_mov) " | Staff location" else ""
+        patlocf <-  if (input$use_patloc) " | Patient location" else ""
+        hcwlocf <-  if (input$use_hcwloc) " | Staff location" else ""
         if (vals$data=="default") {
-            outstr <- sprintf("Using built-in example data:\n%s%s%s%s", patf, alif, wardf, movf)
+            outstr <- sprintf("Using built-in example data:\n%s%s%s%s", patf, alif, patlocf, hcwlocf)
         } else if (vals$data == "user"){
-            outstr <- sprintf("Using user data:\n%s%s%s%s", patf, alif, wardf, movf)
+            outstr <- sprintf("Using user data:\n%s%s%s%s", patf, alif, patlocf, hcwlocf)
         }
         else outstr <- "ERROR 1"
         outstr
@@ -122,11 +123,14 @@ shinyServer(function(input, output, session) {
     output$pat_data_table <- renderTable({
         read.csv(exampledat$pat)[1:2,]
     })
-    output$ward_data_table <- renderTable({
-        read.csv(exampledat$ward)[1:2,]
+    output$patloc_data_table <- renderTable({
+        read.csv(exampledat$patloc)[1:2,]
     })
-    output$mov_data_table <- renderTable({
-        read.csv(exampledat$mov, check.names = FALSE)[1:2,]
+    output$patloclong_data_table <- renderTable({
+        read.csv(exampledat$patloclong)[1:2,]
+    })
+    output$hcwloc_data_table <- renderTable({
+        read.csv(exampledat$hcwloc, check.names = FALSE)[1:2,]
     })
 
     observe({

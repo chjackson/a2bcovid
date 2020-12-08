@@ -1,28 +1,25 @@
 
 pat_file <- system.file("extdata", "Example_genetic_temporal_data.csv", package="a2bcovid")
-mov_file <- system.file("extdata", "Example_movement_file.csv", package="a2bcovid")
+hcw_loc_file <- system.file("extdata", "Example_movement_file.csv", package="a2bcovid")
 ali_file <- system.file("extdata", "Example_sequences.fa", package="a2bcovid")
-ward_file <- system.file("extdata", "Example_ward_file.csv", package="a2bcovid")
+pat_loc_file <- system.file("extdata", "Example_pat_loc_file.csv", package="a2bcovid")
 
 pat_file
 
 library(testthat)
-expect_error(
-res <- a2bcovid(pat_file = pat_file, mov_file = mov_file,
-             ali_file = ali_file),   "\"ward_file\" is missing")
 
 expect_error(
-  res <- a2bcovid(pat_file = pat_file, mov_file = mov_file,
-                  ali_file = ali_file, ward_file = "wibble"),
+  res <- a2bcovid(pat_file = pat_file, hcw_loc_file = hcw_loc_file,
+                  ali_file = ali_file, pat_loc_file = "wibble"),
   "`wibble` not found")
 
 res <- a2bcovid(pat_file = pat_file)
 
 res <- a2bcovid(pat_file = pat_file,
-                ali_file = ali_file, ward_file = ward_file)
+                ali_file = ali_file, pat_loc_file = pat_loc_file)
 
-res <- a2bcovid(pat_file = pat_file, mov_file = mov_file,
-                ali_file = ali_file, ward_file = ward_file)
+res <- a2bcovid(pat_file = pat_file, hcw_loc_file = hcw_loc_file,
+                ali_file = ali_file, pat_loc_file = pat_loc_file)
 plot_a2bcovid(res, hi_from="from_hcw", hi_to="to_hcw")
 plot_a2bcovid(res)
 
@@ -56,3 +53,46 @@ if (0){
   a2bcovid_app()
 
 }
+
+
+# Different file formats
+
+newdata_file <- "../CUH_new_patient_movement_format_edit.csv"
+odfile <- newdata_to_olddata(newdata_file)
+read.csv(odfile)
+
+pat_file <- system.file("extdata", "Example_genetic_temporal_data.csv", package="a2bcovid")
+hcw_loc_file <- system.file("extdata", "Example_movement_file.csv", package="a2bcovid")
+ali_file <- system.file("extdata", "Example_sequences.fa", package="a2bcovid")
+res <- a2bcovid(pat_file = pat_file, hcw_loc_file = hcw_loc_file,
+                ali_file = ali_file, pat_loc_file = odfile)
+
+# patients in odfile are different from patients in other files.
+# Doesn't complain when different people put in different files.
+
+# TODO
+
+# Rename those daft named arguments already:
+# edit a2bcovid to allow pat_loc_format = "wide" or "long"
+# write wide_to_long, allowing test with same patients in each file
+# account for renaming in shiny
+# DONE
+
+wide_file <- system.file("extdata", "Example_pat_loc_file.csv", package="a2bcovid")
+long_file <- wide_to_long(wide_file)
+res1 <- a2bcovid(pat_file = pat_file, hcw_loc_file = hcw_loc_file,
+                 ali_file = ali_file, pat_loc_file = long_file)
+res2 <- a2bcovid(pat_file = pat_file, hcw_loc_file = hcw_loc_file,
+                 ali_file = ali_file, pat_loc_file = wide_file)
+expect_equal(res1, res2)
+
+long_file <- system.file("extdata", "Example_pat_loc_file_long.csv", package="a2bcovid")
+res3 <- a2bcovid(pat_file = pat_file, hcw_loc_file = hcw_loc_file,
+                 ali_file = ali_file, pat_loc_file = long_file)
+expect_equal(res1, res3)
+
+
+# documentation in example analysis,
+# documentation in shiny tab
+
+# test shiny

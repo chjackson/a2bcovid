@@ -52,7 +52,7 @@
 ##'
 ##'
 ##'
-##' @param mov_file  A character string with the path to a file of data
+##' @param hcw_loc_file  A character string with the path to a file of data
 ##'   describing when specific health care workers were on the ward in question.
 ##'   If this argument is omitted or set to an empty string, then this kind of
 ##'   data is not used in the calculation.
@@ -78,20 +78,32 @@
 ##' @param ali_file  A character string with the path to a file in FASTA format
 ##'   containing genome sequences.  This file must contain all required
 ##'   sequences, specified by the sequence ID in the data of \code{pat_file}. If
-##'   this argument is omitted or set to an empty string, then genomic data are
-##'   not used in the calculation.
+##' this argument is omitted or set to an empty string, then genomic data are
+##' not used in the calculation.
 ##'
-##'   An example is given with the installed package.  The path to the example
-##'   file can be shown by the R command \code{system.file("extdata",
-##'   "Example_sequences.fa", package="a2bcovid")}
+##' An example is given with the installed package.  The path to the example
+##' file can be shown by the R command \code{system.file("extdata",
+##' "Example_sequences.fa", package="a2bcovid")}
 ##'
-##' @param ward_file  A character string with the path to a file containing the
-##'   location of patients over time. If this argument is omitted or set to an
-##'   empty string, then this kind of data is not used in the calculation.
+##' @param pat_loc_file  A character string with the path to a file containing
+##'   the location of patients over time. If this argument is omitted or set to
+##'   an empty string, then this kind of data is not used in the calculation.
 ##'
-##'   This should be a comma separated (.csv) file.  The format of the file is
-##'   designed to be compatible with local information on patient movements. The
-##'   first line is a header.  Subsequent lines are in columns as follows:
+##'   This should be a comma separated (.csv) file.  Two alternative formats are
+##'   accepted, "wide" and "long" formats.    These are based on the formats in
+##'   use in the hospital setting where the package was developed.
+##'
+##'   The first line of the file should be a header with variable names.  If
+##'   there is a variable called \code{"start_date"} then the file is assumed to
+##'   be in long format.  Or if there is a variable called \code{"StartDate_0"}
+##'   then the file is assumed to be in wide format.  Otherwise the variable
+##'   names are ignored.   The columns should appear in the specified order.
+##'
+##'   The names don't matter, but the columns should appear in the specified
+##'   order.
+##'
+##'   In wide format, each row represents a different  patient.
+##'   The file should have the following columns:
 ##'
 ##'   1. Individual ID (same as for \code{pat_file}).
 ##'
@@ -106,11 +118,32 @@
 ##'   e.g. WARD_01. ii)  The start date of the individual being in that
 ##'   location. iii) The end date of the individual being in that location.  In
 ##'   practice only the first column, and columns from 5 onwards are used.
+
+##'   An example is given with the installed package.  The path to the example
+##'   file can be shown by the R command \code{system.file("extdata",
+##'   "Example_pat_loc_file_wide.csv", package="a2bcovid")}
+##'
+##'
+##'   In long format, each row represents a single
+##'   stay on a specific ward for a specific patient.  The file should have the
+##'   following columns:
+##'
+##'   1. Individual ID
+##'
+##'   2. Cluster ID, typically the name of the ward
+##'
+##'   3. Start date/time for the ward stay, in d/m/Y format (optionally in d/m/Y
+##'   H:M format, but the time is currently ignored)
+##'
+##'   4. Name of the ward the patient went to next (or "Discharge") if they were
+##'   discharged
+##'
+##'   5. End date/time for the ward stay, in d/m/Y format (optionally in d/m/Y
+##'   H:M format, but the time is currently ignored).
 ##'
 ##'   An example is given with the installed package.  The path to the example
 ##'   file can be shown by the R command \code{system.file("extdata",
-##'   "Example_ward_file.csv", package="a2bcovid")}
-##'
+##'   "Example_pat_loc_file_wide.csv", package="a2bcovid")}
 ##'
 ##' @param evo_rate Rate of evolution of the virus, specified in nucleotide
 ##'   substitutions per locus per year.
@@ -206,12 +239,12 @@
 ##'
 ##' ## Example data supplied with the package
 ##' pat_file <- system.file("extdata", "Example_genetic_temporal_data.csv", package="a2bcovid")
-##' mov_file <- system.file("extdata", "Example_movement_file.csv", package="a2bcovid")
+##' hcw_loc_file <- system.file("extdata", "Example_movement_file.csv", package="a2bcovid")
 ##' ali_file <- system.file("extdata", "Example_sequences.fa", package="a2bcovid")
-##' ward_file <- system.file("extdata", "Example_ward_file.csv", package="a2bcovid")
+##' pat_loc_file <- system.file("extdata", "Example_pat_loc_file.csv", package="a2bcovid")
 ##'
-##' res <- a2bcovid(pat_file = pat_file, mov_file = mov_file, ali_file = ali_file,
-##'                 ward_file = ward_file)
+##' res <- a2bcovid(pat_file = pat_file, hcw_loc_file = hcw_loc_file, ali_file = ali_file,
+##'                 pat_loc_file = pat_loc_file)
 ##' plot_a2bcovid(res, hi_from="from_hcw", hi_to="to_hcw")
 ##'
 ##' @seealso \code{\link{plot_a2bcovid}}
@@ -219,40 +252,47 @@
 ##' @importFrom Rcpp evalCpp
 ##' @importFrom shiny runApp
 ##' @importFrom rstudioapi viewer
-##' @importFrom utils read.csv
+##' @importFrom utils read.csv write.csv
 ##' @importFrom stats approx pnorm qnorm
+##' @importFrom magrittr %>%
 ##' @useDynLib a2bcovid, .registration = TRUE
 ##'
 ##' @export
 a2bcovid <- function(
   pat_file,
-  mov_file = "",
+  hcw_loc_file = "",
   ali_file = "",
-  ward_file = "",
-                  pa=97.18750, pb=0.268908, po=25.625,
-                  smu=1.434065, ssigma=0.6612,
-                  ucta=2.5932152095707406, uctb=3.7760060663975437, ucto=3.112080041460921,
-                  uct_mean=6.67992,
-                  evo_rate  = 0.0008,
-                  seq_noise = 0.772469,
-                  threshold=0, threshold_ns=0,
-                  max_n = 10,
-                  min_qual = 0.8,
-                  calc_thresholds=FALSE,
-                  diagnostic =FALSE,
-                  hcw_default = 0.5714286,
-                  pat_default = 1
+  pat_loc_file = "",
+  pa=97.18750, pb=0.268908, po=25.625,
+  smu=1.434065, ssigma=0.6612,
+  ucta=2.5932152095707406, uctb=3.7760060663975437, ucto=3.112080041460921,
+  uct_mean=6.67992,
+  evo_rate  = 0.0008,
+  seq_noise = 0.772469,
+  threshold=0, threshold_ns=0,
+  max_n = 10,
+  min_qual = 0.8,
+  calc_thresholds=FALSE,
+  diagnostic =FALSE,
+  hcw_default = 0.5714286,
+  pat_default = 1
 )
 {
   check_file(ali_file)
   check_file(pat_file)
-  check_file(mov_file)
-  check_file(ward_file)
+  check_file(hcw_loc_file)
+  if (pat_loc_file != "") {
+    pat_loc_format <- guess_loc_format(pat_loc_file)
+    if (pat_loc_format=="long")
+      pat_loc_file <- long_to_wide(pat_loc_file)
+  }
+  check_file(pat_loc_file)
   params <- list(pa=pa, pb=pb, po=po, smu=smu, ssigma=ssigma,
                  ucta=ucta, uctb=uctb, ucto=ucto, uct_mean=uct_mean,
                  rate=evo_rate, seq_noise=seq_noise,
                  threshold=threshold, threshold_ns=threshold_ns,  max_n=max_n, min_qual=min_qual,
-                 ali_file=ali_file, pat_file=pat_file,  mov_file=mov_file, ward_file=ward_file,
+                 ali_file=ali_file, pat_file=pat_file,
+                 mov_file=hcw_loc_file, ward_file=pat_loc_file,
                  calc_thresholds=calc_thresholds,
                  diagnostic=diagnostic,
 				 hcw_location_default=hcw_default,
@@ -271,6 +311,14 @@ a2bcovid <- function(
   res$consistency <- ordered(res$consistency,
                              levels=c("Unlikely","Borderline","Consistent"))
   res
+}
+
+
+guess_loc_format <- function(filename){
+  dat <- read.csv(filename)
+  if ("start_date" %in% names(dat)) return("long")
+  else if ("StartDate_0" %in% names(dat)) return("wide")
+  else stop("Could not determine patient location file format. No column named either `start_date` or `StartDate_0`")
 }
 
 check_file <- function(filename){

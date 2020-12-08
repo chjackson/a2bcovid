@@ -26,7 +26,9 @@ It is available as both an R package and a web app.
  
 An `a2bcovid` analysis using the R package is shown here for a simple example.
 
-The data files for this example are provided with the installed package, and can be read into R as follows.  For the CSV files, the first couple of rows are shown here, to illustrate the format required.  Full details of the format are specified in the R help page `help(a2bcovid)`
+The data files for this example are provided with the installed package, and can be read into R as follows.  For the CSV files, the first couple of rows are shown here, to illustrate the format required.  Full details of the format are specified in the R help page `help(a2bcovid)`.
+
+The file names, e.g. `pat_file`, below, should be specified as full path names.  If the file is in your current working directory (for example `myfile.csv`) you can construct this path with code such as `file.path(getwd(),"myfile.csv")`. 
 
 ### Times of symptom onset 
 ```{r}
@@ -35,22 +37,33 @@ head(read.csv(pat_file),2)
 ```
 
 ### Genome sequence data
-The example sequences file has been constructed so that all of the variants in the sequence appear in the first 10 positions in the genome.  Looking at it with an alignment viewer will give a simple idea of how the sequences relate to one another.    [ TODO can we show this in R?  No need unless it would help understand the example ]  
+The example sequences file has been constructed so that all of the variants in the sequence appear in the first 10 positions in the genome.  Looking at it with an alignment viewer will give a simple idea of how the sequences relate to one another. 
 
 ```{r}
 ali_file <- system.file("extdata", "Example_sequences.fa", package="a2bcovid")
 ```
 
 ### Patient location data
+
+Two alternative formats are accepted for the patient location data file, as illustrated here.  The format can be automatically detected: if a variable called "start_date" is supplied then long format is assumed, or if there is a variable called "StartDate_0", then wide format is assumed.  
+
+**Wide format: one row per patient**
 ```{r}
-ward_file <- system.file("extdata", "Example_ward_file.csv", package="a2bcovid")
-head(read.csv(ward_file),2)
+pat_loc_file <- system.file("extdata", "Example_pat_loc_file.csv", package="a2bcovid")
+head(read.csv(pat_loc_file),2)
 ```
+
+**Long format: one row per ward stay**
+```{r}
+pat_loc_file_long <- system.file("extdata", "Example_pat_loc_file_long.csv", package="a2bcovid")
+head(read.csv(pat_loc_file_long),2)
+```
+
 
 ### Staff location data
 ```{r}
-mov_file <- system.file("extdata", "Example_movement_file.csv", package="a2bcovid")
-head(read.csv(mov_file),2)
+hcw_loc_file <- system.file("extdata", "Example_hcw_loc_file.csv", package="a2bcovid")
+head(read.csv(hcw_loc_file),2)
 ```
 
 
@@ -80,7 +93,7 @@ With the addition of sequence information, individuals 1009 and 1010 appear more
 Suppose that individuals 1004 to 1006 are healthcare workers, and the remaining individuals are patients in the ward.   Suppose we have location data for all patients, but not the healthcare workers.
 
 ```{r}
-a <- a2bcovid(pat_file = pat_file, ali_file = ali_file, ward_file = ward_file)
+a <- a2bcovid(pat_file = pat_file, ali_file = ali_file, pat_loc_file = pat_loc_file)
 plot_a2bcovid(a)
 ```
 
@@ -91,7 +104,7 @@ The links from 1001 and 1002 to 1009 and 1010 are now gone, with these last two 
 Finally, we add in location data for the healthcare workers, individuals 1004 to 1006.  
 
 ```{r}
-a <- a2bcovid(pat_file = pat_file, ali_file = ali_file, ward_file = ward_file, mov_file = mov_file)
+a <- a2bcovid(pat_file = pat_file, ali_file = ali_file, pat_loc_file = pat_loc_file, hcw_loc_file = hcw_loc_file)
 plot_a2bcovid(a)
 ```
 
@@ -99,7 +112,7 @@ More resolution is now seen around these individuals, with for example 1006 not 
 
 
 
-Note that in the current version of `a2bcovid`, two different data formats are used for location of patients and location of healthcare workers.   However this is not necessary for the calculation.   This is just a legacy of the original setting where the package was used.   In a future version the data format might be standardised. 
+Note that in the current version of `a2bcovid`, two different files and formats are used for location of patients and location of healthcare workers.   However this is not necessary for the calculation.   This is just a legacy of the original setting where the package was used.   In a future version, the data format might be standardised. 
 
 
 
