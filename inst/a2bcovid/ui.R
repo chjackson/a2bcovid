@@ -81,7 +81,7 @@ shinyUI(fluidPage(
                            h4("Patient location data"),
                            p("This can be in \"wide\" format or \"long\"  format."),
                            p("If one of the variables is named \"StartDate_0\" it is assumed to be in wide format. If one of the variables is named \"start_date\" it is assumed to be in long format."),
-                           p(HTML("<b>Wide format:</b>"), "A .csv file with columns in this order."),
+                           p(HTML("<b>Wide format:</b>"), "A .csv file with columns in this order, and one row per patient."),
                            tags$ol(tags$li("Individual ID (matching those in symptom onset file)"),
                                    tags$li("Ward ID"),
                                    tags$li("Infection type. This must have one of two values:",
