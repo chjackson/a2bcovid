@@ -57,6 +57,7 @@ DataFrame mainC(List params) {
   vector<string> removed;
   if (p.ali_file.compare("")!=0) {
     ReadFastaAli(p,names,seqs); //Read in large file containing genome sequences
+	  CheckBaseCase(seqs);
     //Correct names >
     CorrectNames(names);  //Convert the names from the fasta file into the format used for input
     //Add sequence data to records

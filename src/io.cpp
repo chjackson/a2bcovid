@@ -1,7 +1,7 @@
 #include "basicmodel.h"
 #include "likelihoods.h"
 #include "io.h"
-
+#include <string>
 #include "Rcpp.h"
 
 void GetOptions (run_params& p, int argc, const char **argv) {
@@ -482,6 +482,25 @@ void ReadFastaAli (run_params p, vector<string>& names, vector<string>& seqs) {
 	}
 	if (seq.size()>0) {
 		seqs.push_back(seq);
+	}
+}
+
+void CheckBaseCase (vector<string>& seqs) {
+	for (int i=0;i<seqs.size();i++) {
+		for (int j=0;j<seqs[i].size();j++) {
+			if (seqs[i].compare(j,1,"a")==0) {
+				seqs[i][j]='A';
+			}
+			if (seqs[i].compare(j,1,"c")==0) {
+				seqs[i][j]='C';
+			}
+			if (seqs[i].compare(j,1,"g")==0) {
+				seqs[i][j]='G';
+			}
+			if (seqs[i].compare(j,1,"t")==0) {
+				seqs[i][j]='T';
+			}
+		}
 	}
 }
 

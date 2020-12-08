@@ -19,6 +19,7 @@ void MakeDMY (const int j, const vector<string>& subs, char delim, vector<int>& 
 
 int DatetoDay (const vector<int>& dmy);
 void ReadFastaAli (run_params p, vector<string>& names, vector<string>& seqs);
+void CheckBaseCase (vector<string>& seqs);
 void ReadSymptomData (vector<pat>& pdat);
 void ReadSeqTimes(vector<pat>& pdat);
 void ReadLocationData (vector<pat>& pdat);
