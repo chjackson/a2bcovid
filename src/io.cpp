@@ -347,7 +347,33 @@ void MakeDMY (const int j, const vector<string>& subs, char delim, vector<int>& 
 	while (sss.good()) {
 		string sr;
 		getline(sss,sr,delim);
-		dmy.push_back(atoi(sr.c_str()));
+		vector<string> months;
+		months.push_back("Jan");
+		months.push_back("Feb");
+		months.push_back("Mar");
+		months.push_back("Apr");
+		months.push_back("May");
+		months.push_back("Jun");
+		months.push_back("Jul");
+		months.push_back("Aug");
+		months.push_back("Sep");
+		months.push_back("Oct");
+		months.push_back("Nov");
+		months.push_back("Dec");
+		int found=0;
+		int add=-1;
+		for (int i=0;i<months.size();i++) {
+			if (sr.compare(months[i])==0) {
+				add=i;
+				found=1;
+				break;
+			}
+		}
+		if (found==1) {
+			dmy.push_back(add);
+		} else {
+			dmy.push_back(atoi(sr.c_str()));
+		}
 	}
 }
 
@@ -357,35 +383,14 @@ int DatetoDay (const vector<int>& dmy) {
 	int day=dmy[0];
 	int lp=1;
 	//Year calculation
-	if (dmy[2]>2020) {
-		day=day+366;
+	int diff=dmy[2]-20;
+	day=day+(diff*365);
+	if (diff>0) {
+		int leap=diff/4;
+		day=day+leap+1;
+	}
+	if (diff%4!=3) {
 		lp=0;
-	}
-	if (dmy[2]>2021) {
-		day=day+365;
-		lp=0;
-	}
-	if (dmy[2]>2022) {
-		day=day+365;
-		lp=0;
-	}
-	if (dmy[2]>2023) {
-		day=day+365;
-	}
-	if (dmy[2]>2024) {
-		day=day+366;
-		lp=0;
-	}
-	if (dmy[2]>2025) {
-		day=day+365;
-		lp=0;
-	}
-	if (dmy[2]>2026) {
-		day=day+365;
-		lp=0;
-	}
-	if (dmy[2]>2027) {
-		day=day+365;
 	}
 	//Month calculation
 	if (dmy[1]>1) {
