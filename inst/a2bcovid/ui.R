@@ -74,7 +74,7 @@ shinyUI(fluidPage(
                            p("For example:"),
                            uiOutput('pat_data_table'),
 
-                           h4("Genome sequence file"),
+                           h4("Genome sequence alignment file"),
                            p("A FASTA format file containing all required sequences,
                                identified by the sequence ID in the symptom onset data file."),
 

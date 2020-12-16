@@ -70,14 +70,6 @@ res <- a2bcovid(pat_file = pat_file, hcw_loc_file = hcw_loc_file,
 # patients in odfile are different from patients in other files.
 # Doesn't complain when different people put in different files.
 
-# TODO
-
-# Rename those daft named arguments already:
-# edit a2bcovid to allow pat_loc_format = "wide" or "long"
-# write wide_to_long, allowing test with same patients in each file
-# account for renaming in shiny
-# DONE
-
 wide_file <- system.file("extdata", "Example_pat_loc_file.csv", package="a2bcovid")
 long_file <- wide_to_long(wide_file)
 res1 <- a2bcovid(pat_file = pat_file, hcw_loc_file = hcw_loc_file,
@@ -90,9 +82,3 @@ long_file <- system.file("extdata", "Example_pat_loc_file_long.csv", package="a2
 res3 <- a2bcovid(pat_file = pat_file, hcw_loc_file = hcw_loc_file,
                  ali_file = ali_file, pat_loc_file = long_file)
 expect_equal(res1, res3)
-
-
-# documentation in example analysis,
-# documentation in shiny tab
-
-# test shiny

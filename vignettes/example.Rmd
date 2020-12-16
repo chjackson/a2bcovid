@@ -36,7 +36,7 @@ pat_file <- system.file("extdata", "Example_genetic_temporal_data.csv", package=
 head(read.csv(pat_file),2)
 ```
 
-### Genome sequence data
+### Genome sequence alignment data
 The example sequences file has been constructed so that all of the variants in the sequence appear in the first 10 positions in the genome.  Looking at it with an alignment viewer will give a simple idea of how the sequences relate to one another. 
 
 ```{r}

@@ -98,7 +98,7 @@ a2bcovid(
   "Example_movement_file.csv", package="a2bcovid")}}
 
 \item{ali_file}{A character string with the path to a file in FASTA format
-  containing genome sequences.  This file must contain all required
+  containing genome sequence alignments.  This file must contain all required
   sequences, specified by the sequence ID in the data of \code{pat_file}. If
 this argument is omitted or set to an empty string, then genomic data are
 not used in the calculation.

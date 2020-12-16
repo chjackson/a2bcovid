@@ -76,7 +76,7 @@
 ##'   "Example_movement_file.csv", package="a2bcovid")}
 ##'
 ##' @param ali_file  A character string with the path to a file in FASTA format
-##'   containing genome sequences.  This file must contain all required
+##'   containing genome sequence alignments.  This file must contain all required
 ##'   sequences, specified by the sequence ID in the data of \code{pat_file}. If
 ##' this argument is omitted or set to an empty string, then genomic data are
 ##' not used in the calculation.
@@ -278,15 +278,15 @@ a2bcovid <- function(
   pat_default = 1
 )
 {
-  check_file(ali_file)
-  check_file(pat_file)
-  check_file(hcw_loc_file)
+  ali_file <- check_file(ali_file)
+  pat_file <- check_file(pat_file)
+  hcw_loc_file <- check_file(hcw_loc_file)
+  pat_loc_file <- check_file(pat_loc_file)
   if (pat_loc_file != "") {
     pat_loc_format <- guess_loc_format(pat_loc_file)
     if (pat_loc_format=="long")
       pat_loc_file <- long_to_wide(pat_loc_file)
   }
-  check_file(pat_loc_file)
   params <- list(pa=pa, pb=pb, po=po, smu=smu, ssigma=ssigma,
                  ucta=ucta, uctb=uctb, ucto=ucto, uct_mean=uct_mean,
                  rate=evo_rate, seq_noise=seq_noise,
@@ -321,10 +321,15 @@ guess_loc_format <- function(filename){
   else stop("Could not determine patient location file format. No column named either `start_date` or `StartDate_0`")
 }
 
+## Check for file existence
+
 check_file <- function(filename){
-  if (!(filename==""))
+  if (!(filename=="")){
     if (!file.exists(filename))
       stop(sprintf("File `%s` not found", filename))
+    filename <-  normalizePath(filename)
+  }
+  filename
 }
 
 
