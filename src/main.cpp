@@ -80,7 +80,7 @@ DataFrame mainC(List params) {
   //Code to read in location data
   int pd=0;
   if (p.ward_file.compare("")!=0) {
-	  ReadWardMovFromCSV(p,pdat);
+	  ReadWardMovFromCSVTemp(p,pdat);
 	  pd=1;
   }
   if (p.mov_file.compare("")!=0) {

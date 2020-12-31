@@ -11,6 +11,7 @@ void ReadPatFromCSV(run_params p, vector<pat>& pdata);
 void ReadPatFromCSVNoSeq(run_params p, vector<pat>& pdata);
 void ReadHCWMovFromCSV(run_params p, vector<pat>& pdata);
 void ReadWardMovFromCSV(run_params p, vector<pat>& pdata);
+void ReadWardMovFromCSVTemp(run_params p, vector<pat>& pdata);
 void EditHCWMovData (vector<pat>& pdat);
 
 void RemovePunc(string& str);

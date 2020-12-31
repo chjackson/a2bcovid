@@ -318,6 +318,73 @@ void ReadWardMovFromCSV(run_params p, vector<pat>& pdata) {
 	}
 }
 
+void ReadWardMovFromCSVTemp(run_params p, vector<pat>& pdata) {
+	ifstream csv_file;
+	csv_file.open(p.ward_file.c_str());
+	string str;
+	vector<int> dates;
+	getline(csv_file,str);
+	for (int i=0;i<100000;i++) {
+		if (!(csv_file >> str)) break;
+		if (i>-1) {
+			if (p.diagnostic==1) {
+				cout << "Ward_file string " << str << "\n";
+			}
+			//Edit string to remove "
+			RemovePunc(str);
+			//Split at commas
+			vector<string> subs;
+			SplitCommas(str,subs);
+			//Look for matching patient
+			string pat=subs[0];
+			int index=-1;
+			for (int j=0;j<pdata.size();j++) {
+				if (pdata[j].code==pat) {
+					index=j;
+					//cout << pat << "\n";
+					break;
+				}
+			}
+			if (p.diagnostic==1) {
+				cout << subs.size() << " " << index << "\n";
+			}
+
+			if (index!=-1) {
+				for (int j=1;j<subs.size();j=j+4) {
+					loc l;
+					l.ward=subs[j];
+					if (l.ward.compare("WARD_48")==0) {
+						l.ward="WARD_47";
+					}
+					if (l.ward.compare("WARD_49")==0) {
+						l.ward="WARD_47";
+					}
+					if (l.ward.compare("WARD_50")==0) {
+						l.ward="WARD_47";
+					}
+					if (l.ward.size()>0) {
+						vector<int> dmy;
+						MakeDMY(j+1,subs,p.pat_delim,dmy);
+						int day1=DatetoDay(dmy);
+						dmy.clear();
+						MakeDMY(j+3,subs,p.pat_delim,dmy);
+						int day2=DatetoDay(dmy);
+						if (p.diagnostic==1) {
+							cout << day1 << " " << day2 << "\n";
+						}
+						for (int k=day1;k<=day2;k++) {
+							l.date=k;
+							l.prob=1;
+							pdata[index].locat.push_back(l);
+						}
+					}
+				}
+			}
+		}
+	}
+}
+
+
 void RemovePunc(string& str) {
 	//Edit string to remove "
 	vector<int> rem;
