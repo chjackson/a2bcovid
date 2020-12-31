@@ -79,11 +79,11 @@ DataFrame mainC(List params) {
 
   //Code to read in location data
   int pd=0;
-  if (p.mov_file.compare("")!=0) {
+  if (p.ward_file.compare("")!=0) {
 	  ReadWardMovFromCSV(p,pdat);
 	  pd=1;
   }
-  if (p.ward_file.compare("")!=0) {
+  if (p.mov_file.compare("")!=0) {
 	  ReadHCWMovFromCSV(p,pdat);
 	  EditHCWMovData(pdat); //12 hour window of uncertainty - days with probability 0.5
 	  pd=1;

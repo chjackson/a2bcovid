@@ -364,7 +364,7 @@ void MakeDMY (const int j, const vector<string>& subs, char delim, vector<int>& 
 		int add=-1;
 		for (int i=0;i<months.size();i++) {
 			if (sr.compare(months[i])==0) {
-				add=i;
+				add=i+1;
 				found=1;
 				break;
 			}
