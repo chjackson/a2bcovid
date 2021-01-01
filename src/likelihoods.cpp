@@ -18,7 +18,7 @@ void CalculateTDLikelihoods (run_params p, const vector<pat>& pdat, const vector
 Rcpp::Function msg("message");
   msg("Calculate likelihoods");
 	for (int i=0;i<pdat.size();i++) {
-		std::ostringstream outstr
+		std::ostringstream outstr;
 		outstr << "Patient " << i << "\n";
 		msg("outstr.str()");
 		vector<ijlike> lt;
