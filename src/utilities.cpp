@@ -365,7 +365,7 @@ void FixIndivudualsNoLocation (const run_params p, vector<pat>& pdat, vector<str
 	//People are there by default according to their status
 	string mostc=FindMostCommonWard(pdat);
 	std::ostringstream outstr1;
-	outstr << << "Most common " << mostc << "\n";
+	outstr1 << << "Most common " << mostc << "\n";
 	msg(outstr1.str());
 
 //	Rcpp::Rcout << "Most common " << mostc << "\n";
