@@ -310,9 +310,15 @@ a2bcovid <- function(
   res$p <- 1 - res$p
   res$consistency <- ordered(res$consistency,
                              levels=c("Unlikely","Borderline","Consistent"))
+  attr(res, "files") <- list(pat=pat_file, ali=ali_file,  pat_loc=pat_loc_file, hcw_loc=hcw_loc_file)
+  class(res) <- c("a2bcovid", class(res))
   res
 }
 
+##' @export
+plot.a2bcovid <- function(x,...){
+  plot_a2bcovid(x, ...)
+}
 
 guess_loc_format <- function(filename){
   dat <- read.csv(filename)

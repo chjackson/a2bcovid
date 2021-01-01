@@ -330,7 +330,7 @@ void ReadWardMovFromCSVTemp(run_params p, vector<pat>& pdata) {
 		if (!(csv_file >> str)) break;
 		if (i>-1) {
 			if (p.diagnostic==1) {
-				cout << "Ward_file string " << str << "\n";
+				Rcpp::Rcout << "Ward_file string " << str << "\n";
 			}
 			//Edit string to remove "
 			RemovePunc(str);
@@ -348,7 +348,7 @@ void ReadWardMovFromCSVTemp(run_params p, vector<pat>& pdata) {
 				}
 			}
 			if (p.diagnostic==1) {
-				cout << subs.size() << " " << index << "\n";
+				Rcpp::Rcout << subs.size() << " " << index << "\n";
 			}
 
 			if (index!=-1) {
@@ -372,7 +372,7 @@ void ReadWardMovFromCSVTemp(run_params p, vector<pat>& pdata) {
 						MakeDMY(j+3,subs,p.pat_delim,dmy);
 						int day2=DatetoDay(dmy);
 						if (p.diagnostic==1) {
-							cout << day1 << " " << day2 << "\n";
+							Rcpp::Rcout << day1 << " " << day2 << "\n";
 						}
 						for (int k=day1;k<=day2;k++) {
 							l.date=k;
