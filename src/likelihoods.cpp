@@ -19,8 +19,8 @@ Rcpp::Function msg("message");
   msg("Calculate likelihoods");
 	for (int i=0;i<pdat.size();i++) {
 		std::ostringstream outstr
-		outstr << "i= " << i << "\n";
-		msg("outstr.str());
+		outstr << "Patient " << i << "\n";
+		msg("outstr.str()");
 		vector<ijlike> lt;
 		for (int j=0;j<pdat.size();j++) {
 			ijlike lij;
