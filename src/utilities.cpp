@@ -364,11 +364,8 @@ string FindMostCommonWard(vector<pat>& pdat) {
 void FixIndivudualsNoLocation (const run_params p, vector<pat>& pdat, vector<string>& fixed) {
 	//People are there by default according to their status
 	string mostc=FindMostCommonWard(pdat);
-	std::ostringstream outstr1;
-	outstr1 << << "Most common " << mostc << "\n";
-	msg(outstr1.str());
 
-//	Rcpp::Rcout << "Most common " << mostc << "\n";
+	Rcpp::Rcout << "Most common " << mostc << "\n";
 	//Find minimum and maximum times
 	int min=100000;
 	int max=-100000;
@@ -388,9 +385,9 @@ void FixIndivudualsNoLocation (const run_params p, vector<pat>& pdat, vector<str
 			min=pdat[i].time_s-15;
 		}
 	}
-	std::ostringstream outstr;
-	outstr << "No external time data: Range set to " << min << " " << max << "\n";
-	msg(outstr.str());
+	Rcpp::Rcout << "No external time data: Range set to " << min << " " << max << "\n";
+
+	
 
 	//Rcpp::Rcout << max << " " << min << " " << p.hcw_location_default << " " << p.pat_location_default << "\n";
 	//If no location data, assign probabilities by individual status
