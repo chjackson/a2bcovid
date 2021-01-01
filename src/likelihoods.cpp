@@ -20,7 +20,7 @@ Rcpp::Function msg("message");
 	for (int i=0;i<pdat.size();i++) {
 		std::ostringstream outstr;
 		outstr << "Patient " << i << "\n";
-		msg("outstr.str()");
+		msg(outstr.str());
 		vector<ijlike> lt;
 		for (int j=0;j<pdat.size();j++) {
 			ijlike lij;
