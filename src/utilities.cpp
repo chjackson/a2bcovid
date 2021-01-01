@@ -367,8 +367,8 @@ void FixIndivudualsNoLocation (const run_params p, vector<pat>& pdat, vector<str
 
 	//Rcpp::Rcout << "Most common " << mostc << "\n";
 	//Find minimum and maximum times
-	int min=1e10;
-	int max=-1e10;
+	int min=1e8;
+	int max=-1e8;
 	for (int i=0;i<pdat.size();i++) {
 		for (int j=0;j<pdat[i].locat.size();j++) {
 			if (pdat[i].locat[j].date>max) {
