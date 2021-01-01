@@ -18,7 +18,7 @@ void RemovePunc(string& str);
 void SplitCommas(const string str, vector<string>& subs);
 void MakeDMY (const int j, const vector<string>& subs, char delim, vector<int>& dmy);
 
-int DatetoDay (const vector<int>& dmy);
+int DatetoDay (vector<int>& dmy);
 void ReadFastaAli (run_params p, vector<string>& names, vector<string>& seqs);
 void CheckBaseCase (vector<string>& seqs);
 void ReadSymptomData (vector<pat>& pdat);

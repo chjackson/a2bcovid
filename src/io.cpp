@@ -447,7 +447,7 @@ void MakeDMY (const int j, const vector<string>& subs, char delim, vector<int>& 
 }
 
 
-int DatetoDay (const vector<int>& dmy) {
+int DatetoDay (vector<int>& dmy) {
 	//Rcpp::Rcout << dmy[0] << " " << dmy[1] << " " << dmy[2] << "\n";
 	int day=dmy[0];
 	int lp=1;
