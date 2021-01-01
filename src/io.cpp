@@ -109,7 +109,7 @@ void ReadPatFromCSVNoSeq(run_params p, vector<pat>& pdata) {
 			pat pt;
 			//Edit string to remove "
 			RemovePunc(str);
-
+			Rcpp::Rcout << "Read " << str << "\n";
 			//Split by commas
 			vector<string> subs;
 			SplitCommas(str,subs);
@@ -129,6 +129,8 @@ void ReadPatFromCSVNoSeq(run_params p, vector<pat>& pdata) {
 				vector<int> dmy;
 				MakeDMY(d[j],subs,p.pat_delim,dmy);
 				int day=DatetoDay(dmy);
+				Rcpp::Rcout << "Day " << day << "\n";
+
 				if (d[j]==1) {
 					pt.time_s=day;
 				}
