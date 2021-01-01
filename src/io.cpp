@@ -451,6 +451,9 @@ int DatetoDay (const vector<int>& dmy) {
 	//Rcpp::Rcout << dmy[0] << " " << dmy[1] << " " << dmy[2] << "\n";
 	int day=dmy[0];
 	int lp=1;
+	if (dmy[2]>1999) {
+		dmy[2]=dmy[2]-2000;
+	}
 	//Year calculation
 	int diff=dmy[2]-20;
 	day=day+(diff*365);
