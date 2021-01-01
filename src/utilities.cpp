@@ -365,7 +365,7 @@ void FixIndivudualsNoLocation (const run_params p, vector<pat>& pdat, vector<str
 	//People are there by default according to their status
 	string mostc=FindMostCommonWard(pdat);
 
-	Rcpp::Rcout << "Most common " << mostc << "\n";
+	//Rcpp::Rcout << "Most common " << mostc << "\n";
 	//Find minimum and maximum times
 	int min=100000;
 	int max=-100000;

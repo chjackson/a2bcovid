@@ -94,9 +94,6 @@ DataFrame mainC(List params) {
 
   //Deal with individuals with no sequence data - assumed present
   vector<string> fixed;
-	std::ostringstream outstr1;
-	outstr1 << "Fix missing location data";
-	msg(outstr1.str());
   FixIndivudualsNoLocation (p,pdat,fixed);
   if (p.diagnostic==1) {
     PrintPdat(pdat);
