@@ -364,6 +364,10 @@ string FindMostCommonWard(vector<pat>& pdat) {
 void FixIndivudualsNoLocation (const run_params p, vector<pat>& pdat, vector<string>& fixed) {
 	//People are there by default according to their status
 	string mostc=FindMostCommonWard(pdat);
+	std::ostringstream outstr1;
+	outstr << << "Most common " << mostc << "\n";
+	msg(outstr1.str());
+
 //	Rcpp::Rcout << "Most common " << mostc << "\n";
 	//Find minimum and maximum times
 	int min=100000;

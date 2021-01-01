@@ -88,12 +88,15 @@ DataFrame mainC(List params) {
 	  EditHCWMovData(pdat); //12 hour window of uncertainty - days with probability 0.5
 	  pd=1;
   }
-  //if (p.diagnostic==1&&pd==1) {
+  if (p.diagnostic==1&&pd==1) {
 	  PrintPdat(pdat);
-  //}
+  }
 
   //Deal with individuals with no sequence data - assumed present
   vector<string> fixed;
+	std::ostringstream outstr;
+	outstr << "Fix missing location data";
+	msg(outstr.str());
   FixIndivudualsNoLocation (p,pdat,fixed);
   if (p.diagnostic==1) {
     PrintPdat(pdat);
