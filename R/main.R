@@ -310,6 +310,7 @@ a2bcovid <- function(
   res$p <- 1 - res$p
   res$consistency <- ordered(res$consistency,
                              levels=c("Unlikely","Borderline","Consistent"))
+  res <- res[res$from != res$to,]
   attr(res, "files") <- list(pat=pat_file, ali=ali_file,  pat_loc=pat_loc_file, hcw_loc=hcw_loc_file)
   class(res) <- c("a2bcovid", class(res))
   res
@@ -421,25 +422,26 @@ plot_a2bcovid <- function(x, cluster = TRUE,
     if (!(hi_from %in% names(x))) stop(sprintf("`%s` not found in `x`", hi_from))
     x_from <- x[!duplicated(x$from),]
     xhi_from <- x_from[match(levels(factor(x$from)), x_from$from), hi_from]
-    x_cols <- ifelse(xhi_from, hi_col, "black")
-  } else x_cols <- "black"
+    from_cols <- ifelse(xhi_from, hi_col, "black")
+  } else from_cols <- "black"
   if (!is.null(hi_to)) {
     if (!(hi_to %in% names(x))) stop(sprintf("`%s` not found in `x`", hi_from))
     x_to <- x[!duplicated(x$to),]
     xhi_to <- x_to[match(levels(factor(x$to)), x_to$to), hi_to]
-    y_cols <- ifelse(xhi_to, hi_col, "black")
-  } else y_cols <- "black"
+    to_cols <- ifelse(xhi_to, hi_col, "black")
+  } else to_cols <- "black"
   if (is.null(hi_lab) & ((length(xhi_from)>0)||(length(xhi_to)>0)))
     hi_lab <- sprintf("Healthcare workers labelled in %s",hi_col)
 
   fill_var <- if (continuous) "p" else "consistency"
   ggplot(x, aes_string(y="from", x="to")) +
-    geom_raster(aes_string(fill=fill_var)) +
-    theme(axis.text.x = ggtext::element_markdown(angle = 90, vjust=0.5, colour = x_cols),
-          axis.text.y = ggtext::element_markdown(colour = y_cols),
+    geom_tile(aes_string(fill=fill_var), colour = "black") +
+    theme(axis.text.x = ggtext::element_markdown(angle = 90, vjust=0.5, colour = to_cols),
+          axis.text.y = ggtext::element_markdown(colour = from_cols),
           plot.subtitle = ggtext::element_markdown(colour=hi_col)
           ) +
     labs(subtitle=hi_lab,
          fill=leg_lab) +
-    scale_chosen
+    scale_chosen +
+    theme(panel.background = element_rect(fill = 'white', colour = 'white'))
 }
