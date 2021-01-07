@@ -511,12 +511,12 @@ void MakeDMY (run_params& p, string file, const int j, const vector<string>& sub
 }
 
 void DateError (string file, string subsj, char delim) {
-	Rcpp::Rcout << "Error reading in date " << subsj << " in " << file << "\n";
+	Rcpp::Rcout << "Error reading in date\n" << subsj << " in " << file << "\n";
 	Rcpp::Rcout << "Format must be DD" << delim << "MM" << delim << "YY or DD" << delim << "MM" << delim << "YYYY\n";
 }
 
 void YearOOR (string file, string subsj) {
-	Rcpp::Rcout << "Error: Year out of range in entry " << subsj << " in " << file << "\n";
+	Rcpp::Rcout << "Error: Year out of range in entry\n" << subsj << " in " << file << "\n";
 	Rcpp::Rcout << "Possible fix: check date is in DD/MM/YY or DD/MM/YYYY format \n";
 }
 
