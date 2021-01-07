@@ -22,6 +22,7 @@ res <- a2bcovid(pat_file = pat_file, hcw_loc_file = hcw_loc_file,
                 ali_file = ali_file, pat_loc_file = pat_loc_file)
 plot_a2bcovid(res, hi_from="from_hcw", hi_to="to_hcw")
 plot_a2bcovid(res)
+plot(res)
 
 ## todo get seq or not
 res$x
