@@ -11,7 +11,7 @@ void CalculateThresholdsFull (run_params p) {
 	Rcpp::Rcout << "Calculation for complete likelihood\n";
 	vector<double> allstats;
 	//Assume that S1 is at time zero
-	double n=0.772469;
+	double n=0.41369;
 	double r=(0.0008*29782)/365.25;
 	for (int s2=-11;s2<=87;s2++) {
 		Rcpp::Rcout << "Track progress : S2=" << s2 << "\n";

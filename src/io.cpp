@@ -642,7 +642,7 @@ void ReadFastaAli (run_params p, vector<string>& names, vector<string>& seqs) {
 }
 
 void CheckBaseCase (vector<string>& seqs) {
-	Rcpp::Rcout << "Check case of sequence data\n";
+	//Rcpp::Rcout << "Check case of sequence data\n";
 	for (int i=0;i<seqs.size();i++) {
 		//Rcpp::Rcout << "Check sequence " << i << "\n";
 		for (int j=0;j<seqs[i].size();j++) {
@@ -667,7 +667,7 @@ void CheckBaseCase (vector<string>& seqs) {
 
 void ReadSubsets (run_params p, vector< vector<int> >& subsets) {
 	ifstream str_file;
-	Rcpp::Rcout << p.sub_file << "\n";
+	//Rcpp::Rcout << p.sub_file << "\n";
     str_file.open(p.sub_file.c_str());
 	string str;
 	for (int i=0;i<100000;i++) {
