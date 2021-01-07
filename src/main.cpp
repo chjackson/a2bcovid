@@ -217,6 +217,7 @@ run_params DefineParams(List params)
 
   p.rate=(p.rate*29900)/365.25;
   SetThreshold(p);
+  p.error = 0; 
 
   return p;
 }
