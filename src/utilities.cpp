@@ -83,7 +83,7 @@ void CountNs (vector<pat>& pdat) {
 				nn++;
 			}
 		}
-		//cout << i << " " << pdat[i].seq.size() << " " << nn << "\n";
+		//Rcpp::Rcout << i << " " << pdat[i].seq.size() << " " << nn << "\n";
 		pdat[i].seq_n=nn;
 	}
 }
