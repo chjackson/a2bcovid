@@ -625,7 +625,7 @@ void ReadFastaAli (run_params p, vector<string>& names, vector<string>& seqs) {
 		if (str.at(0)=='>') {
 			names.push_back(str);
 			if (p.diagnostic==1) {
-				cout << "Read seqname " << str << "\n";
+				Rcpp::Rcout << "Read seqname " << str << "\n";
 			}
 			if (seq.size()>0) {
 				seqs.push_back(seq);
