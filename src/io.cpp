@@ -157,11 +157,13 @@ void ReadPatFromCSV(run_params& p, vector<pat>& pdata) {
 	int i=-1;
 	int spwarn=0;
 	while (getline(csv_file,str)) {
+		if (p.diagnostic==1) {
+			cout << "Line " << i << " " << str << "\n";
+		}
 		i++;
 		//if (!(csv_file >> str)) break;
 		if (i>0&&p.error==0) {
 			pat pt;
-			cout << str << "\n";
 			//Edit string to remove "
 			RemovePunc(str);
 
@@ -622,6 +624,9 @@ void ReadFastaAli (run_params p, vector<string>& names, vector<string>& seqs) {
 		if (!(ali_file >> str)) break;
 		if (str.at(0)=='>') {
 			names.push_back(str);
+			if (p.diagnostic==1) {
+				cout << "Read seqname " << str << "\n";
+			}
 			if (seq.size()>0) {
 				seqs.push_back(seq);
 				seq.clear();
