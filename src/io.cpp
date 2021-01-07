@@ -30,6 +30,7 @@ void GetOptions (run_params& p, int argc, const char **argv) {
 	p.thresholdns=0;
 	p.max_n=10;
 	p.min_qual=0.8;
+	p.error=0;
     p.ali_file="";
     p.pat_file="";
     p.mov_file="";
