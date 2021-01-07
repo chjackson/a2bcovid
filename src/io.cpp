@@ -96,23 +96,26 @@ void GetOptions (run_params& p, int argc, const char **argv) {
 	SetThreshold(p);
 }
 
-void ReadPatFromCSVNoSeq(run_params p, vector<pat>& pdata) {
+void ReadPatFromCSVNoSeq(run_params& p, vector<pat>& pdata) {
 	if (p.diagnostic==1) {
 		Rcpp::Rcout << "Read data for individuals\n";
 	}
 	ifstream csv_file;
 	csv_file.open(p.pat_file.c_str());
 	string str;
-	for (int i=0;i<100000;i++) {
-		if (!(csv_file >> str)) break;
-		if (i>0) {
+	int i=-1;
+	int spwarn=0;
+	while (getline(csv_file,str)) {
+		i++;
+		if (i>0&&p.error==0) {
 			pat pt;
 			//Edit string to remove "
 			RemovePunc(str);
-			//Rcpp::Rcout << "Read " << str << "\n";
+
 			//Split by commas
 			vector<string> subs;
 			SplitCommas(str,subs);
+			RemoveSpaces(p.pat_file.c_str(),i,spwarn,subs);
 
 			pt.code=subs[0];
 			pt.type=atoi(subs[3].c_str());
@@ -127,10 +130,9 @@ void ReadPatFromCSVNoSeq(run_params p, vector<pat>& pdata) {
 			vector<int> d(temp,temp+sizeof(temp) / sizeof(int));
 			for (int j=0;j<d.size();j++) {
 				vector<int> dmy;
-				MakeDMY(d[j],subs,p.pat_delim,dmy);
+				MakeDMY(p,p.pat_file.c_str(),d[j],subs,p.pat_delim,dmy);
 				int day=DatetoDay(dmy);
 				//Rcpp::Rcout << "Day " << day << "\n";
-
 				if (d[j]==1) {
 					pt.time_s=day;
 				}
@@ -140,30 +142,38 @@ void ReadPatFromCSVNoSeq(run_params p, vector<pat>& pdata) {
 			} else {
 				pt.time_s_cert=0;
 			}
-
 			pdata.push_back(pt);
 		}
 	}
 }
 
-void ReadPatFromCSV(run_params p, vector<pat>& pdata) {
+void ReadPatFromCSV(run_params& p, vector<pat>& pdata) {
 	if (p.diagnostic==1) {
 		Rcpp::Rcout << "Read data for individuals\n";
 	}
 	ifstream csv_file;
 	csv_file.open(p.pat_file.c_str());
 	string str;
-	for (int i=0;i<100000;i++) {
-		if (!(csv_file >> str)) break;
-		if (i>0) {
+	int i=-1;
+	int spwarn=0;
+	while (getline(csv_file,str)) {
+		i++;
+		//if (!(csv_file >> str)) break;
+		if (i>0&&p.error==0) {
 			pat pt;
+			cout << str << "\n";
 			//Edit string to remove "
 			RemovePunc(str);
 
 			//Split by commas
 			vector<string> subs;
 			SplitCommas(str,subs);
-
+			if (subs.size()!=7) {
+				Rcpp::Rcout << "Error in input file: " << p.pat_file << " Wrong number of columns\n";
+				p.error=1;
+			}
+			RemoveSpaces(p.pat_file.c_str(),i,spwarn,subs);
+			
 			pt.code=subs[0];
 			pt.code_match=subs[4];
 			pt.type=atoi(subs[3].c_str());
@@ -178,9 +188,8 @@ void ReadPatFromCSV(run_params p, vector<pat>& pdata) {
 			vector<int> d(temp,temp+sizeof(temp) / sizeof(int));
 			for (int j=0;j<d.size();j++) {
 				vector<int> dmy;
-				MakeDMY(d[j],subs,p.pat_delim,dmy);
+				MakeDMY(p,p.pat_file.c_str(),d[j],subs,p.pat_delim,dmy);
 				int day=DatetoDay(dmy);
-				//Rcpp::Rcout << dmy[0] << " " << dmy[1] << " " << dmy[2] << " " << day << "\n";
 				if (d[j]==1) {
 					pt.time_s=day;
 				}
@@ -193,7 +202,7 @@ void ReadPatFromCSV(run_params p, vector<pat>& pdata) {
 			} else {
 				pt.time_s_cert=0;
 			}
-
+			
 			//Rcpp::Rcout << str << "\n";
 			//Rcpp::Rcout << pt.code << " " << pt.code_match << " " << pt.hcw << " " << pt.type << " " << pt.time_s << " " << pt.time_seq << " " << pt.time_s_cert << "\n";
 			pdata.push_back(pt);
@@ -201,23 +210,47 @@ void ReadPatFromCSV(run_params p, vector<pat>& pdata) {
 	}
 }
 
-void ReadHCWMovFromCSV(run_params p, vector<pat>& pdata) {
+void RemoveSpaces(string file, int i, int& pr, vector<string>& subs) {
+	for (int j=0;j<subs.size();j++) {
+		//Remove spaces
+		vector<int> to_rem;
+		for (int k=0;k<subs[j].size();k++){
+			if (subs[j].compare(k,1," ")==0) {
+				to_rem.push_back(k);
+			}
+		}
+		sort(to_rem.begin(),to_rem.end());
+		reverse(to_rem.begin(),to_rem.end());
+		for (int k=0;k<to_rem.size();k++) {
+			if (pr==0) {
+				Rcpp::Rcout << "Warning: Removing spaces from line " << i << " of " << file << "\n";
+				pr=1;
+			}
+			subs[j].erase(subs[j].begin()+to_rem[k]);
+		}
+	}
+}
+
+void ReadHCWMovFromCSV(run_params& p, vector<pat>& pdata) {
 	ifstream csv_file;
 	csv_file.open(p.mov_file.c_str());
 	string str;
 	vector<int> dates;
-	for (int i=0;i<100000;i++) {
-		if (!(csv_file >> str)) break;
+	int i=-1;
+	int spwarn=0;
+	while (getline(csv_file,str)) {
+		i++;
 		//Edit string to remove "
 		RemovePunc(str);
 		//Split at commas
 		vector<string> subs;
 		SplitCommas(str,subs);
+		RemoveSpaces(p.mov_file.c_str(),i,spwarn,subs);
 		if (i==0) {
 			//Date information
 			for (int j=2;j<subs.size();j++) {
 				vector<int> dmy;
-				MakeDMY(j,subs,p.mov_delim,dmy);
+				MakeDMY(p,p.mov_file.c_str(),j,subs,p.mov_delim,dmy);
 				int day=DatetoDay(dmy);
 				//Rcpp::Rcout << subs[j] << " " << day << "\n";
 				dates.push_back(day);
@@ -226,7 +259,7 @@ void ReadHCWMovFromCSV(run_params p, vector<pat>& pdata) {
 			//Put information into pdat location information
 			string pat=subs[0];
 			string w=subs[1];
-			if (subs[1].compare("B")==0) {
+			/*if (subs[1].compare("B")==0) {
 				w="WARD_47";//N.B. Wards 47 to 50 all linked - code as 47
 			}
 			if (subs[1].compare("C")==0) {
@@ -240,7 +273,7 @@ void ReadHCWMovFromCSV(run_params p, vector<pat>& pdata) {
 			}
 			if (subs[1].compare("E")==0) {
 				w="WARD_52";
-			}
+			}*/
 
 			int index=-1;
 			for (int j=0;j<pdata.size();j++) {
@@ -252,7 +285,7 @@ void ReadHCWMovFromCSV(run_params p, vector<pat>& pdata) {
 			}
 			if (index!=-1) {
 				for (int j=2;j<subs.size();j++) {
-					if (subs[j].compare("Y")==0) {
+					if (subs[j].compare(0,1,"Y")==0) {
 						loc l;
 						l.ward=w;
 						l.date=dates[j-2];
@@ -265,19 +298,24 @@ void ReadHCWMovFromCSV(run_params p, vector<pat>& pdata) {
 	}
 }
 
-void ReadWardMovFromCSV(run_params p, vector<pat>& pdata) {
+void ReadWardMovFromCSV(run_params& p, vector<pat>& pdata) {
+	cout << "Read ward file\n";
 	ifstream csv_file;
 	csv_file.open(p.ward_file.c_str());
 	string str;
 	vector<int> dates;
-	for (int i=0;i<100000;i++) {
-		if (!(csv_file >> str)) break;
+	int i=-1;
+	int spwarn=0;
+	while (getline(csv_file,str)) {
+		i++;
 		if (i>0) {
+			//Rcpp::Rcout << "String here " << str << "\n";
 			//Edit string to remove "
 			RemovePunc(str);
 			//Split at commas
 			vector<string> subs;
 			SplitCommas(str,subs);
+			RemoveSpaces(p.ward_file.c_str(),i,spwarn,subs);
 			//Look for matching patient
 			string pat=subs[0];
 			int index=-1;
@@ -292,7 +330,7 @@ void ReadWardMovFromCSV(run_params p, vector<pat>& pdata) {
 				for (int j=4;j<subs.size();j=j+3) {
 					loc l;
 					l.ward=subs[j];
-					if (l.ward.compare("WARD_48")==0) {
+					/*if (l.ward.compare("WARD_48")==0) {
 						l.ward="WARD_47";
 					}
 					if (l.ward.compare("WARD_49")==0) {
@@ -300,18 +338,21 @@ void ReadWardMovFromCSV(run_params p, vector<pat>& pdata) {
 					}
 					if (l.ward.compare("WARD_50")==0) {
 						l.ward="WARD_47";
-					}
+					}*/
 					if (l.ward.size()>0) {
 						vector<int> dmy;
-						MakeDMY(j+1,subs,p.pat_delim,dmy);
+						MakeDMY(p,p.ward_file.c_str(),j+1,subs,p.pat_delim,dmy);
+						//Rcpp::Rcout << dmy[0] << " " << dmy[1] << " " << dmy[2] << "\n";
 						int day1=DatetoDay(dmy);
 						dmy.clear();
-						MakeDMY(j+2,subs,p.pat_delim,dmy);
-						int day2=DatetoDay(dmy);
-						for (int k=day1;k<=day2;k++) {
-							l.date=k;
-							l.prob=1;
-							pdata[index].locat.push_back(l);
+						if (p.error==0) {
+							MakeDMY(p,p.ward_file.c_str(),j+2,subs,p.pat_delim,dmy);
+							int day2=DatetoDay(dmy);
+							for (int k=day1;k<=day2;k++) {
+								l.date=k;
+								l.prob=1;
+								pdata[index].locat.push_back(l);
+							}
 						}
 					}
 				}
@@ -320,42 +361,46 @@ void ReadWardMovFromCSV(run_params p, vector<pat>& pdata) {
 	}
 }
 
-void ReadWardMovFromCSVTemp(run_params p, vector<pat>& pdata) {
+void ReadWardMovFromCSVTemp(run_params& p, vector<pat>& pdata) {
 	ifstream csv_file;
 	csv_file.open(p.ward_file.c_str());
 	string str;
 	vector<int> dates;
-	getline(csv_file,str);
-	for (int i=0;i<100000;i++) {
-		if (!(csv_file >> str)) break;
-		if (i>-1) {
+	int i=-1;
+	int spwarn=0;
+	while (getline(csv_file,str)) {
+		i++;
+		if (i>0&&p.error==0) {
+			Rcpp::Rcout << str << "\n";
 			if (p.diagnostic==1) {
-				cout << "Ward_file string " << str << "\n";
+				Rcpp::Rcout << "Ward_file string " << str << "\n";
 			}
 			//Edit string to remove "
 			RemovePunc(str);
 			//Split at commas
 			vector<string> subs;
 			SplitCommas(str,subs);
+			RemoveSpaces(p.ward_file.c_str(),i,spwarn,subs);
+
 			//Look for matching patient
 			string pat=subs[0];
 			int index=-1;
 			for (int j=0;j<pdata.size();j++) {
 				if (pdata[j].code==pat) {
 					index=j;
-					//cout << pat << "\n";
+					//Rcpp::Rcout << pat << "\n";
 					break;
 				}
 			}
 			if (p.diagnostic==1) {
-				cout << subs.size() << " " << index << "\n";
+				Rcpp::Rcout << subs.size() << " " << index << "\n";
 			}
 
 			if (index!=-1) {
 				for (int j=1;j<subs.size();j=j+4) {
 					loc l;
 					l.ward=subs[j];
-					if (l.ward.compare("WARD_48")==0) {
+					/*if (l.ward.compare("WARD_48")==0) {
 						l.ward="WARD_47";
 					}
 					if (l.ward.compare("WARD_49")==0) {
@@ -363,21 +408,23 @@ void ReadWardMovFromCSVTemp(run_params p, vector<pat>& pdata) {
 					}
 					if (l.ward.compare("WARD_50")==0) {
 						l.ward="WARD_47";
-					}
+					}*/
 					if (l.ward.size()>0) {
 						vector<int> dmy;
-						MakeDMY(j+1,subs,p.pat_delim,dmy);
+						MakeDMY(p,p.ward_file.c_str(),j+1,subs,p.pat_delim,dmy);
 						int day1=DatetoDay(dmy);
 						dmy.clear();
-						MakeDMY(j+3,subs,p.pat_delim,dmy);
-						int day2=DatetoDay(dmy);
-						if (p.diagnostic==1) {
-							cout << day1 << " " << day2 << "\n";
-						}
-						for (int k=day1;k<=day2;k++) {
-							l.date=k;
-							l.prob=1;
-							pdata[index].locat.push_back(l);
+						if (p.error==0) {
+							MakeDMY(p,p.ward_file.c_str(),j+3,subs,p.pat_delim,dmy);
+							int day2=DatetoDay(dmy);
+							if (p.diagnostic==1) {
+								Rcpp::Rcout << day1 << " " << day2 << "\n";
+							}
+							for (int k=day1;k<=day2;k++) {
+								l.date=k;
+								l.prob=1;
+								pdata[index].locat.push_back(l);
+							}
 						}
 					}
 				}
@@ -410,10 +457,9 @@ void SplitCommas(const string str, vector<string>& subs) {
 	}
 }
 
-void MakeDMY (const int j, const vector<string>& subs, char delim, vector<int>& dmy) {
-//Rcpp::Rcout << j << " " << subs.size() << " " << subs[j] << " ";
+void MakeDMY (run_params& p, string file, const int j, const vector<string>& subs, char delim, vector<int>& dmy) {
 	stringstream sss(subs[j]);
-	while (sss.good()) {
+	while (sss.good()&&p.error==0) {
 		string sr;
 		getline(sss,sr,delim);
 		vector<string> months;
@@ -444,8 +490,35 @@ void MakeDMY (const int j, const vector<string>& subs, char delim, vector<int>& 
 			dmy.push_back(atoi(sr.c_str()));
 		}
 	}
+	if (p.error==0) {
+		if (dmy.size()!=3) {
+			DateError(file,subs[j],delim);
+			p.error=1;
+		}
+		if (dmy[2]>50&&dmy[2]<100) {
+			YearOOR(file,subs[j]);
+			p.error=1;
+		}
+		if (dmy[2]>99&&dmy[2]<2000) {
+			YearOOR(file,subs[j]);
+			p.error=1;
+		}
+		if (dmy[2]>2050) {
+			YearOOR(file,subs[j]);
+			p.error=1;
+		}
+	}
 }
 
+void DateError (string file, string subsj, char delim) {
+	Rcpp::Rcout << "Error reading in date " << subsj << " in " << file << "\n";
+	Rcpp::Rcout << "Format must be DD" << delim << "MM" << delim << "YY or DD" << delim << "MM" << delim << "YYYY\n";
+}
+
+void YearOOR (string file, string subsj) {
+	Rcpp::Rcout << "Error: Year out of range in entry " << subsj << " in " << file << "\n";
+	Rcpp::Rcout << "Possible fix: check date is in DD/MM/YY or DD/MM/YYYY format \n";
+}
 
 int DatetoDay (vector<int>& dmy) {
 	//Rcpp::Rcout << dmy[0] << " " << dmy[1] << " " << dmy[2] << "\n";

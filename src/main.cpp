@@ -50,6 +50,9 @@ DataFrame mainC(List params) {
   } else {
     ReadPatFromCSV(p,pdat);
   }
+  if (p.error==1) {
+	return 0;
+  }
 
 
   vector<string> names;
@@ -88,6 +91,10 @@ DataFrame mainC(List params) {
 	  EditHCWMovData(pdat); //12 hour window of uncertainty - days with probability 0.5
 	  pd=1;
   }
+  if (p.error==1) {
+    return 0;
+  }
+
   if (p.diagnostic==1&&pd==1) {
 	  PrintPdat(pdat);
   }
