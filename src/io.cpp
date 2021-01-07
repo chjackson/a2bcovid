@@ -641,7 +641,7 @@ void ReadFastaAli (run_params p, vector<string>& names, vector<string>& seqs) {
 }
 
 void CheckBaseCase (vector<string>& seqs) {
-	Rcout << "Check case of sequence data\n";
+	Rcpp::Rcout << "Check case of sequence data\n";
 	for (int i=0;i<seqs.size();i++) {
 		for (int j=0;j<seqs[i].size();j++) {
 			if (seqs[i].compare(j,1,"a")==0) {
