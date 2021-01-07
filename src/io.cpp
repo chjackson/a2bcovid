@@ -655,6 +655,9 @@ void CheckBaseCase (vector<string>& seqs) {
 			if (seqs[i].compare(j,1,"t")==0) {
 				seqs[i][j]='T';
 			}
+			if (seqs[i].compare(j,1,"n")==0) {
+				seqs[i][j]='N';
+			}
 		}
 	}
 }
