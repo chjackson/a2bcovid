@@ -158,7 +158,7 @@ void ReadPatFromCSV(run_params& p, vector<pat>& pdata) {
 	int spwarn=0;
 	while (getline(csv_file,str)) {
 		if (p.diagnostic==1) {
-			cout << "Line " << i << " " << str << "\n";
+			Rcpp::Rcout << "Line " << i << " " << str << "\n";
 		}
 		i++;
 		//if (!(csv_file >> str)) break;
