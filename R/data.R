@@ -38,13 +38,16 @@ long_to_wide <- function(long_file){
 
     locs <- tidyr::pivot_wider(dat[,c("patient","from_ward","stayid")],
                                names_from="stayid", names_prefix="LocationName",
-                               values_from="from_ward")
+                               values_from="from_ward",
+                               values_fill="")
     starts <- tidyr::pivot_wider(dat[,c("patient","start_date","stayid")],
                                  names_from="stayid", names_prefix="StartDate",
-                                 values_from="start_date")
+                                 values_from="start_date",
+                                 values_fill="")
     ends <- tidyr::pivot_wider(dat[,c("patient","end_date","stayid")],
                                names_from="stayid", names_prefix="EndDate",
-                               values_from="end_date")
+                               values_from="end_date",
+                               values_fill="")
 
     # One row per patient, with a triple of columns for each ward stay
     widedata <- data.frame(
