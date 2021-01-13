@@ -20,7 +20,7 @@ a2bcovid(
   ucto = 3.11208004146092,
   uct_mean = 6.67992,
   evo_rate = 8e-04,
-  seq_noise = 0.772469,
+  seq_noise = 0.41369,
   threshold = 0,
   threshold_ns = 0,
   max_n = 10,

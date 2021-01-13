@@ -268,7 +268,7 @@ a2bcovid <- function(
   ucta=2.5932152095707406, uctb=3.7760060663975437, ucto=3.112080041460921,
   uct_mean=6.67992,
   evo_rate  = 0.0008,
-  seq_noise = 0.772469,
+  seq_noise = 0.41369,
   threshold=0, threshold_ns=0,
   max_n = 10,
   min_qual = 0.8,

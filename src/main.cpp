@@ -125,11 +125,11 @@ DataFrame mainC(List params) {
   outstr.str("");
   outstr << "Number of variants is " << variants.size(); 
   msg(outstr.str());
-  for (int i=0;i<variants.size();i++) {
+  /*for (int i=0;i<variants.size();i++) {
       outstr.str("");
       outstr << i << " " << variants[i].locus.size();
       msg(outstr.str());
-  }
+  }*/
 
     if (p.diagnostic==1) {
 	  PrintVariantLoci(allvar);
