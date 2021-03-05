@@ -93,8 +93,10 @@ void RemoveDuplicateTimes (vector<tprob>& contact_times_probs) {
 		if (contact_times_probs[k].time==contact_times_probs[k+1].time) {
 			if (contact_times_probs[k].weight<contact_times_probs[k+1].weight) {
 				to_rem.push_back(k);
+				contact_times_probs[k+1].weight = 1-((1-contact_times_probs[k+1].weight)*(1-contact_times_probs[k].weight));
 			} else {
 				to_rem.push_back(k+1);
+				contact_times_probs[k].weight = 1-((1-contact_times_probs[k+1].weight)*(1-contact_times_probs[k].weight));
 			}
 		}
 	}
