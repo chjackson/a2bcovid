@@ -204,6 +204,10 @@
 ##' @param diagnostic Flag to enable extensive diagnostic output from the
 ##'   function.
 ##'
+##' @param use_all_seqs Flag to use multiple sequences from an individual, rather
+##'   than simply the first collected.  Reports the maximum likelihood calculated
+##'   across all sequences from an individual.
+##'
 ##' @param threshold documentme
 ##' @param threshold_ns documentme
 ##' @param calc_thresholds documentme

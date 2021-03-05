@@ -41,6 +41,8 @@ struct run_params {
 	int calc_thresholds; //Calculate thresholds of the likelihood function
 	double hcw_location_default;  //Probability a HCW is there given no other information
 	double pat_location_default;  //Probability a HCW is there given no other information
+	int ward_format_old; //Flag to use a previous formatting style for the ward_file data.  Redundant in this version; implemented in the R code
+	int use_all_seqs; //Flag to use all sequences.  Don't discard duplicate sequences.  Find the maximum likelihood value across all sequences for each pair
 	int error; //General error flag
 };
 

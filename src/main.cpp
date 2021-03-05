@@ -60,17 +60,28 @@ DataFrame mainC(List params) {
   vector<string> removed;
   if (p.ali_file.compare("")!=0) {
     ReadFastaAli(p,names,seqs); //Read in large file containing genome sequences
+	  Rcpp::Rcout << "Now here\n";
 	CheckBaseCase(seqs);
     //Correct names >
+	  Rcpp::Rcout << "Now here\n";
     CorrectNames(names);  //Convert the names from the fasta file into the format used for input
     //Add sequence data to records
+	  Rcpp::Rcout << "Go to Incorporate\n";
+
     IncorporateSequenceData(p,pdat,names,seqs);
     RemoveIndividualsNoSequence(p,pdat,removed);
     //Calculate number of Ns in each sequence.  Use to discriminate between same day samples
     CountNs(pdat);
-    //Remove duplicate records for individuals with more than one sequence.  Take the earliest, best quality
-    RemoveRepeatPatients(p,pdat); //N.B. This currently takes the earliest regardless of quality.  Should impose a minimum quality...
-    RemoveIndividualsSequenceQuality(p,pdat,removed);
+	if (p.use_all_seqs==0) {
+      //Remove duplicate records for individuals with more than one sequence.  Take the earliest, best quality
+	  RemoveRepeatPatients(p,pdat); //N.B. This currently takes the earliest regardless of quality.  Should impose a minimum quality...
+	}
+	RemoveIndividualsSequenceQuality(p,pdat,removed);
+  }
+
+  vector <vector<int> > repeatpatients;
+  if (p.use_all_seqs==1) {
+	FindRepeatPatients (p,pdat,repeatpatients);
   }
 
   ProcessSymptomUncertainty(p,pdat);
@@ -125,11 +136,6 @@ DataFrame mainC(List params) {
   outstr.str("");
   outstr << "Number of variants is " << variants.size(); 
   msg(outstr.str());
-  /*for (int i=0;i<variants.size();i++) {
-      outstr.str("");
-      outstr << i << " " << variants[i].locus.size();
-      msg(outstr.str());
-  }*/
 
     if (p.diagnostic==1) {
 	  PrintVariantLoci(allvar);
@@ -166,6 +172,9 @@ DataFrame mainC(List params) {
 
   vector<int> ordered;
   FindOrdering (like_trans,ordered);
+  //Find best likelihoods for each indiviudal.  Redundant with --use_all_seqs 0
+  FindBestLikelihoods (repeatpatients,like_trans,pdat);
+  //Data output
   out = LikelihoodOutputR(p,ordered,pdat,like_trans);
   FinalOutput(p,removed,fixed);
 
@@ -214,6 +223,7 @@ run_params DefineParams(List params)
   p.calc_thresholds = as<NumericVector>(params["calc_thresholds"])[0];
   p.hcw_location_default = as<NumericVector>(params["hcw_location_default"])[0];
   p.pat_location_default  = as<NumericVector>(params["pat_location_default"])[0];
+  p.use_all_seqs  = as<NumericVector>(params["use_all_seqs"])[0];
 
   p.rate=(p.rate*29900)/365.25;
   SetThreshold(p);

@@ -41,6 +41,8 @@ void GetOptions (run_params& p, int argc, const char **argv) {
 	p.calc_thresholds=0;
 	p.hcw_location_default=0.5714286;
 	p.pat_location_default=1;
+	p.ward_format_old=0;
+	p.use_all_seqs=0;
 	int x=1;
 	while (x < argc && (argv[x][0]=='-')) {
 		p_switch=argv[x];
@@ -86,6 +88,12 @@ void GetOptions (run_params& p, int argc, const char **argv) {
 		} else if (p_switch.compare("--calc_thresholds")==0) {
 			x++;
 			p.calc_thresholds=atoi(argv[x]);
+		} else if (p_switch.compare("--use_all_seqs")==0) {
+			x++;
+			p.use_all_seqs=atoi(argv[x]);
+		} else if (p_switch.compare("--ward_format_old")==0) {
+			x++;
+			p.ward_format_old=atoi(argv[x]);
         } else {
 			Rcpp::Rcout << "Incorrect usage\n ";
 			//			exit(1);
@@ -374,10 +382,10 @@ void ReadWardMovFromCSVTemp(run_params& p, vector<pat>& pdata) {
 	while (getline(csv_file,str)) {
 		i++;
 		if (i>0&&p.error==0) {
-			Rcpp::Rcout << str << "\n";
-			if (p.diagnostic==1) {
+			//Rcpp::Rcout << str << "\n";
+			/*if (p.diagnostic==1) {
 				Rcpp::Rcout << "Ward_file string " << str << "\n";
-			}
+			}*/
 			//Edit string to remove "
 			RemovePunc(str);
 			//Split at commas
@@ -642,10 +650,11 @@ void ReadFastaAli (run_params p, vector<string>& names, vector<string>& seqs) {
 }
 
 void CheckBaseCase (vector<string>& seqs) {
-	//Rcpp::Rcout << "Check case of sequence data\n";
+	Rcpp::Rcout << "Check case of sequence data\n";
 	for (int i=0;i<seqs.size();i++) {
-		//Rcpp::Rcout << "Check sequence " << i << "\n";
+		//Rcpp::Rcout << "Check sequence " << i << " " << seqs[i].size() << "\n";
 		for (int j=0;j<seqs[i].size();j++) {
+			//Rcpp::Rcout << "Check character " << i << " " << j << " " << seqs[i][j] << "\n";
 			if (seqs[i].compare(j,1,"a")==0) {
 				seqs[i][j]='A';
 			}
@@ -663,6 +672,7 @@ void CheckBaseCase (vector<string>& seqs) {
 			}
 		}
 	}
+	Rcpp::Rcout << "CheckBaseCase complete\n";
 }
 
 void ReadSubsets (run_params p, vector< vector<int> >& subsets) {

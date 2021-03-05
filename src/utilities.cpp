@@ -61,7 +61,7 @@ void MatchSequencetoPatient (vector<pat>& pdat) {
 
 void IncorporateSequenceData (run_params p, vector<pat>& pdat, vector<string>& names, vector<string>& seqs) {
 	for (int i=0;i<names.size();i++) {
-		//Rcpp::Rcout << "Name " << i << " of " << names.size() << " " << names[i] << "\n";
+		Rcpp::Rcout << "Name " << i << " of " << names.size() << " " << names[i] << "\n";
 		for (int j=0;j<pdat.size();j++) {
 			if (pdat[j].code_match.compare(names[i])==0) {
 				if (p.diagnostic==1) {
@@ -466,6 +466,44 @@ void RemoveRepeatPatients (run_params p, vector<pat>& pdat) {
 	}
 }
 
+void FindRepeatPatients (run_params p, const vector<pat>& pdat, vector <vector<int> >& repeatpatients) {
+	if (p.diagnostic==1) {
+		cout << "Find repeat patients\n";
+	}
+	for (int i=0;i<pdat.size();i++) {
+		int found=0;
+		for (int j=0;j<repeatpatients.size();j++) {
+			for (int k=0;k<repeatpatients[j].size();k++) {
+				if (repeatpatients[j][k]==i) {
+					found=1;
+					break;
+				}
+			}
+		}
+		if (found==0) {
+			vector<int> rp;
+			for (int j=0;j<pdat.size();j++) {
+				if (i!=j&&pdat[i].code==pdat[j].code) {
+					if (rp.size()==0) {
+						rp.push_back(i);
+					}
+					rp.push_back(j);
+				}
+			}
+			if (rp.size()>0) {
+				repeatpatients.push_back(rp);
+				if (p.diagnostic==1) {
+					for (int j=0;j<rp.size();j++) {
+						cout << rp[j] << " ";
+					}
+					cout << "\n";
+				}
+			}
+		}
+	}
+}
+
+
 void RepairSequence(int i, int j, vector<pat>& pdat) {
 	for (int k=0;k<pdat[i].seq.size();k++) {
 		if (pdat[i].seq.compare(k,1,"N")==0) {
@@ -486,6 +524,50 @@ void FindOrdering (const vector< vector<ijlike> >& like_trans, vector<int>& orde
 	for (int i=0;i<subsets.size();i++) {
 		for (int j=0;j<subsets[i].size();j++) {
 			ordered.push_back(subsets[i][j]);
+		}
+	}
+}
+
+void FindBestLikelihoods (const vector< vector<int> >& repeatpatients, vector< vector<ijlike> >& like_trans, vector<pat>& pdat) {
+	//Best likelihood for each individual given multiple sequences collected
+	vector<int> to_rem;
+	for (int i=0;i<repeatpatients.size();i++) {
+		//Concentrate maximum likelihoods into the first individual
+		for (int j=1;j<repeatpatients[i].size();j++) {
+			//Find max lL_tot
+			for (int k=0;k<like_trans.size();k++) {
+				if (like_trans[k][repeatpatients[i][j]].lL_tot>like_trans[k][repeatpatients[i][0]].lL_tot) {
+					like_trans[k][repeatpatients[i][0]].lL_tot=like_trans[k][repeatpatients[i][j]].lL_tot;
+				}
+				if (like_trans[repeatpatients[i][j]][k].lL_tot>like_trans[repeatpatients[i][0]][k].lL_tot) {
+					like_trans[repeatpatients[i][0]][0].lL_tot=like_trans[repeatpatients[i][0]][k].lL_tot;
+				}
+			}
+			//Find max ns_lL_tot
+			for (int k=0;k<like_trans.size();k++) {
+				if (like_trans[k][repeatpatients[i][j]].ns_lL_tot>like_trans[k][repeatpatients[i][0]].ns_lL_tot) {
+					like_trans[k][repeatpatients[i][0]].ns_lL_tot=like_trans[k][repeatpatients[i][j]].ns_lL_tot;
+				}
+				if (like_trans[repeatpatients[i][j]][k].ns_lL_tot>like_trans[repeatpatients[i][0]][k].ns_lL_tot) {
+					like_trans[repeatpatients[i][0]][0].ns_lL_tot=like_trans[repeatpatients[i][0]][k].ns_lL_tot;
+				}
+			}
+			to_rem.push_back(repeatpatients[i][j]);
+		}
+	}
+	if (to_rem.size()>0) {
+		sort(to_rem.begin(),to_rem.end());
+		reverse(to_rem.begin(),to_rem.end());
+		//Transmissions in each like_trans element
+		for (int i=0;i<like_trans.size();i++) {
+			for (int j=0;j<to_rem.size();j++) {
+				like_trans[i].erase(like_trans[i].begin()+to_rem[j]);
+			}
+		}
+		//Transmissions out in like_trans plus pdat to correct names in final output
+		for (int i=0;i<to_rem.size();i++) {
+			like_trans.erase(like_trans.begin()+to_rem[i]);
+			pdat.erase(pdat.begin()+to_rem[i]);
 		}
 	}
 }

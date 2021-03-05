@@ -24,7 +24,7 @@ Rcpp::Function msg("message");
 			lij.lL_tot=0;
 			lij.ns_lL_tot=0;
 			vector<tprob> contact_times_probs;
-			if (i==j) {
+			if (pdat[i].code==pdat[j].code) { //Can't transmit to yourself
 				lij.lL_tot=-1e10;
 				lij.ns_lL_tot=-1e10;
 				lij.min=0;

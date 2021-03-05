@@ -29,6 +29,7 @@ a2bcovid(
   diagnostic = FALSE,
   hcw_default = 0.5714286,
   pat_default = 1
+  use_all_seqs = 0
 )
 }
 \arguments{
@@ -230,6 +231,8 @@ that individual.  Default is 4/7.}
 \item{pat_default}{Default probability of a patient being present on the
 ward on a given day if no location information is specified for that
 individual.  Default 1.}
+
+\item{use_all_seqs}{Flag to use all sequences collected from an indiviudal.  If set to 1 this repeats the calculation for all sequences collected from an individual that pass quality control, using the sequence and the date of collection of each in the calculation.  Following these calculations, the maximum likelihood generated with any of the sequences is reported.  Default 0.}
 }
 \value{
 A data frame with the following columns
