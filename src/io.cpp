@@ -43,6 +43,7 @@ void GetOptions (run_params& p, int argc, const char **argv) {
 	p.pat_location_default=1;
 	p.ward_format_old=0;
 	p.use_all_seqs=0;
+	p.symptom_uncertainty_calc=0;
 	int x=1;
 	while (x < argc && (argv[x][0]=='-')) {
 		p_switch=argv[x];
@@ -105,7 +106,7 @@ void GetOptions (run_params& p, int argc, const char **argv) {
 	SetThreshold(p);
 }
 
-void ReadPatFromCSVNoSeq(run_params& p, vector<pat>& pdata) {
+void ReadPatFromCSVNoSeq(run_params& p, vector<pat>& pdata, const vector<int>& sdist_interval, const vector<double>& sdist_prob) {
 	if (p.diagnostic==1) {
 		Rcpp::Rcout << "Read data for individuals\n";
 	}
@@ -143,20 +144,32 @@ void ReadPatFromCSVNoSeq(run_params& p, vector<pat>& pdata) {
 				int day=DatetoDay(dmy);
 				//Rcpp::Rcout << "Day " << day << "\n";
 				if (d[j]==1) {
-					pt.time_s=day;
+					pt.time_s.most_likely=day;
 				}
 			}
 			if (subs[2]=="1") {
-				pt.time_s_cert=1;
+				pt.time_s.time.push_back(pt.time_s.most_likely);
+				pt.time_s.prob.push_back(1);
 			} else {
-				pt.time_s_cert=0;
+				if (p.symptom_uncertainty_calc==0) {
+					//Correct the symptom onset time by the mean of the difference between symptom and positive test times
+					pt.time_s.time.push_back(pt.time_s.most_likely-floor(p.uct_mean+0.5));
+					pt.time_s.most_likely=pt.time_s.most_likely-floor(p.uct_mean+0.5);
+					pt.time_s.prob.push_back(1);
+				} else {
+					pt.time_s.most_likely=pt.time_s.most_likely-3;
+					for (int j=0;j<sdist_interval.size();j++) {
+						pt.time_s.time.push_back(pt.time_s.most_likely+sdist_interval[j]);
+						pt.time_s.prob.push_back(sdist_prob[j]);
+					}
+				}
 			}
 			pdata.push_back(pt);
 		}
 	}
 }
 
-void ReadPatFromCSV(run_params& p, vector<pat>& pdata) {
+void ReadPatFromCSV(run_params& p, vector<pat>& pdata, const vector<int>& sdist_interval, const vector<double>& sdist_prob) {
 	if (p.diagnostic==1) {
 		Rcpp::Rcout << "Read data for individuals\n";
 	}
@@ -202,20 +215,34 @@ void ReadPatFromCSV(run_params& p, vector<pat>& pdata) {
 				MakeDMY(p,p.pat_file.c_str(),d[j],subs,p.pat_delim,dmy);
 				int day=DatetoDay(dmy);
 				if (d[j]==1) {
-					pt.time_s=day;
+					pt.time_s.most_likely=day;
 				}
 				if (d[j]==5) {
 					pt.time_seq=day;
 				}
 			}
 			if (subs[2]=="1") {
-				pt.time_s_cert=1;
+				pt.time_s.time.push_back(pt.time_s.most_likely);
+				pt.time_s.prob.push_back(1);
 			} else {
-				pt.time_s_cert=0;
+				if (p.symptom_uncertainty_calc==0) {
+					//Correct the symptom onset time by the mean of the difference between symptom and positive test times
+					pt.time_s.time.push_back(pt.time_s.most_likely-floor(p.uct_mean+0.5));
+					pt.time_s.most_likely=pt.time_s.most_likely-floor(p.uct_mean+0.5);
+					pt.time_s.prob.push_back(1);
+				} else {
+					pt.time_s.most_likely=pt.time_s.most_likely-3;
+					for (int j=0;j<sdist_interval.size();j++) {
+						pt.time_s.time.push_back(pt.time_s.most_likely+sdist_interval[j]);
+						pt.time_s.prob.push_back(sdist_prob[j]);
+						
+						cout << pt.time_s.most_likely+sdist_interval[j] << " "  << sdist_prob[j] << "\n";
+					}
+				}
 			}
-			
+
 			//Rcpp::Rcout << str << "\n";
-			//Rcpp::Rcout << pt.code << " " << pt.code_match << " " << pt.hcw << " " << pt.type << " " << pt.time_s << " " << pt.time_seq << " " << pt.time_s_cert << "\n";
+			//Rcpp::Rcout << pt.code << " " << pt.code_match << " " << pt.hcw << " " << pt.type << " " << pt.time_s.most_likely << " " << pt.time_seq << " " << pt.time_s_cert << "\n";
 			pdata.push_back(pt);
 		}
 	}

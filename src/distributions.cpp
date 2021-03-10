@@ -42,3 +42,11 @@ double Poisson (int n, double lambda) {
 	y=log(y);
 	return y;
 }
+
+void PrecalculateSymptomDist (run_params p, vector<int>& sdist_interval, vector<double>& sdist_prob) {
+	for (int i=-3;i<30;i++) {
+		sdist_interval.push_back(i);
+		double y=exp(OffsetGammaCDFFlex (i, p.ucta, p.uctb, p.ucto));
+		sdist_prob.push_back(y);
+	}
+}

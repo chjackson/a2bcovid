@@ -246,26 +246,6 @@ void FromConsensusDistancesNoSeq (const vector<sparseseq>& variants, vector< vec
 	}
 }
 
-
-void ProcessSymptomUncertainty (run_params& p, vector<pat>& pdat) {
-	//Deals with cases where we have positive test dates but not dates of becoming symptomatic
-	//Find samples with uncertain symptomatic times
-	vector<int> uncertain_times;
-	for (int i=0;i<pdat.size();i++) {
-		if (pdat[i].time_s_cert==0) {
-			uncertain_times.push_back(i);
-		}
-	}
-	if (uncertain_times.size()>0) {
-		Rcpp::Rcout << "Estimate unknown times of symptom onset using CUH mean statistics\n";
-		for (int i=0;i<pdat.size();i++) {
-			if (pdat[i].time_s_cert==0) {
-				pdat[i].time_s=pdat[i].time_s-floor(p.uct_mean+0.5);
-			}
-		}
-	}
-}
-
 void RemoveIndividualsNoSequence(const run_params p, vector<pat>& pdat, vector<string>& removed) {
 	vector<int> to_rem;
 	for (int i=0;i<pdat.size();i++) {
@@ -378,11 +358,11 @@ void FixIndivudualsNoLocation (const run_params p, vector<pat>& pdat, vector<str
 				min=pdat[i].locat[j].date;
 			}
 		}
-		if (pdat[i].time_s+25>max) {
-			max=pdat[i].time_s+25;
+		if (pdat[i].time_s.most_likely+25>max) {
+			max=pdat[i].time_s.most_likely+25;
 		}
-		if (pdat[i].time_s-15<min) {
-			min=pdat[i].time_s-15;
+		if (pdat[i].time_s.most_likely-15<min) {
+			min=pdat[i].time_s.most_likely-15;
 		}
 	}
 	//Rcpp::Rcout << "No external time data: Range set to " << min << " " << max << "\n";

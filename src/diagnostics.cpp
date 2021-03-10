@@ -31,7 +31,7 @@ void PrintSequenceDistances (const vector< vector<int> >& seqdists) {
 void PrintVariants (const vector<sparseseq>& variants, const vector<pat>& pdat) {
 	Rcout << "Variants\n";
 	for (int i=0;i<variants.size();i++) {
-		Rcout << i << " " << pdat[i].code << " " << pdat[i].time_s << " ";
+		Rcout << i << " " << pdat[i].code << " " << pdat[i].time_s.most_likely << " ";
 		for (int j=0;j<variants[i].locus.size();j++) {
 			Rcout << variants[i].locus[j] << variants[i].allele[j] << " ";
 		}
@@ -49,7 +49,7 @@ void PrintVariantLoci (const vector<allele>& allvar) {
 
 void PrintPdat (const vector<pat>& pdat) {
 	for (int i=0;i<pdat.size();i++) {
-		Rcout << pdat[i].code << " " << pdat[i].time_s << " ";
+		Rcout << pdat[i].code << " " << pdat[i].time_s.most_likely << " ";
 		for (int j=0;j<pdat[i].locat.size();j++) {
 			Rcout << pdat[i].locat[j].ward << " " << pdat[i].locat[j].date << " " << pdat[i].locat[j].prob << " ";
 		}

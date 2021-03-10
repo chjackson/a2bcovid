@@ -208,6 +208,10 @@
 ##'   than simply the first collected.  Reports the maximum likelihood calculated
 ##'   across all sequences from an individual.
 ##'
+##' @symptom_uncertainty_calc Flag to use a complete offset gamma distribution,
+##' specified by the parameters ucta, uctb, and ucto, to model the undertainty
+##' in the date of onset of symptom
+##'
 ##' @param threshold documentme
 ##' @param threshold_ns documentme
 ##' @param calc_thresholds documentme
@@ -280,6 +284,8 @@ a2bcovid <- function(
   diagnostic =FALSE,
   hcw_default = 0.5714286,
   pat_default = 1
+  use_all_seqs = 0
+  symptom_uncertainty_calc = 0
 )
 {
   ali_file <- check_file(ali_file)

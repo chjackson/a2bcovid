@@ -7,8 +7,8 @@
 
 
 void GetOptions (run_params& p, int argc, const char **argv);
-void ReadPatFromCSV(run_params& p, vector<pat>& pdata);
-void ReadPatFromCSVNoSeq(run_params& p, vector<pat>& pdata);
+void ReadPatFromCSV(run_params& p, vector<pat>& pdata, const vector<int>& sdist_interval, const vector<double>& sdist_prob);
+void ReadPatFromCSVNoSeq(run_params& p, vector<pat>& pdata, const vector<int>& sdist_interval, const vector<double>& sdist_prob);
 void RemoveSpaces(string file, int i, int& pr, vector<string>& subs);
 void ReadHCWMovFromCSV(run_params& p, vector<pat>& pdata);
 void ReadWardMovFromCSV(run_params& p, vector<pat>& pdata);

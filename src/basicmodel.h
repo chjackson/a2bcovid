@@ -86,13 +86,19 @@ struct ijlike {
 	vector<double> noseq_likes;
 };
 
+struct ts { //Structure to vectorise the time of becoming symptomatic
+	vector<int> time;
+	vector<double> prob;
+	int most_likely;  //Use as a proxy for outputs
+};
+
 struct pat {
 	string code;
 	string seq;
 	string code_match;
 	int hcw; //Flag to indicate health care worker (as opposed to patient) 1 = HCW; 0 = Patient
 	int type; //Flag for type of infection.  1 = Community.  2 = Patient.  3 = HCW
-	int time_s;  //Time of becoming symptomatic or time of testing positive
+	ts time_s;  //Time of becoming symptomatic or time of testing positive
 	int time_seq; //Time of collecting sample used in sequencing
 	int dtime_s;  //If the time of becoming symptomatic is optimised, this gives the change in that time from the default
 	int time_s_cert; //Certainty in time_s.  Flag 1 = Treat time_s as accurate.  0 = Asymptomatic or unknown.  time_s is the date of positive test

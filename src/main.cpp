@@ -30,6 +30,10 @@ DataFrame mainC(List params) {
 
   p = DefineParams(params);
 
+  vector<int> sdist_interval;
+  vector<double> sdist_prob;
+  PrecalculateSymptomDist(p,sdist_interval,sdist_prob);
+	
   if (p.calc_thresholds==1) {
     CalculateThresholdsNoSeq(p);
     CalculateThresholdsFull(p);
@@ -40,7 +44,7 @@ DataFrame mainC(List params) {
   //Code to read in CSV format
   vector<pat> pdat;
   if (p.ali_file.compare("")==0) {
-    ReadPatFromCSVNoSeq(p,pdat);  //No sequence data
+	  ReadPatFromCSVNoSeq(p,pdat,sdist_interval,sdist_prob);  //No sequence data
     //Remove duplicate individuals by code
     RemoveDuplicatesNoSeq(pdat);
     if (pdat.size()<2) {
@@ -48,7 +52,7 @@ DataFrame mainC(List params) {
       return 0;
     }
   } else {
-    ReadPatFromCSV(p,pdat);
+	  ReadPatFromCSV(p,pdat,sdist_interval,sdist_prob);
   }
   if (p.error==1) {
 	return 0;
@@ -83,8 +87,6 @@ DataFrame mainC(List params) {
   if (p.use_all_seqs==1) {
 	FindRepeatPatients (p,pdat,repeatpatients);
   }
-
-  ProcessSymptomUncertainty(p,pdat);
 
   // TODO sprintf this then msg
   std::ostringstream outstr; 
