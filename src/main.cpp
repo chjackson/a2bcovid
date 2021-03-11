@@ -226,6 +226,7 @@ run_params DefineParams(List params)
   p.hcw_location_default = as<NumericVector>(params["hcw_location_default"])[0];
   p.pat_location_default  = as<NumericVector>(params["pat_location_default"])[0];
   p.use_all_seqs  = as<NumericVector>(params["use_all_seqs"])[0];
+  p.symptom_uncertainty_calc  = as<NumericVector>(params["symptom_uncertainty_calc"])[0];
 
   p.rate=(p.rate*29900)/365.25;
   SetThreshold(p);
