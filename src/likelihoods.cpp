@@ -192,15 +192,25 @@ double LikelihoodFromItoJTimeK (int i, int j, int k, const run_params& p, const 
 double NoSeqLikelihoodFromItoJTimeK (int i, int j, int k, const run_params& p, const vector<tprob>& contact_times_probs, const vector<pat>& pdat) {
 	//Transmission from i to j at time contact_times[k].  Integrate sequence evolution date with key likelihood.
 	double L=0;
-	double OGL=OffsetGammaCDFFlex(contact_times_probs[k].time-pdat[i].time_s,p.pa,p.pb,p.po); //Time from symptom onset of i to transmission
-	L=L+OGL;
+	double Ladd=0;
+	for (int q=0;q<pdat[i].time_s.prob.size();q++) {
+		double OGL=OffsetGammaCDFFlex(contact_times_probs[k].time-pdat[i].time_s.time[q],p.pa,p.pb,p.po); //Time from symptom onset of i to transmission
+		Ladd=Ladd+(pdat[i].time_s.prob[q]*exp(OGL));
+	}
+	Ladd=log(Ladd);
+	L=L+Ladd;
 	if (contact_times_probs[k].weight==0) {
 		L=L-1e10; //Can't transmit when there is no contact between individuals
 	} else {
 		L=L+log(contact_times_probs[k].weight); //Probability of contact between individuals
 	}
-	double LN=LogNormal(pdat[j].time_s-contact_times_probs[k].time,p.smu,p.ssigma);//Time from transmission to j becoming symptomatic
-	L=L+LN;
+	Ladd=0;
+	for (int q=0;q<pdat[i].time_s.prob.size();q++) {
+		double LN=LogNormal(pdat[j].time_s.time[q]-contact_times_probs[k].time,p.smu,p.ssigma);//Time from transmission to j becoming symptomatic
+		Ladd=Ladd+(pdat[i].time_s.prob[q]*exp(LN));
+	}
+	Ladd=log(Ladd);
+	L=L+Ladd;
 	//Rcpp::Rcout << "Log " << L << "\n";
 	return L;
 }

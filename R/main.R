@@ -283,8 +283,8 @@ a2bcovid <- function(
   calc_thresholds=FALSE,
   diagnostic =FALSE,
   hcw_default = 0.5714286,
-  pat_default = 1
-  use_all_seqs = 0
+  pat_default = 1,
+  use_all_seqs = 0,
   symptom_uncertainty_calc = 0
 )
 {
@@ -306,7 +306,9 @@ a2bcovid <- function(
                  calc_thresholds=calc_thresholds,
                  diagnostic=diagnostic,
 				 hcw_location_default=hcw_default,
-				 pat_location_default=pat_default)
+				 pat_location_default=pat_default,
+				 use_all_seqs_default=use_all_seqs,
+				 symptom_uncertainty_calc_default=symptom_uncertainty_calc)
   res <- .Call(`_a2bcovid_mainC`, params)
   ## default factor levels as in data order, not sorted alphabetically
   res$from <- factor(res$from, unique(res$from))
