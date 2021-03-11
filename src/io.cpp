@@ -157,11 +157,17 @@ void ReadPatFromCSVNoSeq(run_params& p, vector<pat>& pdata, const vector<int>& s
 					pt.time_s.most_likely=pt.time_s.most_likely-floor(p.uct_mean+0.5);
 					pt.time_s.prob.push_back(1);
 				} else {
-					pt.time_s.most_likely=pt.time_s.most_likely-3;
+					double max=-1;
+					int max_index=0;
 					for (int j=0;j<sdist_interval.size();j++) {
 						pt.time_s.time.push_back(pt.time_s.most_likely+sdist_interval[j]);
 						pt.time_s.prob.push_back(sdist_prob[j]);
+						if (sdist_prob[j]>max) {
+							max=sdist_prob[j];
+							max_index=j;
+						}
 					}
+					pt.time_s.most_likely=pt.time_s.most_likely-sdist_interval[max_index];
 				}
 			}
 			pdata.push_back(pt);
@@ -231,13 +237,17 @@ void ReadPatFromCSV(run_params& p, vector<pat>& pdata, const vector<int>& sdist_
 					pt.time_s.most_likely=pt.time_s.most_likely-floor(p.uct_mean+0.5);
 					pt.time_s.prob.push_back(1);
 				} else {
-					pt.time_s.most_likely=pt.time_s.most_likely-3;
+					double max=-1;
+					int max_index=0;
 					for (int j=0;j<sdist_interval.size();j++) {
 						pt.time_s.time.push_back(pt.time_s.most_likely+sdist_interval[j]);
 						pt.time_s.prob.push_back(sdist_prob[j]);
-						
-						cout << pt.time_s.most_likely+sdist_interval[j] << " "  << sdist_prob[j] << "\n";
+						if (sdist_prob[j]>max) {
+							max=sdist_prob[j];
+							max_index=j;
+						}
 					}
+					pt.time_s.most_likely=pt.time_s.most_likely-sdist_interval[max_index];
 				}
 			}
 

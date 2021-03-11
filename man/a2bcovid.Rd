@@ -28,8 +28,8 @@ a2bcovid(
   calc_thresholds = FALSE,
   diagnostic = FALSE,
   hcw_default = 0.5714286,
-  pat_default = 1
-  use_all_seqs = 0
+  pat_default = 1,
+  use_all_seqs = 0,
   symptom_uncertainty_calc = 0
 )
 }
@@ -235,7 +235,7 @@ individual.  Default 1.}
 
 \item{use_all_seqs}{Flag to use all sequences collected from an indiviudal.  If set to 1 this repeats the calculation for all sequences collected from an individual that pass quality control, using the sequence and the date of collection of each in the calculation.  Following these calculations, the maximum likelihood generated with any of the sequences is reported.  Default 0.}
 
-\item{symptom_uncertainty_calc}{Flag to use a complete offset gamma distribution, specified by the parameters ucta, uctb, and ucto, to model the undertainty in the date of onset of symptoms.  If this is set to zero, the date is modelled as the positive test date corrected by the mean of this distribution.  If this is set to 1, the entire gamma distribution is modelled, considering the symptom onset as a stochastic object.  Setting this to 1 is not recommended.  Default 0.}
+\item{symptom_uncertainty_calc}{Flag to use a complete offset gamma distribution, specified by the parameters ucta, uctb, and ucto, to model the undertainty in the date of onset of symptoms.  If this is set to zero, the date is modelled as the positive test date corrected by the mean of this distribution.  If this is set to 1, the entire gamma distribution is modelled, considering the symptom onset as a stochastic object.  Note: Setting this to 1 does not work well with the current default uct parameters.  Default 0.}
 }
 \value{
 A data frame with the following columns
