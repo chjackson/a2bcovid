@@ -33,7 +33,7 @@ struct cstat {
 
 void CalculateThresholdsNoSeq (run_params p);
 void CalculateThresholdsFullMeanCHat (run_params p, const vector<double>& OGPreCalcP, const vector<double>& LNPreCalc);
-void CalculateThresholdsExplicitCHat (run_params p, const vector<double>& OGPreCalcP, const vector<double>& LNPreCalc, gsl_rng *rgen);
+//void CalculateThresholdsExplicitCHat (run_params p, const vector<double>& OGPreCalcP, const vector<double>& LNPreCalc, gsl_rng *rgen);
 void ReCalculateThresholds (run_params p);
 
 

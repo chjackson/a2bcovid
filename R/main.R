@@ -304,7 +304,8 @@ a2bcovid <- function(
   }
   params <- list(pa=pa, pb=pb, po=po, smu=smu, ssigma=ssigma,
                  ucta=ucta, uctb=uctb, ucto=ucto, uct_mean=uct_mean,
-                 rate=evo_rate, seq_noise=seq_noise, chat=chat
+                 rate=evo_rate, seq_noise=seq_noise,
+				 chat=chat,
                  threshold=threshold, threshold_ns=threshold_ns,  max_n=max_n, min_qual=min_qual,
                  ali_file=ali_file, pat_file=pat_file,
                  mov_file=hcw_loc_file, ward_file=pat_loc_file,

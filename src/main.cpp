@@ -28,13 +28,22 @@ DataFrame mainC(List params) {
   run_params p;
   DataFrame out;
 
+  /*int seed=(int) time(NULL);
+  gsl_rng_env_setup();
+  gsl_rng *rgen = gsl_rng_alloc (gsl_rng_taus);
+  gsl_rng_set (rgen, seed);*/
+
   p = DefineParams(params);
 
   vector<int> sdist_interval;
   vector<double> sdist_prob;
   PrecalculateSymptomDist(p,sdist_interval,sdist_prob);
 	
-	
+  //Pre-calculate likelihoods
+  vector<double> LNPreCalc; //LogNormal.  Assumes p.smu, p.ssigma parameters
+  vector<double> OGPreCalcP; //Offset gamma
+  PreCalculateLikelihoods(p,LNPreCalc,OGPreCalcP);
+
   if (p.calc_thresholds==1) {
 	CalculateThresholdsNoSeq(p);
 	return 0;
@@ -43,10 +52,10 @@ DataFrame mainC(List params) {
 	CalculateThresholdsFullMeanCHat(p,OGPreCalcP,LNPreCalc);
 	return 0;
   }
-  if (p.calc_thresholds==3) {
+  /*if (p.calc_thresholds==3) {
 	CalculateThresholdsExplicitCHat(p,OGPreCalcP,LNPreCalc,rgen);
     return 0;
-  }
+  }*/
 
   //Code to read in CSV format
   vector<pat> pdat;

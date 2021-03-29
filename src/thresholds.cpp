@@ -8,12 +8,11 @@
 using namespace std;
 
 void CalculateThresholdsFullMeanCHat (run_params p, const vector<double>& OGPreCalcP, const vector<double>& LNPreCalc) {
-	Rcpp::Rcout << "Threshold calculation for complete likelihood: Use mean \hat C \n";
+	Rcpp::Rcout << "Threshold calculation for complete likelihood: Use mean hat C \n";
 	vector<double> allstats;
 	//Assume that S1 is at time zero
 	double n=0.41369;
 	double r=(0.0008*29782)/365.25;
-	int index=1;
 	//ofstream tf_file;
 	//tf_file.open("Threshold_data.out");
 	for (int s2=-11;s2<=87;s2++) {
@@ -109,14 +108,13 @@ void CalculateThresholdsFullMeanCHat (run_params p, const vector<double>& OGPreC
 	}
 }
 
-void CalculateThresholdsExplicitCHat (run_params p, const vector<double>& OGPreCalcP, const vector<double>& LNPreCalc, gsl_rng *rgen) {
-	Rcpp::Rcout << "Threshold calculation for complete likelihood: Sample 100 C_AB with Bernoulli \hat C \n";
-	Rcpp:Rcout << "Note: Calculation takes a few minutes...\n";
+/*void CalculateThresholdsExplicitCHat (run_params p, const vector<double>& OGPreCalcP, const vector<double>& LNPreCalc, gsl_rng *rgen) {
+	Rcpp::Rcout << "Threshold calculation for complete likelihood: Sample 100 C_AB with Bernoulli hat C \n";
+	Rcpp::Rcout << "Note: Calculation takes a few minutes...\n";
 	vector<double> allstats;
 	//Assume that S1 is at time zero
 	double n=0.41369;
 	double r=(0.0008*29782)/365.25;
-	int index=1;
 	for (int s2=-11;s2<=87;s2++) {
 		Rcpp::Rcout << "Track progress : S_B=" << s2 << "\n";
 		for (int d2=s2-5;d2<=s2+20;d2++) {
@@ -125,7 +123,6 @@ void CalculateThresholdsExplicitCHat (run_params p, const vector<double>& OGPreC
 					for (int b=0;b<=h;b++) {
 						int h1=b;
 						int h2=h-b;
-						double logT=0;
 						vector<double> tlog;
 						for (int t=-11;t<=16;t++) {
 							double tl=0;
@@ -211,13 +208,12 @@ void CalculateThresholdsExplicitCHat (run_params p, const vector<double>& OGPreC
 			}
 		}
 	}
-}
+}*/
 
 void CalculateThresholdsNoSeq (run_params p) {
 	Rcpp::Rcout << "Threshold calculation for likelihood with sequence information removed\n";
 	vector<double> allstats;
 	//Assume that S1 is at time zero
-	int index=1;
 	stat ss;
 	ss.s1=0;
 	ss.h1=0;
