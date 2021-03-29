@@ -26,6 +26,7 @@ void GetOptions (run_params& p, int argc, const char **argv) {
 	//Can create an option to optimise over the unknown times of becoming symptomatic
 	p.rate=0.0008;
 	p.seq_noise=0.41369;
+	p.chat=0.5;
 	p.threshold=0;
 	p.thresholdns=0;
 	p.max_n=10;
@@ -53,6 +54,9 @@ void GetOptions (run_params& p, int argc, const char **argv) {
 		} else if (p_switch.compare("--seq_noise")==0) {
 			x++;
 			p.seq_noise=atof(argv[x]);
+		} else if (p_switch.compare("--chat")==0) {
+			x++;
+			p.chat=atof(argv[x]);
 		} else if (p_switch.compare("--diag")==0) {
 			x++;
 			p.diagnostic=atoi(argv[x]);

@@ -34,12 +34,19 @@ DataFrame mainC(List params) {
   vector<double> sdist_prob;
   PrecalculateSymptomDist(p,sdist_interval,sdist_prob);
 	
+	
   if (p.calc_thresholds==1) {
-    CalculateThresholdsNoSeq(p);
-    CalculateThresholdsFull(p);
-//    return List::create();
+	CalculateThresholdsNoSeq(p);
+	return 0;
   }
-
+  if (p.calc_thresholds==2) {
+	CalculateThresholdsFullMeanCHat(p,OGPreCalcP,LNPreCalc);
+	return 0;
+  }
+  if (p.calc_thresholds==3) {
+	CalculateThresholdsExplicitCHat(p,OGPreCalcP,LNPreCalc,rgen);
+    return 0;
+  }
 
   //Code to read in CSV format
   vector<pat> pdat;

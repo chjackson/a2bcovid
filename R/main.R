@@ -154,6 +154,10 @@
 ##'   single hosts, using the criteria that at least 90\% of the reported
 ##'   nucleotides were unambiguous.
 ##'
+##' @param chat Prior estimate of the probability of any two individuals being
+##'   in contact on any given day, conditional on transmission between the two
+##'   individuals having taken place.
+##'
 ##' @param min_qual Minimum sequence quality for a sequence to be included,
 ##'   measured as a fraction of genome coverage (e.g. 0.8 would indicate that at
 ##'   least 80\% of the genome must have been specified by a sequence
@@ -277,6 +281,7 @@ a2bcovid <- function(
   uct_mean=6.67992,
   evo_rate  = 0.0008,
   seq_noise = 0.41369,
+  chat = 0.5,
   threshold=0, threshold_ns=0,
   max_n = 10,
   min_qual = 0.8,
@@ -299,7 +304,7 @@ a2bcovid <- function(
   }
   params <- list(pa=pa, pb=pb, po=po, smu=smu, ssigma=ssigma,
                  ucta=ucta, uctb=uctb, ucto=ucto, uct_mean=uct_mean,
-                 rate=evo_rate, seq_noise=seq_noise,
+                 rate=evo_rate, seq_noise=seq_noise, chat=chat
                  threshold=threshold, threshold_ns=threshold_ns,  max_n=max_n, min_qual=min_qual,
                  ali_file=ali_file, pat_file=pat_file,
                  mov_file=hcw_loc_file, ward_file=pat_loc_file,

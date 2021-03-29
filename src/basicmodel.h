@@ -22,6 +22,7 @@ struct run_params {
 	double uct_mean;  //Mean of the above distribution
 	double rate;	//Substitutions per site per year
 	double seq_noise; //Mean number of errors in sequencing
+	double chat; //Prior probability of co-location
 	int missing_spatial; //Strategy for missing spatial data.  0=remove datapoint.  1=constant probability.  2=Data-driven based on Addenbrookes data we have so far
 	string ali_file;	//Name of alignment file
 	string pat_file;	//Name of file with patient data i.e. code, date of symptoms, HCW status, etc.

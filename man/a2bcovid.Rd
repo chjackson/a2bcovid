@@ -21,6 +21,7 @@ a2bcovid(
   uct_mean = 6.67992,
   evo_rate = 8e-04,
   seq_noise = 0.41369,
+  chat = 0.5,
   threshold = 0,
   threshold_ns = 0,
   max_n = 10,
@@ -205,6 +206,10 @@ genome sequences that arises from sequencing noise.  The default parameter
 was estimated from data collected by Cambridge University Hospitals within
 single hosts, using the criteria that at least 90\% of the reported
 nucleotides were unambiguous.}
+
+\item{chat}{Estimated prior probability of two individuals being in contact
+on a given day, conditional on transmission having occurred between the two
+individuals.  Default is 0.5.}
 
 \item{threshold}{documentme}
 

@@ -61,7 +61,7 @@ void MatchSequencetoPatient (vector<pat>& pdat) {
 
 void IncorporateSequenceData (run_params p, vector<pat>& pdat, vector<string>& names, vector<string>& seqs) {
 	for (int i=0;i<names.size();i++) {
-		Rcpp::Rcout << "Name " << i << " of " << names.size() << " " << names[i] << "\n";
+		//Rcpp::Rcout << "Name " << i << " of " << names.size() << " " << names[i] << "\n";
 		for (int j=0;j<pdat.size();j++) {
 			if (pdat[j].code_match.compare(names[i])==0) {
 				if (p.diagnostic==1) {
