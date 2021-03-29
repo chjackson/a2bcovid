@@ -108,7 +108,7 @@ void CalculateThresholdsFullMeanCHat (run_params p, const vector<double>& OGPreC
 	}
 }
 
-/*void CalculateThresholdsExplicitCHat (run_params p, const vector<double>& OGPreCalcP, const vector<double>& LNPreCalc, gsl_rng *rgen) {
+void CalculateThresholdsExplicitCHat (run_params p, const vector<double>& OGPreCalcP, const vector<double>& LNPreCalc) {
 	Rcpp::Rcout << "Threshold calculation for complete likelihood: Sample 100 C_AB with Bernoulli hat C \n";
 	Rcpp::Rcout << "Note: Calculation takes a few minutes...\n";
 	vector<double> allstats;
@@ -152,11 +152,14 @@ void CalculateThresholdsFullMeanCHat (run_params p, const vector<double>& OGPreC
 						}
 						for (int rep=0;rep<100;rep++) {
 							double logL=0;
-							for (int r=0;r<tlog.size();r++) {
-								if (gsl_ran_bernoulli(rgen,p.chat)==1) {
-									logL=logL+tlog[r];
-								}
-							}
+						  for (int r=0;r<tlog.size();r++) {
+						    //								if (gsl_ran_bernoulli(rgen,p.chat)==1) {
+						    GetRNGstate();
+						    if (R::rbinom(1, p.chat)==1) {
+						      logL=logL+tlog[r];
+						    }
+						    PutRNGstate();
+						}
 							logL=log(logL);
 							allstats.push_back(logL);
 						}
@@ -195,7 +198,7 @@ void CalculateThresholdsFullMeanCHat (run_params p, const vector<double>& OGPreC
 		prob.push_back(i);
 		found.push_back(0);
 	}
-	
+
 	int min=0;
 	for (int i=1;i<allstats.size();i++) {
 		double unlog=log(allstats[i]);
@@ -208,7 +211,7 @@ void CalculateThresholdsFullMeanCHat (run_params p, const vector<double>& OGPreC
 			}
 		}
 	}
-}*/
+}
 
 void CalculateThresholdsNoSeq (run_params p) {
 	Rcpp::Rcout << "Threshold calculation for likelihood with sequence information removed\n";
