@@ -27,8 +27,6 @@ void GetOptions (run_params& p, int argc, const char **argv) {
 	p.rate=0.0008;
 	p.seq_noise=0.41369;
 	p.chat=0.5;
-	p.threshold=0;
-	p.thresholdns=0;
 	p.max_n=10;
 	p.min_qual=0.8;
 	p.error=0;
@@ -75,9 +73,6 @@ void GetOptions (run_params& p, int argc, const char **argv) {
 		} else if (p_switch.compare("--sub_file")==0) {
 			x++;
 			p.sub_file=argv[x];
-		} else if (p_switch.compare("--threshold")==0) {
-			x++;
-			p.threshold=atoi(argv[x]);
 		} else if (p_switch.compare("--hcw_loc_default")==0) {
 			x++;
 			p.hcw_location_default=atof(argv[x]);
@@ -107,7 +102,60 @@ void GetOptions (run_params& p, int argc, const char **argv) {
 		x++;
 	}
 	p.rate=(p.rate*29900)/365.25;
-	SetThreshold(p);
+}
+
+void GetThresholds (vector< vector<double> >& thresholds95, vector< vector<double> >& thresholds99, double& t95NS, double& t99NS, int& error) {
+	t95NS=0;
+	t99NS=0;
+	ifstream t95;
+	ifstream t99;
+	ifstream t95n;
+	ifstream t99n;
+	t95.open("../Data/Thresholds95.dat");
+	t99.open("../Data/Thresholds99.dat");
+	t95n.open("../Data/Thresholds95NS.dat");
+	t99n.open("../Data/Thresholds99NS.dat");
+	int n;
+	double x;
+	t95n >> x;
+	t95NS=x;
+	t99n >> x;
+	t99NS=x;
+	if (t95NS==0) {
+		cout << "Error reading NS threshold: File not found ../Data/Thresholds95NS.dat\n";
+		error=1;
+	}
+	if (t99NS==0) {
+		cout << "Error reading NS threshold: File not found ../Data/Thresholds99NS.dat\n";
+		error=1;
+	}
+	int index1=-10;
+	vector<double> t;
+	for (int i=0;i<1000000;i++) {
+		if (!(t95 >> n)) break;
+		if (!(t95 >> n)) break;
+		if (!(t95 >> x)) break;
+		t.push_back(x);
+		index1++;
+		if (index1>40) {
+			index1=-10;
+			thresholds95.push_back(t);
+			t.clear();
+		}
+	}
+	index1=-10;
+	for (int i=0;i<1000000;i++) {
+		if (!(t99 >> n)) break;
+		if (!(t99 >> n)) break;
+		if (!(t99 >> x)) break;
+		t.push_back(x);
+		index1++;
+		if (index1>40) {
+			index1=-10;
+			thresholds99.push_back(t);
+			t.clear();
+		}
+	}
 }
 
 void ReadPatFromCSVNoSeq(run_params& p, vector<pat>& pdata, const vector<int>& sdist_interval, const vector<double>& sdist_prob) {

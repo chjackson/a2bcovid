@@ -45,17 +45,16 @@ DataFrame mainC(List params) {
   PreCalculateLikelihoods(p,LNPreCalc,OGPreCalcP);
 
   if (p.calc_thresholds==1) {
-	CalculateThresholdsNoSeq(p);
+	CalculateThresholdsNoSeq(p,OGPreCalcP,LNPreCalc);
+	CalculateThresholdsFullExplicit (p,OGPreCalcP,LNPreCalc);
 	return 0;
   }
-  if (p.calc_thresholds==2) {
-	CalculateThresholdsFullMeanCHat(p,OGPreCalcP,LNPreCalc);
+	
+  int error=0;
+  GetThresholds (p.threshold95,p.threshold99,p.t95NS,p.t99NS,error);
+  if (error==1) {
 	return 0;
   }
-  /*if (p.calc_thresholds==3) {
-	CalculateThresholdsExplicitCHat(p,OGPreCalcP,LNPreCalc,rgen);
-    return 0;
-  }*/
 
   //Code to read in CSV format
   vector<pat> pdat;
@@ -217,6 +216,7 @@ run_params DefineParams(List params)
   p.po = as<NumericVector>(params["po"])[0];
   p.smu = as<NumericVector>(params["smu"])[0];
   p.ssigma = as<NumericVector>(params["ssigma"])[0];
+  p.chat = as<NumericVector>(params["chat"])[0];
 
   p.ucta = as<NumericVector>(params["ucta"])[0];
   p.uctb = as<NumericVector>(params["uctb"])[0];
@@ -224,8 +224,8 @@ run_params DefineParams(List params)
   p.uct_mean = as<NumericVector>(params["uct_mean"])[0];
   p.rate = as<NumericVector>(params["rate"])[0];
   p.seq_noise = as<NumericVector>(params["seq_noise"])[0];
-  p.threshold = as<NumericVector>(params["threshold"])[0];
-  p.thresholdns = as<NumericVector>(params["threshold_ns"])[0];
+//  p.threshold = as<NumericVector>(params["threshold"])[0];
+//  p.thresholdns = as<NumericVector>(params["threshold_ns"])[0];
   p.max_n = as<NumericVector>(params["max_n"])[0];
   p.min_qual = as<NumericVector>(params["min_qual"])[0];
 
@@ -245,7 +245,6 @@ run_params DefineParams(List params)
   p.symptom_uncertainty_calc  = as<NumericVector>(params["symptom_uncertainty_calc"])[0];
 
   p.rate=(p.rate*29900)/365.25;
-  SetThreshold(p);
   p.error = 0; 
 
   return p;

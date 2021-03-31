@@ -7,6 +7,7 @@
 
 
 void GetOptions (run_params& p, int argc, const char **argv);
+void GetThresholds (vector< vector<double> >& thresholds95, vector< vector<double> >& thresholds99, double& t95NS, double& t99NS, int& error);
 void ReadPatFromCSV(run_params& p, vector<pat>& pdata, const vector<int>& sdist_interval, const vector<double>& sdist_prob);
 void ReadPatFromCSVNoSeq(run_params& p, vector<pat>& pdata, const vector<int>& sdist_interval, const vector<double>& sdist_prob);
 void RemoveSpaces(string file, int i, int& pr, vector<string>& subs);

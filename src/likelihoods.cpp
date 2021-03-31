@@ -23,6 +23,12 @@ Rcpp::Function msg("message");
 			ijlike lij;
 			lij.lL_tot=0;
 			lij.ns_lL_tot=0;
+			for (int k=0;k<pdat[i].time_s.time.size();k++) {
+				lij.da.push_back(pdat[i].time_seq-pdat[i].time_s.time[k]);
+			}
+			for (int k=0;k<pdat[j].time_s.time.size();k++) {
+				lij.db.push_back(pdat[j].time_seq-pdat[j].time_s.time[k]);
+			}
 			vector<tprob> contact_times_probs;
 			if (pdat[i].code==pdat[j].code) { //Can't transmit to yourself
 				lij.lL_tot=-1e10;
@@ -215,7 +221,7 @@ double NoSeqLikelihoodFromItoJTimeK (int i, int j, int k, const run_params& p, c
 	return L;
 }
 
-
+/*
 //This code isn't currently used, but could be of use if we want to divide the likelihoods into subsets later.
 void FindLikelihoodSubsetsIJ(run_params p, const vector< vector<ijlike> >& like_trans, vector< vector<int> >& subsets) {
 	vector <int> range;
@@ -262,67 +268,94 @@ void FindLikelihoodSubsetsIJ(run_params p, const vector< vector<ijlike> >& like_
 		}
 	}
 }
+*/
 
 
-
-Rcpp::String ThresholdsR (run_params p, double L) {
+Rcpp::String ThresholdsR (run_params p, int i, int j, const vector<pat>& pdat, const vector< vector<ijlike> >& like_trans) {
   Rcpp::String out;
-  //99.9%:-12.8883
-  //99.999%:-17.6422
-  if (L>-8.01729) {
-    out = "Consistent"; //p>0.05
-  } else if (L>-10.0562) {
-    out = "Borderline"; //0.05>p>0.01
-  } else {
-    out = "Unlikely"; //0.01>p
-  }
+	double t95=0;
+	double t99=0;
+	int error=0;
+	for (int k1=0;k1<pdat[i].time_s.time.size();k1++) {
+		if (error==0) {
+			int da=like_trans[i][j].da[k1]+10;
+			for (int k2=0;k2<pdat[j].time_s.time.size();k2++) {
+				if (error==0) {
+					int db=like_trans[i][j].db[k2]+10;
+					if (da<0||db<0||da>51||db>51) {
+						out = "Unlikely";
+						error=1;
+						break;
+					}
+					t95=t95+pdat[i].time_s.prob[k1]*pdat[j].time_s.prob[k2]*p.threshold95[da][db];
+					t99=t99+pdat[i].time_s.prob[k1]*pdat[j].time_s.prob[k2]*p.threshold99[da][db];
+				}
+			}
+		}
+	}
+	if (error==0) {
+		if (like_trans[i][j].lL_tot>t95) {
+			out = "Consistent"; //p>0.05
+		} else if (like_trans[i][j].lL_tot>t99) {
+			out = "Borderline"; //0.05>p>0.01
+		} else {
+			out = "Unlikely"; //0.01>p
+		}
+	}
   return out;
 }
 
 Rcpp::String ThresholdsNSR (run_params p, double L) {
-  Rcpp::String out;
-  //99.999%:-13.7123
-  if (L>-4.62534) {
-    out = "Consistent"; //p>0.05
-  } else if (L>-6.17563) {
-    out = "Borderline"; //0.05>p>0.01
-  } else {
-    out = "Unlikely";
-  }
-  return out;
+	Rcpp::String out;
+	if (L>p.t95NS) {
+		out = "Consistent"; //p>0.05
+	} else if (L>p.t99NS) {
+		out = "Borderline"; //0.05>p>0.01
+	} else {
+		out = "Unlikely";
+	}
+	return out;
 }
 
-void Thresholds (run_params p, double L) {
-		//99.9%:-12.8883
-		//99.999%:-17.6422
-	if (L>-8.01729) {
-	        Rcpp::Rcout << "Consistent "; //p>0.05
-	} else if (L>-10.0562) {
-		Rcpp::Rcout << "Borderline "; //0.05>p>0.01
-	} else {
-		Rcpp::Rcout << "Unlikely "; //0.01>p
+void Thresholds (run_params p, int i, int j, const vector<pat>& pdat, const vector< vector<ijlike> >& like_trans) {
+	//Calculate threshold; Requires probabilistic sum over D_i - S_i and D_j - S_j
+	double t95=0;
+	double t99=0;
+	int error=0;
+	for (int k1=0;k1<pdat[i].time_s.time.size();k1++) {
+		if (error==0) {
+			int da=like_trans[i][j].da[k1]+10;
+			for (int k2=0;k2<pdat[j].time_s.time.size();k2++) {
+				if (error==0) {
+					int db=like_trans[i][j].db[k2]+10;
+					if (da<0||db<0||da>51||db>51) {
+						Rcpp::Rcout << "Unlikely ";
+						error=1;
+						break;
+					}
+					t95=t95+pdat[i].time_s.prob[k1]*pdat[j].time_s.prob[k2]*p.threshold95[da][db];
+					t99=t99+pdat[i].time_s.prob[k1]*pdat[j].time_s.prob[k2]*p.threshold99[da][db];
+				}
+			}
+		}
 	}
-	if (L<p.threshold) {
-		Rcpp::Rcout << "* ";
+	if (error==0) {
+		if (like_trans[i][j].lL_tot>t95) {
+			Rcpp::Rcout << "Consistent "; //p>0.05
+		} else if (like_trans[i][j].lL_tot>t99) {
+			Rcpp::Rcout << "Borderline "; //0.05>p>0.01
+		} else {
+			Rcpp::Rcout << "Unlikely "; //0.01>p
+		}
 	}
 }
 
 void ThresholdsNS (run_params p, double L) {
-	//99.999%:-13.7123
-	if (L>-4.62534) {
+	if (L>p.t95NS) {
 		Rcpp::Rcout << "Consistent "; //p>0.05
-	} else if (L>-6.17563) {
+	} else if (L>p.t99NS) {
 		Rcpp::Rcout << "Borderline "; //0.05>p>0.01
 	} else {
 		Rcpp::Rcout << "Unlikely "; //0.01>p
 	}
-	if (L<p.thresholdns) {
-		Rcpp::Rcout << "* ";
-	}
-}
-
-void SetThreshold (run_params& p) {
-	//Here have 99.999% thresholds
-	p.threshold=-17.6422;
-	p.thresholdns=-13.7123;
 }

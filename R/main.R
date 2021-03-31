@@ -216,8 +216,6 @@
 ##' specified by the parameters ucta, uctb, and ucto, to model the undertainty
 ##' in the date of onset of symptom
 ##'
-##' @param threshold documentme
-##' @param threshold_ns documentme
 ##' @param calc_thresholds documentme
 ##'
 ##'
@@ -282,7 +280,6 @@ a2bcovid <- function(
   evo_rate  = 0.0008,
   seq_noise = 0.41369,
   chat = 0.5,
-  threshold=0, threshold_ns=0,
   max_n = 10,
   min_qual = 0.8,
   calc_thresholds=FALSE,
@@ -306,7 +303,7 @@ a2bcovid <- function(
                  ucta=ucta, uctb=uctb, ucto=ucto, uct_mean=uct_mean,
                  rate=evo_rate, seq_noise=seq_noise,
 				 chat=chat,
-                 threshold=threshold, threshold_ns=threshold_ns,  max_n=max_n, min_qual=min_qual,
+                 max_n=max_n, min_qual=min_qual,
                  ali_file=ali_file, pat_file=pat_file,
                  mov_file=hcw_loc_file, ward_file=pat_loc_file,
                  calc_thresholds=calc_thresholds,

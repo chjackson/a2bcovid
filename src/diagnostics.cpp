@@ -87,12 +87,10 @@ DataFrame LikelihoodOutputR(run_params p, const vector<int>& ordered, const vect
 		orderj[k] = ordered[j];
         if (p.ali_file.compare("")==0) {
           likelihood[k] = like_trans[i][j].ns_lL_tot;
-          consistency[k] = ThresholdsNSR(p, like_trans[i][j].ns_lL_tot);
-          under_threshold[k] = (likelihood[k] < p.thresholdns);
+          consistency[k] = ThresholdsNSR(p, like_trans[i][j].lL_tot);
         } else {
           likelihood[k] = like_trans[i][j].lL_tot;
-          consistency[k] = ThresholdsR(p, like_trans[i][j].lL_tot);
-          under_threshold[k] = (likelihood[k] < p.threshold);
+		  consistency[k] = ThresholdsR(p, i, j, pdat, like_trans);
         }
         ++k;
       }
@@ -104,8 +102,7 @@ DataFrame LikelihoodOutputR(run_params p, const vector<int>& ordered, const vect
                               Named("ordered_i")  = orderi,
                               Named("ordered_j")  = orderj,
                               Named("likelihood") = likelihood,
-                              Named("consistency") = consistency,
-                              Named("under_threshold") = under_threshold );
+                              Named("consistency") = consistency );
 }
 
 void LikelihoodOutput (run_params p, const vector<pat>& pdat, const vector< vector<ijlike> >& like_trans) {
@@ -118,7 +115,7 @@ void LikelihoodOutput (run_params p, const vector<pat>& pdat, const vector< vect
 				Rcout << "\n";
 			} else {
 				Rcout << like_trans[i][j].lL_tot << " ";
-				Thresholds(p,like_trans[i][j].lL_tot);
+				Thresholds(p,i,j,pdat,like_trans);
 				Rcout << "\n";
 			}
 		}

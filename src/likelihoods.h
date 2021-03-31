@@ -30,10 +30,10 @@ double NoSeqLikelihoodFromItoJTimeK (int i, int j, int k, const run_params& p, c
 void FindLikelihoodSubsetsIJ(run_params p, const vector< vector<ijlike> >& like_trans, vector< vector<int> >& subsets);
 
 
-Rcpp::String ThresholdsR (run_params p, double L);
 Rcpp::String ThresholdsNSR (run_params p, double L);
+Rcpp::String ThresholdsR (run_params p, int i, int j, const vector<pat>& pdat, const vector< vector<ijlike> >& like_trans);
 
-void Thresholds (run_params p, double L);
+void Thresholds (run_params p, int i, int j, const vector<pat>& pdat, const vector< vector<ijlike> >& like_trans);
 void ThresholdsNS (run_params p, double L);
 
 void SetThreshold (run_params& p);

@@ -33,8 +33,10 @@ struct run_params {
 	int seqvar; //Flag to account for uncertainty over sequence composition
 	int max_n; //Maximum number of ambiguous sites to allow per sequence.  Delete any sequence with more than this
 	double min_qual; //Minimum sequence quality by coverage of the genome
-	double threshold; //Likelihood threshold at which to cut the network into subsets
-	double thresholdns; //Likelihood threshold for case of no sequence data.  Used in tree evaluation
+	double t95NS;  //95% threshold, no sequence data
+	double t99NS;  //99% threshold, no sequence data
+	vector< vector<double> > threshold95; //95% thresholds by {D_A,D_B}
+	vector< vector<double> > threshold99; //99% thresholds by {D_A,D_B}
 	char pat_delim; //Delimiter for date information in the patient data file
 	char mov_delim; //Delimiter for date information in the HCW movement data file
 	int diagnostic; //Flag to run various diagnostics - prints out various data along the way
@@ -83,6 +85,8 @@ struct ijlike {
 	double ns_lL_tot;
 	int min; //Minimum time
 	int max; //Maximum time
+	vector<int> da; //Time of sequencing relative to s1.  Vector because the symptom time is a vector
+	vector<int> db; //Time of sequencing relative to s2
 	vector<int> contact_times;
 	vector<double> contact_likes;
 	vector<double> noseq_likes;
