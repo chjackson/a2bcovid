@@ -44,8 +44,10 @@ void CalculateThresholdsFullExplicit (run_params p, const vector<double>& OGPreC
 	f99.open("../Data/Thresholds99Exp.out");
 	vector< vector<double> > thresholds95;
 	vector< vector<double> > thresholds99;
+	Rcpp::Rcout << "Calculating thresholds:\n";
+	Rcpp::Rcout << "---------------------------------------------------\n";
 	for (int d1=-10;d1<=40;d1++) {
-		cout << d1 << "\n";
+		Rcpp::Rcout << "|";
 		vector<double> t95;
 		vector<double> t99;
 		for (int d2d=-10;d2d<=40;d2d++) {

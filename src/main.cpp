@@ -19,6 +19,8 @@ using namespace Rcpp;
 #include "thresholds.h"
 #include "io.h"
 
+//Technical note: For convenience this code excludes the constant term 0.5^{|C|-1} described within the text.  As implemented, this affects the absolute values which are returned by the code, but has no impact on the comparison of said values.
+
 run_params DefineParams(List params);
 
 // [[Rcpp::export]]

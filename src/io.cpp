@@ -122,11 +122,11 @@ void GetThresholds (vector< vector<double> >& thresholds95, vector< vector<doubl
 	t99n >> x;
 	t99NS=x;
 	if (t95NS==0) {
-		cout << "Error reading NS threshold: File not found ../Data/Thresholds95NS.dat\n";
+		Rcpp::Rcout << "Error reading NS threshold: File not found ../Data/Thresholds95NS.dat\n";
 		error=1;
 	}
 	if (t99NS==0) {
-		cout << "Error reading NS threshold: File not found ../Data/Thresholds99NS.dat\n";
+		Rcpp::Rcout << "Error reading NS threshold: File not found ../Data/Thresholds99NS.dat\n";
 		error=1;
 	}
 	int index1=-10;
@@ -399,7 +399,7 @@ void ReadHCWMovFromCSV(run_params& p, vector<pat>& pdata) {
 }
 
 void ReadWardMovFromCSV(run_params& p, vector<pat>& pdata) {
-	cout << "Read ward file\n";
+	Rcpp::Rcout << "Read ward file\n";
 	ifstream csv_file;
 	csv_file.open(p.ward_file.c_str());
 	string str;

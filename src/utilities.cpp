@@ -474,9 +474,9 @@ void FindRepeatPatients (run_params p, const vector<pat>& pdat, vector <vector<i
 				repeatpatients.push_back(rp);
 				if (p.diagnostic==1) {
 					for (int j=0;j<rp.size();j++) {
-						cout << rp[j] << " ";
+						Rcpp::Rcout << rp[j] << " ";
 					}
-					cout << "\n";
+					Rcpp::Rcout << "\n";
 				}
 			}
 		}
