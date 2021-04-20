@@ -121,11 +121,11 @@ void GetThresholds (vector< vector<double> >& thresholds95, vector< vector<doubl
 	t95NS=x;
 	t99n >> x;
 	t99NS=x;
-	if (t95NS==0) {
+	if (t95NS<=0.01) {
 		Rcpp::Rcout << "Error reading NS threshold: File not found ../Data/Thresholds95NS.dat\n";
 		error=1;
 	}
-	if (t99NS==0) {
+	if (t99NS<=0.01) {
 		Rcpp::Rcout << "Error reading NS threshold: File not found ../Data/Thresholds99NS.dat\n";
 		error=1;
 	}
@@ -155,6 +155,14 @@ void GetThresholds (vector< vector<double> >& thresholds95, vector< vector<doubl
 			thresholds99.push_back(t);
 			t.clear();
 		}
+	}
+	if (thresholds95.size()<1) {
+		Rcpp::cout << "Error reading thresholds.  Can't find file ../Data/Thresholds95.dat: Check this\n";
+		error=1;
+	}
+	if (thresholds99.size()<1) {
+		Rcpp::Rcout << "Error reading thresholds.  Can't find file ../Data/Thresholds99.dat: Check this\n";
+		error=1;
 	}
 }
 
