@@ -76,12 +76,20 @@ void FindAmbiguousVarPositions (const vector<allele>& allvar, vector<pat>& pdat,
 	for (int i=0;i<pdat.size();i++) {
 		int nc=0;
 		for (int j=0;j<allvar.size();j++) {
-			if (pdat[i].seq.compare(allvar[j].loc,1,"N")==0) {
+			if (allvar[j].loc>pdat[i].seq.size()) {
 				idat id;
 				id.loc=allvar[j].loc;
 				id.q=0;
 				pdat[i].seq_uncertainty.push_back(id);
 				nc++;
+			} else {
+				if (pdat[i].seq.compare(allvar[j].loc,1,"N")==0) {
+					idat id;
+					id.loc=allvar[j].loc;
+					id.q=0;
+					pdat[i].seq_uncertainty.push_back(id);
+					nc++;
+				}
 			}
 		}
 		nloc_count.push_back(nc);
