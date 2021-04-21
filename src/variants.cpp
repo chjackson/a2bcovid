@@ -49,15 +49,25 @@ void ListAllVariantPositions (const vector<sparseseq>& variants, vector<allele>&
 	}
 	sort(allvar.begin(),allvar.end(),compare_allele);
 	vector<int> to_rem;
-	for (int i=allvar.size();i>0;i--) {
+	for (int i=1;i<allvar.size();i++) {
 		if (allvar[i].loc==allvar[i-1].loc&&allvar[i].nuc==allvar[i-1].nuc) {
 			to_rem.push_back(i);
-			//Rcpp::Rcout << "Remove " << i << "\n";
 		}
 	}
-	for (int i=0;i<to_rem.size();i++) {
-		allvar.erase(allvar.begin()+to_rem[i]);
+	vector<int> keep;
+	int index=0;
+	for (int i=0;i<allvar.size();i++) {
+		if (i==to_rem[index]) {
+			index++;
+		} else {
+			keep.push_back(i);
+		}
 	}
+	vector<allele> allvar_new;
+	for (int i=0;i<keep.size();i++) {
+		allvar_new.push_back(allvar[keep[i]]);
+	}
+	allvar=allvar_new;
 }
 
 
