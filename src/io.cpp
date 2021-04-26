@@ -157,7 +157,7 @@ void GetThresholds (vector< vector<double> >& thresholds95, vector< vector<doubl
 		}
 	}
 	if (thresholds95.size()<1) {
-		Rcpp::cout << "Error reading thresholds.  Can't find file ../Data/Thresholds95.dat: Check this\n";
+		Rcpp::Rcout << "Error reading thresholds.  Can't find file ../Data/Thresholds95.dat: Check this\n";
 		error=1;
 	}
 	if (thresholds99.size()<1) {
