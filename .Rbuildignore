@@ -8,5 +8,4 @@ R/files.R
 ^doc$
 ^docs$
 R/locations.R
-*.dll
-
+^.*\.dll
