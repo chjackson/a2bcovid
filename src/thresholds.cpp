@@ -2,6 +2,7 @@
 #include "basicmodel.h"
 #include "thresholds.h"
 #include "distributions.h"
+#include "io.h"
 
 #include "Rcpp.h"
 
@@ -10,8 +11,8 @@ using namespace std;
 void CalculateThresholdsFull (run_params p, const vector<double>& OGPreCalcP, const vector<double>& LNPreCalc) {
 	ofstream f95;
 	ofstream f99;
-	f95.open("../Data/Thresholds95.out");
-	f99.open("../Data/Thresholds99.out");
+	f95.open(get_extdata("Thresholds95.dat"));
+	f99.open(get_extdata("Thresholds99.dat"));
 	vector< vector<double> > thresholds95;
 	vector< vector<double> > thresholds99;
 	for (int d1=-10;d1<=40;d1++) {
@@ -40,8 +41,8 @@ void CalculateThresholdsFull (run_params p, const vector<double>& OGPreCalcP, co
 void CalculateThresholdsFullExplicit (run_params p, const vector<double>& OGPreCalcP, const vector<double>& LNPreCalc) {
 	ofstream f95;
 	ofstream f99;
-	f95.open("../Data/Thresholds95Exp.out");
-	f99.open("../Data/Thresholds99Exp.out");
+	f95.open(get_extdata("Thresholds95Exp.dat"));
+	f99.open(get_extdata("Thresholds99Exp.dat"));
 	vector< vector<double> > thresholds95;
 	vector< vector<double> > thresholds99;
 	Rcpp::Rcout << "Calculating thresholds:\n";
@@ -78,7 +79,7 @@ vector<double> CalculateThresholdsSpecificDMean (run_params p, int d1, int d2d, 
 	double n=0.41369;
 	double r=(0.0008*29782)/365.25;
 	//ofstream tf_file;
-	//tf_file.open("Threshold_data.out");
+	//tf_file.open("Threshold_data.dat");
 	for (int s2=-11;s2<=87;s2++) {
 		int d2=s2+d2d;
 		for (int h=0;h<=10;h++) {
@@ -170,8 +171,8 @@ vector<double> CalculateThresholdsSpecificDMean (run_params p, int d1, int d2d, 
 void CalculateThresholdsNoSeq (run_params p, const vector<double>& OGPreCalcP, const vector<double>& LNPreCalc) {
 	ofstream f95;
 	ofstream f99;
-	f95.open("../Data/ThresholdNS95.out");
-	f99.open("../Data/ThresholdNS99.out");
+	f95.open(get_extdata("Thresholds95NS.dat"));
+	f99.open(get_extdata("Thresholds99NS.dat"));
 	vector<double> y=CalculateThresholdsNSSpecific(p,OGPreCalcP,LNPreCalc);
 	f95 << y[0] << "\n";
 	f99 << y[1] << "\n";

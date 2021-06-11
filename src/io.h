@@ -5,6 +5,7 @@
 #include <fstream>
 #include <vector>
 
+string get_extdata(string fname);
 
 void GetOptions (run_params& p, int argc, const char **argv);
 void GetThresholds (vector< vector<double> >& thresholds95, vector< vector<double> >& thresholds99, double& t95NS, double& t99NS, int& error);

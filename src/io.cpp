@@ -4,6 +4,15 @@
 #include <string>
 #include "Rcpp.h"
 
+// Return C string with the full path to the given package data file after package installation
+string get_extdata(string fname){
+    Rcpp::Environment base("package:base");
+    Rcpp::Function sys_file = base["system.file"];
+    Rcpp::StringVector rstr = sys_file("extdata", fname, Rcpp::_["package"] = "a2bcovid");
+    std::string str = Rcpp::as<std::string>(rstr);
+    return str;
+}
+
 void GetOptions (run_params& p, int argc, const char **argv) {
 	string p_switch;
 	//Infectious potential relative to time of symptoms
@@ -111,22 +120,23 @@ void GetThresholds (vector< vector<double> >& thresholds95, vector< vector<doubl
 	ifstream t99;
 	ifstream t95n;
 	ifstream t99n;
-	t95.open("../Data/Thresholds95.dat");
-	t99.open("../Data/Thresholds99.dat");
-	t95n.open("../Data/Thresholds95NS.dat");
-	t99n.open("../Data/Thresholds99NS.dat");
+	t95.open(get_extdata("Thresholds95.dat"));
+	t99.open(get_extdata("Thresholds99.dat"));
+	t95n.open(get_extdata("Thresholds95NS.dat"));
+	t99n.open(get_extdata("Thresholds99NS.dat"));
 	int n;
 	double x;
 	t95n >> x;
 	t95NS=x;
 	t99n >> x;
 	t99NS=x;
+
 	if (t95NS>=-0.01) {
-		Rcpp::Rcout << "Error reading NS threshold: File not found ../Data/Thresholds95NS.dat\n";
+		Rcpp::Rcout << "Error reading NS threshold. File not found: Thresholds95NS.dat\n";
 		error=1;
 	}
 	if (t99NS>=-0.01) {
-		Rcpp::Rcout << "Error reading NS threshold: File not found ../Data/Thresholds99NS.dat\n";
+		Rcpp::Rcout << "Error reading NS threshold. File not found: Thresholds99NS.dat\n";
 		error=1;
 	}
 	int index1=-10;
