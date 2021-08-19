@@ -61,10 +61,14 @@ Rcpp::Function msg("message");
 
 					FillTimes(contact_times_probs);
 					for (int k=0;k<contact_times_probs.size();k++) {
-						double lL=LikelihoodFromItoJTimeK (i,j,k,p,contact_times_probs,seqdists,seqdists_c,pdat);
-						lij.lL_tot=lij.lL_tot+exp(lL);
-						lij.contact_times.push_back(contact_times_probs[k].time);
-						lij.contact_likes.push_back(lL);
+						if (p.ali_file.compare("")!=0) {
+							lij.lL_tot=-1e10;
+						} else {
+							double lL=LikelihoodFromItoJTimeK (i,j,k,p,contact_times_probs,seqdists,seqdists_c,pdat);
+							lij.lL_tot=lij.lL_tot+exp(lL);
+							lij.contact_times.push_back(contact_times_probs[k].time);
+							lij.contact_likes.push_back(lL);
+						}
 						double lLnoseq=NoSeqLikelihoodFromItoJTimeK (i,j,k,p,contact_times_probs,pdat);
 						lij.noseq_likes.push_back(lLnoseq);
 						lij.ns_lL_tot=lij.ns_lL_tot+exp(lLnoseq);
@@ -87,6 +91,7 @@ Rcpp::Function msg("message");
 				lij.lL_tot=-1e10;
 			}
 			lt.push_back(lij);
+			//Rcpp::Rcout << i << " " << j << " " << lij.ns_lL_tot << " " << p.t95NS << " " << p.t99NS << "\n";
 		}
 		like_trans.push_back(lt);
 	}
