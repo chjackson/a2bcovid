@@ -702,31 +702,33 @@ void EditHCWMovData (vector<pat>& pdat) {
 	//Assign a probability of 0.5 to the days before and after a known presence
 	for (int i=0;i<pdat.size();i++) {
 		vector<loc> new_loc;
-		for (int j=0;j<pdat[i].locat.size();j++) {
-			loc l=pdat[i].locat[j];
-			int minus=1;
-			int plus=1;
-			if (j>0&&pdat[i].locat[j-1].date==l.date-1&&pdat[i].locat[j-1].ward==l.ward&&pdat[i].locat[j-1].prob==1) {
-				minus=0;
+		if (pdat[i].hcw==1) {
+			for (int j=0;j<pdat[i].locat.size();j++) {
+				loc l=pdat[i].locat[j];
+				int minus=1;
+				int plus=1;
+				if (j>0&&pdat[i].locat[j-1].date==l.date-1&&pdat[i].locat[j-1].ward==l.ward&&pdat[i].locat[j-1].prob==1) {
+					minus=0;
+				}
+				if (j<pdat[i].locat.size()-1&&pdat[i].locat[j+1].date==l.date+1&&pdat[i].locat[j+1].ward==l.ward&&pdat[i].locat[j+1].prob==1) {
+					plus=0;
+				}
+				if (minus==1) {
+					loc lm=l;
+					lm.date--;
+					lm.prob=0.5;
+					new_loc.push_back(lm);
+				}
+				if (plus==1) {
+					loc lp=l;
+					lp.date++;
+					lp.prob=0.5;
+					new_loc.push_back(lp);
+				}
 			}
-			if (j<pdat[i].locat.size()-1&&pdat[i].locat[j+1].date==l.date+1&&pdat[i].locat[j+1].ward==l.ward&&pdat[i].locat[j+1].prob==1) {
-				plus=0;
+			for (int j=0;j<new_loc.size();j++) {
+				pdat[i].locat.push_back(new_loc[j]);
 			}
-			if (minus==1) {
-				loc lm=l;
-				lm.date--;
-				lm.prob=0.5;
-				new_loc.push_back(lm);
-			}
-			if (plus==1) {
-				loc lp=l;
-				lp.date++;
-				lp.prob=0.5;
-				new_loc.push_back(lp);
-			}
-		}
-		for (int j=0;j<new_loc.size();j++) {
-			pdat[i].locat.push_back(new_loc[j]);
 		}
 	}
 }
