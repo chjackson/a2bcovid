@@ -8,7 +8,7 @@
 string get_extdata(string fname){
     Rcpp::Environment base("package:base");
     Rcpp::Function sys_file = base["system.file"];
-    Rcpp::StringVector rstr = sys_file("extdata", fname, Rcpp::_["package"] = "a2bcovid");
+    Rcpp::StringVector rstr = sys_file("inst", "extdata", fname, Rcpp::_["package"] = "a2bcovid");
     std::string str = Rcpp::as<std::string>(rstr);
     return str;
 }
