@@ -274,10 +274,10 @@ void ReadPatFromCSV(run_params& p, vector<pat>& pdata, const vector<int>& sdist_
 			}
 			RemoveSpaces(p.pat_file.c_str(),i,spwarn,subs);
 			
-			if (subs[5].compare("")==0&&subs[6].compare("")!=0) {
-				cout << "Warning: Missing date of sample collection in " << subs[0] << ".  Replacing with date of sample receipt.\n";
-				subs[5]=subs[6];
-			}
+		//	if (subs[5].compare("")==0&&subs[6].compare("")!=0) {
+		//		cout << "Warning: Missing date of sample collection in " << subs[0] << ".  Replacing with date of sample receipt.\n";
+		//		subs[5]=subs[6];
+		//	} //Revert change from November
 			
 			pt.code=subs[0];
 			pt.code_match=subs[4];
@@ -329,15 +329,15 @@ void ReadPatFromCSV(run_params& p, vector<pat>& pdata, const vector<int>& sdist_
 			//Rcpp::Rcout << str << "\n";
 			//Rcpp::Rcout << pt.code << " " << pt.code_match << " " << pt.hcw << " " << pt.type << " " << pt.time_s.most_likely << " " << pt.time_seq << " " << pt.time_s_cert << "\n";
 			pdata.push_back(pt);
-		} else if (i>0) {
-			pat pt;
-			//Edit string to remove "
-			RemovePunc(str);
-			//Split by commas
-			vector<string> subs;
-			SplitCommas(str,subs);
-			RemoveSpaces(p.pat_file.c_str(),i,spwarn,subs);
-			cout << "Exclude individual " << subs[0] << " due to error in data\n";
+		//} else if (i>0) {
+		//	pat pt;
+		//	//Edit string to remove "
+		//	RemovePunc(str);
+		//	//Split by commas
+		//	vector<string> subs;
+		//	SplitCommas(str,subs);
+		//	RemoveSpaces(p.pat_file.c_str(),i,spwarn,subs);
+		//	cout << "Exclude individual " << subs[0] << " due to error in data\n"; //Revert change from November
 		}
 	}
 }
