@@ -87,7 +87,7 @@ DataFrame LikelihoodOutputR(run_params p, const vector<int>& ordered, const vect
 		orderj[k] = ordered[j];
         if (p.ali_file.compare("")==0) {
           likelihood[k] = like_trans[i][j].ns_lL_tot;
-          consistency[k] = ThresholdsNSR(p, like_trans[i][j].lL_tot);
+          consistency[k] = ThresholdsNSR(p, like_trans[i][j].ns_lL_tot);
         } else {
           likelihood[k] = like_trans[i][j].lL_tot;
 		  consistency[k] = ThresholdsR(p, i, j, pdat, like_trans);

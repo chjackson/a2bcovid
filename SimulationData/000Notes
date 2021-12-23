@@ -1,0 +1,48 @@
+#1: Simulation of direct and indirect transmission
+
+The Mathematica software package v12.3.1.0 was used to generate simulated data, describing:
+
+i) Direct transmission events from A to B
+
+ii) Indirect transmission events, separated by other indiviuduals, i.e. from A to a chain of n individuals then to B.
+
+The individual A was assumed to have been infected on day 0.
+
+In our model:
+
+The time of symptom onset was distributed according to the lognormal distribution described in the main text for the original SARS-CoV-2 variant
+
+The time of infection was calculated from an offset gamma distribution, conditional on the time to symptom onset.
+
+The time at which a sample was collected for sequencing was calculated as a uniformly distributed integer between 2 and 10 days inclusive after symptom onset.
+
+The number of substitutions in the genomes collected from A and B were calculated using the Poisson process for evolution described in the main text, with a rate equal to the rate of evolution multiplied by the time from transmission to sample collection plus the error term.
+
+Outputs were recorded in the form:
+
+S_A	S_B	D_A	D_B	E_A	E_B
+
+where
+
+S_A = day when A became symptomatic
+S_B = day when B became symptomatic
+D_A = day when sequence data was collected from A
+D_B = day when sequence data was collected from B
+E_A = number of sequence substitutions detected in the sequence collected from A
+E_B = number of sequence substitutions detected in the sequence collected from B
+
+A total of 10^5 simulations were performed for each relationship between A and B.  Data for the direct transmission events are provided in the file Direct.dat.  Data from the indirect transmission events are provided in the files Indirectn.dat for n between 1 and 8.
+
+#2. Calculation of consistency with the model for simulated data
+
+A reduced version of the A2B-COVID software package was designed for calulating consistency for simulated data.  Code is contained within the A2B-Core directory.  This code is identical to that used in A2B-COVID, but stripped down to the basic model, without the R implementation or graphical interface.
+
+The code can be compiled using a C compiler using the command line:
+
+make basic.
+
+The code can then be run from the command line, with the simulation data fed in instead of patient information:
+
+./run_basic --pat_file Direct.dat 
+
+The script analysis.sh can be used to analyse various outputs from this code, calculating the number of individual simulations that were judged to be Consistent, Unlikely, or Borderline.
