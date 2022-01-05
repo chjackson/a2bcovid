@@ -53,7 +53,7 @@ DataFrame mainC(List params) {
   }
 	
   int error=0;
-  GetThresholds (p.threshold95,p.threshold99,p.t95NS,p.t99NS,error);
+  GetThresholds (p.threshold95,p.threshold99,p.t95NS,p.t99NS,p.strain,error);
   if (error==1) {
 	return 0;
   }
@@ -245,6 +245,7 @@ run_params DefineParams(List params)
   p.pat_location_default  = as<NumericVector>(params["pat_location_default"])[0];
   p.use_all_seqs  = as<NumericVector>(params["use_all_seqs"])[0];
   p.symptom_uncertainty_calc  = as<NumericVector>(params["symptom_uncertainty_calc"])[0];
+  p.strain = as<CharacterVector>(params["strain"])[0];
 
   p.rate=(p.rate*29900)/365.25;
   p.error = 0; 

@@ -4,16 +4,16 @@ hcw_loc_file <- system.file("extdata", "Example_movement_file.csv", package="a2b
 ali_file <- system.file("extdata", "Example_sequences.fa", package="a2bcovid")
 pat_loc_file <- system.file("extdata", "Example_pat_loc_file.csv", package="a2bcovid")
 
-pat_file
-
 library(testthat)
 
-expect_error(
-  res <- a2bcovid(pat_file = pat_file, hcw_loc_file = hcw_loc_file,
-                  ali_file = ali_file, pat_loc_file = "wibble"),
-  "`wibble` not found")
-
 res <- a2bcovid(pat_file = pat_file)
+
+res <- a2bcovid(pat_file = pat_file, strain="default")
+res <- a2bcovid(pat_file = pat_file, strain="delta")
+res <- a2bcovid(pat_file = pat_file, strain=list(pa=90, pb=0.2, po=25, smu=1.3, ssigma=0.7))
+expect_error(res <- a2bcovid(pat_file = pat_file, strain=list(pa=90, pb=0.2, po=25, smu=1.3)),
+             "strain\\[\\[\"ssigma\"\\]\\] should be a number")
+expect_error(res <- a2bcovid(pat_file = pat_file, strain="wibble"), "`strain` should be")
 
 res <- a2bcovid(pat_file = pat_file,
                 ali_file = ali_file, pat_loc_file = pat_loc_file)
@@ -23,6 +23,13 @@ res <- a2bcovid(pat_file = pat_file, hcw_loc_file = hcw_loc_file,
 plot_a2bcovid(res, hi_from="from_hcw", hi_to="to_hcw")
 plot_a2bcovid(res)
 plot(res)
+
+expect_error(
+  res <- a2bcovid(pat_file = pat_file, hcw_loc_file = hcw_loc_file,
+                  ali_file = ali_file, pat_loc_file = "wibble"),
+  "`wibble` not found")
+expect_error(res <- a2bcovid(pat_file = c(1,2,3)), "pat_file should be a character vector")
+expect_error(res <- a2bcovid(pat_file = pat_file, ali_file = 1, "ali_file should be"))
 
 ## todo get seq or not
 res$x

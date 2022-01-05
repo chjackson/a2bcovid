@@ -113,17 +113,25 @@ void GetOptions (run_params& p, int argc, const char **argv) {
 	p.rate=(p.rate*29900)/365.25;
 }
 
-void GetThresholds (vector< vector<double> >& thresholds95, vector< vector<double> >& thresholds99, double& t95NS, double& t99NS, int& error) {
+void GetThresholds (vector< vector<double> >& thresholds95, vector< vector<double> >& thresholds99, double& t95NS, double& t99NS, string strain, int& error) {
 	t95NS=0;
 	t99NS=0;
 	ifstream t95;
 	ifstream t99;
 	ifstream t95n;
 	ifstream t99n;
-	t95.open(get_extdata("Thresholds95.dat"));
-	t99.open(get_extdata("Thresholds99.dat"));
-	t95n.open(get_extdata("Thresholds95NS.dat"));
-	t99n.open(get_extdata("Thresholds99NS.dat"));
+	string t95fn;
+	string t99fn;
+	string t95nsfn;
+	string t99nsfn;
+	if (strain=="delta") { t95fn = "ThresholdsD95.dat"; } else { t95fn = "ThresholdsD95.dat"; }
+	if (strain=="delta") { t99fn = "ThresholdsD99.dat"; } else { t99fn = "ThresholdsD99.dat"; }
+	if (strain=="delta") { t95nsfn = "ThresholdsD95NS.dat"; } else { t95nsfn = "ThresholdsD95NS.dat"; }
+	if (strain=="delta") { t99nsfn = "ThresholdsD99NS.dat"; } else { t99nsfn = "ThresholdsD99NS.dat"; }
+	t95.open(get_extdata(t95fn));
+	t99.open(get_extdata(t99fn));
+	t95n.open(get_extdata(t95nsfn));
+	t99n.open(get_extdata(t99nsfn));
 	int n;
 	double x;
 	t95n >> x;

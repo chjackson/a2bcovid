@@ -48,6 +48,7 @@ struct run_params {
 	int use_all_seqs; //Flag to use all sequences.  Don't discard duplicate sequences.  Find the maximum likelihood value across all sequences for each pair
 	int error; //General error flag
 	int symptom_uncertainty_calc;
+        string strain;
 };
 
 

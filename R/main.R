@@ -190,33 +190,43 @@
 ##' @param ucto Offset parameter for a gamma distribution of the times bewterrn
 ##'   becomining symptomatic and testing positive.  Currently not used.
 ##'
-##' @param pa Alpha parameter for the gamma distribution for the infectious
+##' @param strain Specification of parameters describing transmission dynamics.  This
+##' can be supplied as a list with the following components
+##'
+##' * \code{pa} Alpha parameter for the gamma distribution for the infectious
 ##'   potential of an individual.
 ##'
-##' @param pb Beta parameter for the gamma distribution for the infectious
+##' * \code{pb} Beta parameter for the gamma distribution for the infectious
 ##'   potential of an individual.
 ##'
-##' @param po Offset parameter for the gamma distribution for the infectious
+##' * \code{po} Offset parameter for the gamma distribution for the infectious
 ##'   potential of an individual.
 ##'
-##' @param smu Mu parameter for the lognormal distribution for the time from
+##' * \code{smu} Mu parameter for the lognormal distribution for the time from
 ##'   infection to becoming symptomatic.
 ##'
-##' @param ssigma Sigma parameter for the lognormal distribution for the time
+##' * \code{ssigma} Sigma parameter for the lognormal distribution for the time
 ##'   from infection to becoming symptomatic.
 ##'
-##' @param diagnostic Flag to enable extensive diagnostic output from the
+##' Alternatively, a set of standard values can be used through the following specification:
+##' 
+##'  \code{strain = "default"} is equivalent to \code{strain = list(pa=97.18750, pb=0.268908, po=25.625, smu=1.434065, ssigma=0.6612)}, representing the original strain of the SARS-CoV-2 virus.  This is the default. 
+##' 
+##'  \code{strain = "delta"}, equivalent to \code{strain = list(pa = 38.4805, pb=0.468049, po=20, smu=1.39599, ssigma=0.41354)}, representing the Delta variant of SARS-CoV-2.
+##' 
+##'
+##' @param diagnostic Binary flag to enable extensive diagnostic output from the
 ##'   function.
 ##'
-##' @param use_all_seqs Flag to use multiple sequences from an individual, rather
+##' @param use_all_seqs Binary flag to use multiple sequences from an individual, rather
 ##'   than simply the first collected.  Reports the maximum likelihood calculated
 ##'   across all sequences from an individual.
 ##'
-##' @symptom_uncertainty_calc Flag to use a complete offset gamma distribution,
-##' specified by the parameters ucta, uctb, and ucto, to model the undertainty
-##' in the date of onset of symptom
+##' @param symptom_uncertainty_calc Binary flag to use a complete offset gamma distribution,
+##' specified by the parameters ucta, uctb, and ucto, to model the uncertainty
+##' in the date of onset of symptom.
 ##'
-##' @param calc_thresholds documentme
+##' @param calc_thresholds Currently unused.
 ##'
 ##'
 ##' @return A data frame with the following columns
@@ -273,8 +283,7 @@ a2bcovid <- function(
   hcw_loc_file = "",
   ali_file = "",
   pat_loc_file = "",
-  pa=97.18750, pb=0.268908, po=25.625,
-  smu=1.434065, ssigma=0.6612,
+  strain = "default", 
   ucta=2.5932152095707406, uctb=3.7760060663975437, ucto=3.112080041460921,
   uct_mean=6.67992,
   evo_rate  = 0.0008,
@@ -290,16 +299,30 @@ a2bcovid <- function(
   symptom_uncertainty_calc = 0
 )
 {
-  ali_file <- check_file(ali_file)
-  pat_file <- check_file(pat_file)
-  hcw_loc_file <- check_file(hcw_loc_file)
-  pat_loc_file <- check_file(pat_loc_file)
+  ali_file <- check_file(ali_file, "ali")
+  pat_file <- check_file(pat_file, "pat")
+  hcw_loc_file <- check_file(hcw_loc_file, "hcw_loc")
+  pat_loc_file <- check_file(pat_loc_file, "pat_loc")
   if (pat_loc_file != "") {
     pat_loc_format <- guess_loc_format(pat_loc_file)
     if (pat_loc_format=="long")
       pat_loc_file <- long_to_wide(pat_loc_file)
   }
-  params <- list(pa=pa, pb=pb, po=po, smu=smu, ssigma=ssigma,
+
+  if (identical(strain, "default"))
+      spars <- .strain_pars_default
+  else if (identical(strain, "delta"))
+      spars <- .strain_pars_delta
+  else if (!is.list(strain)) stop("`strain` should be \"default\", \"delta\" or a list of numbers")
+  else { 
+    for (i in .strain_parnames) 
+      if (!is.numeric(strain[[i]])) 
+        stop(sprintf("strain[[\"%s\"]] should be a number", i))
+    spars <- strain
+    strain <- "custom" # TODO should the thresholds be re-calculated here
+  }
+
+  params <- list(pa=spars$pa, pb=spars$pb, po=spars$po, smu=spars$smu, ssigma=spars$ssigma,
                  ucta=ucta, uctb=uctb, ucto=ucto, uct_mean=uct_mean,
                  rate=evo_rate, seq_noise=seq_noise,
 				 chat=chat,
@@ -311,7 +334,8 @@ a2bcovid <- function(
 				 hcw_location_default=hcw_default,
 				 pat_location_default=pat_default,
 				 use_all_seqs=use_all_seqs,
-				 symptom_uncertainty_calc=symptom_uncertainty_calc)
+                 symptom_uncertainty_calc=symptom_uncertainty_calc,
+                 strain=strain)
   res <- .Call(`_a2bcovid_mainC`, params)
   ## default factor levels as in data order, not sorted alphabetically
   res$from <- factor(res$from, unique(res$from))
@@ -345,8 +369,10 @@ guess_loc_format <- function(filename){
 
 ## Check for file existence
 
-check_file <- function(filename){
-  if (!(filename=="")){
+check_file <- function(filename, str=""){
+  if (!(identical(filename, ""))){
+      if (!is.character(filename) || (length(filename) > 1))
+          stop(sprintf("%s_file should be a character vector of length 1", str))
     if (!file.exists(filename))
       stop(sprintf("File `%s` not found", filename))
     filename <-  normalizePath(filename)
