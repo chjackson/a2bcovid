@@ -8,7 +8,11 @@
 string get_extdata(string fname){
     Rcpp::Environment base("package:base");
     Rcpp::Function sys_file = base["system.file"];
-    Rcpp::StringVector rstr = sys_file("inst", "extdata", fname, Rcpp::_["package"] = "a2bcovid");
+    Rcpp::Function file_exists = base["file.exists"];
+    Rcpp::StringVector rstr = sys_file("extdata", fname, Rcpp::_["package"] = "a2bcovid");
+    Rcpp::LogicalVector exists = file_exists(rstr);
+    if (!exists[0]) // seems to be required for local use from devtools::load_all
+	rstr = sys_file("inst", "extdata", fname, Rcpp::_["package"] = "a2bcovid");
     std::string str = Rcpp::as<std::string>(rstr);
     return str;
 }

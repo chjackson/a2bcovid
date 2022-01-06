@@ -10,11 +10,7 @@ a2bcovid(
   hcw_loc_file = "",
   ali_file = "",
   pat_loc_file = "",
-  pa = 97.1875,
-  pb = 0.268908,
-  po = 25.625,
-  smu = 1.434065,
-  ssigma = 0.6612,
+  strain = "default",
   ucta = 2.59321520957074,
   uctb = 3.77600606639754,
   ucto = 3.11208004146092,
@@ -22,8 +18,6 @@ a2bcovid(
   evo_rate = 8e-04,
   seq_noise = 0.41369,
   chat = 0.5,
-  threshold = 0,
-  threshold_ns = 0,
   max_n = 10,
   min_qual = 0.8,
   calc_thresholds = FALSE,
@@ -169,20 +163,29 @@ file can be shown by the R command \code{system.file("extdata",
   file can be shown by the R command \code{system.file("extdata",
   "Example_pat_loc_file_wide.csv", package="a2bcovid")}}
 
-\item{pa}{Alpha parameter for the gamma distribution for the infectious
-potential of an individual.}
+\item{strain}{Specification of parameters describing transmission dynamics.  This
+can be supplied as a list with the following components
 
-\item{pb}{Beta parameter for the gamma distribution for the infectious
-potential of an individual.}
+* \code{pa} Alpha parameter for the gamma distribution for the infectious
+  potential of an individual.
 
-\item{po}{Offset parameter for the gamma distribution for the infectious
-potential of an individual.}
+* \code{pb} Beta parameter for the gamma distribution for the infectious
+  potential of an individual.
 
-\item{smu}{Mu parameter for the lognormal distribution for the time from
-infection to becoming symptomatic.}
+* \code{po} Offset parameter for the gamma distribution for the infectious
+  potential of an individual.
 
-\item{ssigma}{Sigma parameter for the lognormal distribution for the time
-from infection to becoming symptomatic.}
+* \code{smu} Mu parameter for the lognormal distribution for the time from
+  infection to becoming symptomatic.
+
+* \code{ssigma} Sigma parameter for the lognormal distribution for the time
+  from infection to becoming symptomatic.
+
+Alternatively, a set of standard values can be used through the following specification:
+
+ \code{strain = "default"} is equivalent to \code{strain = list(pa=97.18750, pb=0.268908, po=25.625, smu=1.434065, ssigma=0.6612)}, representing the original strain of the SARS-CoV-2 virus.  This is the default. 
+
+ \code{strain = "delta"}, equivalent to \code{strain = list(pa = 38.4805, pb=0.468049, po=20, smu=1.39599, ssigma=0.41354)}, representing the Delta variant of SARS-CoV-2.}
 
 \item{ucta}{Alpha parameter for a gamma distribution of the times bewterrn
 becomining symptomatic and testing positive.  Currently not used.}
@@ -207,13 +210,9 @@ was estimated from data collected by Cambridge University Hospitals within
 single hosts, using the criteria that at least 90\% of the reported
 nucleotides were unambiguous.}
 
-\item{chat}{Estimated prior probability of two individuals being in contact
-on a given day, conditional on transmission having occurred between the two
-individuals.  Default is 0.5.}
-
-\item{threshold}{documentme}
-
-\item{threshold_ns}{documentme}
+\item{chat}{Prior estimate of the probability of any two individuals being
+in contact on any given day, conditional on transmission between the two
+individuals having taken place.}
 
 \item{max_n}{Maximum number of ambiguous nucleotides tolerated in a sequence
 counted at positions in the sequence data for which there is a
@@ -225,9 +224,9 @@ critical sites}
 measured as a fraction of genome coverage (e.g. 0.8 would indicate that at
 least 80\% of the genome must have been specified by a sequence}
 
-\item{calc_thresholds}{documentme}
+\item{calc_thresholds}{Currently unused.}
 
-\item{diagnostic}{Flag to enable extensive diagnostic output from the
+\item{diagnostic}{Binary flag to enable extensive diagnostic output from the
 function.}
 
 \item{hcw_default}{Default probability of a health care worker being present
@@ -238,9 +237,13 @@ that individual.  Default is 4/7.}
 ward on a given day if no location information is specified for that
 individual.  Default 1.}
 
-\item{use_all_seqs}{Flag to use multiple sequences from an individual, rather
+\item{use_all_seqs}{Binary flag to use multiple sequences from an individual, rather
 than simply the first collected.  Reports the maximum likelihood calculated
 across all sequences from an individual.}
+
+\item{symptom_uncertainty_calc}{Binary flag to use a complete offset gamma distribution,
+specified by the parameters ucta, uctb, and ucto, to model the uncertainty
+in the date of onset of symptom.}
 }
 \value{
 A data frame with the following columns
