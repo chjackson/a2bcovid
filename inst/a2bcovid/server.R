@@ -52,7 +52,7 @@ shinyServer(function(input, output, session) {
         }
         a2bcovid(pat_file = dat$pat, hcw_loc_file = dat$hcwloc,
                  pat_loc_file = dat$patloc, ali_file = dat$ali,
-                 seq_noise = input$seq_noise, evo_rate = input$evo_rate,
+                 seq_noise = input$seq_noise, 
                  max_n = input$max_n, min_qual = input$min_qual)
     })
 
@@ -61,8 +61,9 @@ shinyServer(function(input, output, session) {
                  hcw_loc_file = if (input$use_hcwloc) exampledat$hcwloc else "",
                  pat_loc_file = if (input$use_patloc) exampledat$patloc else  "",
                  ali_file = if (input$use_ali) exampledat$ali else "",
-                 seq_noise = input$seq_noise, evo_rate = input$evo_rate,
-                 max_n = input$max_n, min_qual = input$min_qual)
+                 seq_noise = input$seq_noise, 
+                 max_n = input$max_n, min_qual = input$min_qual,
+                 strain = input$virus_strain)
     })
 
     get_res <- reactive({
@@ -78,7 +79,8 @@ shinyServer(function(input, output, session) {
     output$rasterPlot <- renderPlot({
         plot_a2bcovid(get_res(), cluster=input$cluster,
                       hi_from="from_hcw", hi_to="to_hcw",
-                      continuous=(input$colour_scale=="continuous"))
+                      continuous=(input$colour_scale=="continuous")
+                      )
     })
 
     output$patInput <- renderUI({
@@ -135,7 +137,7 @@ shinyServer(function(input, output, session) {
 
     observe({
         input$reset_pars
-        for (i in c("seq_noise","evo_rate","max_n","min_qual"))
+        for (i in c("seq_noise","max_n","min_qual"))
             updateNumericInput(session, i, value=defaultpars[[i]])
     })
 })
