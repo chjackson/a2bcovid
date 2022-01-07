@@ -48,3 +48,5 @@ inst/a2bcovid/global_bsu.R
 R/locations.R
 
 *.dll
+
+*~

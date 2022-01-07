@@ -36,7 +36,7 @@ highlighted, similarly.}
 \item{hi_lab}{Legend to describe which individuals are highlighted.  By default this is "Healthcare workers".}
 
 \item{palette}{Colour palette, passed to
-\code{\link[ggplot2]{scale_fill_brewer}}.  If omitted, a default will be chosen}
+\code{\link[ggplot2:scale_brewer]{ggplot2::scale_fill_brewer()}}.  If omitted, a default will be chosen.}
 
 \item{continuous}{If \code{TRUE} then the p-values are plotted on a
 continuous colour scale.  Currently only implemented with the default

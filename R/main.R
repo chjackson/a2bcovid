@@ -190,30 +190,7 @@
 ##' @param ucto Offset parameter for a gamma distribution of the times bewterrn
 ##'   becomining symptomatic and testing positive.  Currently not used.
 ##'
-##' @param strain Specification of parameters describing transmission dynamics.  This
-##' can be supplied as a list with the following components
-##'
-##' * \code{pa} Alpha parameter for the gamma distribution for the infectious
-##'   potential of an individual.
-##'
-##' * \code{pb} Beta parameter for the gamma distribution for the infectious
-##'   potential of an individual.
-##'
-##' * \code{po} Offset parameter for the gamma distribution for the infectious
-##'   potential of an individual.
-##'
-##' * \code{smu} Mu parameter for the lognormal distribution for the time from
-##'   infection to becoming symptomatic.
-##'
-##' * \code{ssigma} Sigma parameter for the lognormal distribution for the time
-##'   from infection to becoming symptomatic.
-##'
-##' Alternatively, a set of standard values can be used through the following specification:
-##' 
-##'  \code{strain = "default"} is equivalent to \code{strain = list(pa=97.18750, pb=0.268908, po=25.625, smu=1.434065, ssigma=0.6612)}, representing the original strain of the SARS-CoV-2 virus.  This is the default. 
-##' 
-##'  \code{strain = "delta"}, equivalent to \code{strain = list(pa = 38.4805, pb=0.468049, po=20, smu=1.39599, ssigma=0.41354)}, representing the Delta variant of SARS-CoV-2.
-##' 
+##' @param strain Specification of parameters describing transmission dynamics. \code{strain = "default"} uses parameter representing the original strain of the SARS-CoV-2 virus.  This is the default.  \code{strain = "delta"} uses parameters representing the Delta variant of SARS-CoV-2.
 ##'
 ##' @param diagnostic Binary flag to enable extensive diagnostic output from the
 ##'   function.
@@ -225,9 +202,6 @@
 ##' @param symptom_uncertainty_calc Binary flag to use a complete offset gamma distribution,
 ##' specified by the parameters ucta, uctb, and ucto, to model the uncertainty
 ##' in the date of onset of symptom.
-##'
-##' @param calc_thresholds Currently unused.
-##'
 ##'
 ##' @return A data frame with the following columns
 ##'
@@ -291,7 +265,6 @@ a2bcovid <- function(
   chat = 0.5,
   max_n = 10,
   min_qual = 0.8,
-  calc_thresholds=FALSE,
   diagnostic =FALSE,
   hcw_default = 0.5714286,
   pat_default = 1,
@@ -313,14 +286,7 @@ a2bcovid <- function(
       spars <- .strain_pars_default
   else if (identical(strain, "delta"))
       spars <- .strain_pars_delta
-  else if (!is.list(strain)) stop("`strain` should be \"default\", \"delta\" or a list of numbers")
-  else { 
-    for (i in .strain_parnames) 
-      if (!is.numeric(strain[[i]])) 
-        stop(sprintf("strain[[\"%s\"]] should be a number", i))
-    spars <- strain
-    strain <- "custom" # TODO should the thresholds be re-calculated here
-  }
+  else stop("`strain` should be \"default\" or \"delta\"")
 
   params <- list(pa=spars$pa, pb=spars$pb, po=spars$po, smu=spars$smu, ssigma=spars$ssigma,
                  ucta=ucta, uctb=uctb, ucto=ucto, uct_mean=uct_mean,
@@ -329,7 +295,7 @@ a2bcovid <- function(
                  max_n=max_n, min_qual=min_qual,
                  ali_file=ali_file, pat_file=pat_file,
                  mov_file=hcw_loc_file, ward_file=pat_loc_file,
-                 calc_thresholds=calc_thresholds,
+                 calc_thresholds=FALSE,
                  diagnostic=diagnostic,
 				 hcw_location_default=hcw_default,
 				 pat_location_default=pat_default,
@@ -405,7 +371,7 @@ check_file <- function(filename, str=""){
 ##' @param hi_lab Legend to describe which individuals are highlighted.  By default this is "Healthcare workers".
 ##'
 ##' @param palette Colour palette, passed to
-##'   \code{\link[ggplot2]{scale_fill_brewer}}.  If omitted, a default will be chosen
+##'   \code{\link[ggplot2:scale_brewer]{ggplot2::scale_fill_brewer()}}.  If omitted, a default will be chosen.
 ##'
 ##' @param continuous  If \code{TRUE} then the p-values are plotted on a
 ##'   continuous colour scale.  Currently only implemented with the default

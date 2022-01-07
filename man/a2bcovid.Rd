@@ -20,7 +20,6 @@ a2bcovid(
   chat = 0.5,
   max_n = 10,
   min_qual = 0.8,
-  calc_thresholds = FALSE,
   diagnostic = FALSE,
   hcw_default = 0.5714286,
   pat_default = 1,
@@ -163,29 +162,7 @@ file can be shown by the R command \code{system.file("extdata",
   file can be shown by the R command \code{system.file("extdata",
   "Example_pat_loc_file_wide.csv", package="a2bcovid")}}
 
-\item{strain}{Specification of parameters describing transmission dynamics.  This
-can be supplied as a list with the following components
-
-* \code{pa} Alpha parameter for the gamma distribution for the infectious
-  potential of an individual.
-
-* \code{pb} Beta parameter for the gamma distribution for the infectious
-  potential of an individual.
-
-* \code{po} Offset parameter for the gamma distribution for the infectious
-  potential of an individual.
-
-* \code{smu} Mu parameter for the lognormal distribution for the time from
-  infection to becoming symptomatic.
-
-* \code{ssigma} Sigma parameter for the lognormal distribution for the time
-  from infection to becoming symptomatic.
-
-Alternatively, a set of standard values can be used through the following specification:
-
- \code{strain = "default"} is equivalent to \code{strain = list(pa=97.18750, pb=0.268908, po=25.625, smu=1.434065, ssigma=0.6612)}, representing the original strain of the SARS-CoV-2 virus.  This is the default. 
-
- \code{strain = "delta"}, equivalent to \code{strain = list(pa = 38.4805, pb=0.468049, po=20, smu=1.39599, ssigma=0.41354)}, representing the Delta variant of SARS-CoV-2.}
+\item{strain}{Specification of parameters describing transmission dynamics. \code{strain = "default"} uses parameter representing the original strain of the SARS-CoV-2 virus.  This is the default.  \code{strain = "delta"} uses parameters representing the Delta variant of SARS-CoV-2.}
 
 \item{ucta}{Alpha parameter for a gamma distribution of the times bewterrn
 becomining symptomatic and testing positive.  Currently not used.}
@@ -223,8 +200,6 @@ critical sites}
 \item{min_qual}{Minimum sequence quality for a sequence to be included,
 measured as a fraction of genome coverage (e.g. 0.8 would indicate that at
 least 80\% of the genome must have been specified by a sequence}
-
-\item{calc_thresholds}{Currently unused.}
 
 \item{diagnostic}{Binary flag to enable extensive diagnostic output from the
 function.}
