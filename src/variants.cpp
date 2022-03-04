@@ -47,27 +47,29 @@ void ListAllVariantPositions (const vector<sparseseq>& variants, vector<allele>&
 			allvar.push_back(a);
 		}
 	}
-	sort(allvar.begin(),allvar.end(),compare_allele);
-	vector<int> to_rem;
-	for (int i=1;i<allvar.size();i++) {
-		if (allvar[i].loc==allvar[i-1].loc&&allvar[i].nuc==allvar[i-1].nuc) {
-			to_rem.push_back(i);
-		}
-	}
-	vector<int> keep;
-	int index=0;
-	for (int i=0;i<allvar.size();i++) {
-		if (i==to_rem[index]) {
-			index++;
-		} else {
-			keep.push_back(i);
-		}
-	}
-	vector<allele> allvar_new;
-	for (int i=0;i<keep.size();i++) {
-		allvar_new.push_back(allvar[keep[i]]);
-	}
-	allvar=allvar_new;
+    if (allvar.size()>1) {
+        sort(allvar.begin(),allvar.end(),compare_allele);
+        vector<int> to_rem;
+        for (int i=1;i<allvar.size();i++) {
+            if (allvar[i].loc==allvar[i-1].loc&&allvar[i].nuc==allvar[i-1].nuc) {
+                to_rem.push_back(i);
+            }
+        }
+        vector<int> keep;
+        int index=0;
+        for (int i=0;i<allvar.size();i++) {
+            if (i==to_rem[index]) {
+                index++;
+            } else {
+                keep.push_back(i);
+            }
+        }
+        vector<allele> allvar_new;
+        for (int i=0;i<keep.size();i++) {
+            allvar_new.push_back(allvar[keep[i]]);
+        }
+        allvar=allvar_new;
+    }
 }
 
 
