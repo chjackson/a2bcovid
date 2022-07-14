@@ -64,7 +64,9 @@ a2bcovid(
   6.  Date of sample collection : Used in evolutionary calculations. Date
   format should be dd/mm/yyyy.
 
-  7.  Sample received date : Currently not used in the calculation.
+  7.  Sample received date : Currently not used in the calculation but
+  necessary.  If this seventh column is missing A2B-Covid has been reported
+  to crash R completely.
 
   An example is given with the installed package.  The path to the example
   file can be shown by the R command \code{system.file("extdata",
@@ -96,8 +98,10 @@ a2bcovid(
 \item{ali_file}{A character string with the path to a file in FASTA format
   containing genome sequence alignments.  This file must contain all required
   sequences, specified by the sequence ID in the data of \code{pat_file}. If
-this argument is omitted or set to an empty string, then genomic data are
-not used in the calculation.
+  this argument is omitted or set to an empty string, then genomic data are
+  not used in the calculation.  Note: Sequences must be properly aligned for
+  the code to work.  It is worth manually checking the sequence alignment
+  before running the code.
 
 An example is given with the installed package.  The path to the example
 file can be shown by the R command \code{system.file("extdata",
