@@ -47,7 +47,11 @@ void ListAllVariantPositions (const vector<sparseseq>& variants, vector<allele>&
 			allvar.push_back(a);
 		}
 	}
+<<<<<<< HEAD
     if (allvar.size()>=2) {
+=======
+    if (allvar.size()>1) {
+>>>>>>> 64f475fd884a73fbd2c44440ccfdf53ea24e4771
         sort(allvar.begin(),allvar.end(),compare_allele);
         vector<int> to_rem;
         for (int i=1;i<allvar.size();i++) {
